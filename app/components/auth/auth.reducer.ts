@@ -2,7 +2,7 @@ import { Action } from 'redux';
 import { SET_AUTHENTICATED } from './auth.actions';
 
 const initialState={
-  isAuthenticated:true
+  isAuthenticated:false
 }
 
 export default function auth(state = initialState, action: Action<string>) {

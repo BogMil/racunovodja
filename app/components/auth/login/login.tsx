@@ -12,7 +12,7 @@ export default function Login() {
 
   const onLogin=()=>{
     dispatch(setAuthenticated());
-    history.push(routes.HOME)
+    history.push(routes.HOME);
   }
   return(
     <AuthenticationCard>

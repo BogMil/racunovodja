@@ -8,8 +8,8 @@ type Props={
 
 export default function AuthenticationCard(props:Props) {
   return(
-     <Container>
-      <Row className={`justify-content-md-center`} style={{paddingTop:100}} >
+     <Container style={{position:'relative',top:'50%',transform:'translateY(-50%)'}}>
+      <Row className={`justify-content-md-center`}  >
         <Card style={{width:300}}>
           <Card.Body>
             <Row className="justify-content-md-center" style={{paddingBottom:50}}>

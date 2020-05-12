@@ -8,6 +8,7 @@ import LoginComponent from './components/auth/login/login';
 import RegisterComponent from './components/auth/register/register';
 import SuccessfulRegistrationComponent from './components/auth/register/success';
 import { useSelector } from 'react-redux';
+import Employees from './components/employees/employees';
 
 export default function Routes() {
   const auth = useSelector((state:any)=>state.auth);
@@ -19,11 +20,10 @@ export default function Routes() {
         <PrivateRoute exact path={routes.HOME}>
           <HomePage />
         </PrivateRoute>
-        {/* <Route path={routes.HOME} component={HomePage} /> */}
         <GuestRoute path={routes.LOGIN} component={LoginComponent} />
         <Route path={routes.REGISTER}  component={RegisterComponent} />
-
         <Route path={routes.SUCCESS_REGISTRATION} component={SuccessfulRegistrationComponent} />
+        <Route path={routes.EMPLOYEES} component={Employees} />
       </Switch>
     </App>
   );
@@ -47,10 +47,12 @@ export default function Routes() {
       />
     );
   }
+
+  function GuestRoute({ ...rest }: any) {  
+    return isAuthenticated
+    ? <Redirect to={routes.HOME} /> 
+    : <Route  {...rest} />
+  }
 }
 
-function GuestRoute({ ...rest }: any) {
-  const isAuthenticated = false;
-  return isAuthenticated ==false ? <Route  {...rest} />
-  : null
-}
+

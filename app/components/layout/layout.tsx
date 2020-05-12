@@ -2,11 +2,8 @@ import React, { ReactNode } from 'react';
 import SideBar from './sidebar/sidebar';
 import TopBar from './topbar/topbar';
 import { useSelector } from 'react-redux';
-import {useHistory} from 'react-router-dom';
 
 export default function Layout(props:{children:ReactNode}) {
-
-  const history=useHistory();
 
   const auth = useSelector((state:any)=>state.auth);
   if(auth.isAuthenticated)
@@ -15,7 +12,7 @@ export default function Layout(props:{children:ReactNode}) {
       <TopBar />
       <div>
           <SideBar/>
-          <main style={{marginLeft:200}}>
+          <main style={{marginLeft:200,height:'100vh'}}>
             {props.children}
           </main>
       </div>
@@ -27,7 +24,7 @@ export default function Layout(props:{children:ReactNode}) {
     <div>
       <TopBar />
       <div>
-          <main>
+          <main style={{height:'100vh'}}>
             {props.children}
           </main>
       </div>

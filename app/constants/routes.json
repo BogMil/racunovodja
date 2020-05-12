@@ -3,5 +3,6 @@
   "LOGIN": "/login",
   "REGISTER": "/register",
   "SUCCESS_REGISTRATION": "/success-registration",
-  "COUNTER": "/counter"
+  "COUNTER": "/counter",
+  "EMPLOYEES":"/employees"
 }

@@ -44,7 +44,7 @@ const installExtensions = async () => {
     extensions.map(name => installer.default(installer[name], forceDownload))
   ).catch(console.log);
 };
-
+const icon=path.join(__dirname,'../resources/icons8-accounting-100.png');
 const createWindow = async () => {
   if (
     process.env.NODE_ENV === 'development' ||
@@ -53,7 +53,7 @@ const createWindow = async () => {
     await installExtensions();
   }
 
-  let splash = new BrowserWindow({width: 810, height: 610, transparent: true, frame: false, alwaysOnTop: true});
+  let splash = new BrowserWindow({width: 810, height: 610, transparent: true, frame: false, alwaysOnTop: true,icon:icon});
   splash.loadURL(`file://${__dirname}/splash.html`);
   splash.show();
 
@@ -69,8 +69,11 @@ const createWindow = async () => {
           }
         : {
             preload: path.join(__dirname, 'dist/renderer.prod.js')
-          }
+          },
+    icon:icon
   });
+  // mainWindow.setIcon(path.join(__dirname,'resources/icons8-accounting-16.png'))
+
   mainWindow.loadURL(`file://${__dirname}/app.html`);
   mainWindow.removeMenu();
   // @TODO: Use 'ready-to-show' event
