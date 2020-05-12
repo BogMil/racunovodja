@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux';
 
 export default function Routes() {
   const auth = useSelector((state:any)=>state.auth);
-  console.log(auth)
   let isAuthenticated = auth.isAuthenticated;
   return (
     <App>
@@ -50,32 +49,8 @@ export default function Routes() {
   }
 }
 
-
-
-
 function GuestRoute({ ...rest }: any) {
   const isAuthenticated = false;
   return isAuthenticated ==false ? <Route  {...rest} />
   : null
-}
-
-function PrivateRoute({ children, ...rest }: any) {
-  const isAuthenticated = false;
-  return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        isAuthenticated ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: routes.LOGIN,
-              state: { from: location }
-            }}
-          />
-        )
-      }
-    />
-  );
 }

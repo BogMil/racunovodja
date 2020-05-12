@@ -10,17 +10,17 @@ export default function Layout(props:{children:ReactNode}) {
 
   const auth = useSelector((state:any)=>state.auth);
   if(auth.isAuthenticated)
-    return (
+  return (
+    <div>
+      <TopBar />
       <div>
-        <TopBar />
-        <div>
-            <SideBar/>
-            <main style={{marginLeft:200}}>
-              {props.children}
-            </main>
-        </div>
+          <SideBar/>
+          <main style={{marginLeft:200}}>
+            {props.children}
+          </main>
       </div>
-    );
+    </div>
+  );
 
   // history.push(routes.LOGIN)
   return (
