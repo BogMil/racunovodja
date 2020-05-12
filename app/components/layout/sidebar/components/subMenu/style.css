@@ -1,0 +1,20 @@
+.subMenu {
+  border-radius: 0;
+  background-color: #3f0e40;
+  border: 0;
+}
+
+.subMenuBody {
+  padding: 0;
+}
+.subMenuBody > li > a > div {
+  padding: 0;
+  padding-left: 20px;
+}
+
+.subMenuHeader {
+  padding-left: 10px !important;
+  color: #b7a5b7;
+  cursor: pointer;
+  border: 0;
+}

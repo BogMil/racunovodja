@@ -1,0 +1,22 @@
+.menuItem {
+  padding-left: 10px;
+}
+
+.activeMenuItem div {
+  background-color: #1164a3;
+  color: white;
+}
+
+.menuItemHolder:hover {
+  background-color: #320b33;
+  color: #b7a5b7;
+}
+
+.menuItemHolder > a:hover {
+  text-decoration: none;
+}
+
+.menuItemHolder > a {
+  color: #b7a5b7;
+  width: 100%;
+}
