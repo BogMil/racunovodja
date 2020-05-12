@@ -58,3 +58,24 @@ function GuestRoute({ ...rest }: any) {
   return isAuthenticated ==false ? <Route  {...rest} />
   : null
 }
+
+function PrivateRoute({ children, ...rest }: any) {
+  const isAuthenticated = false;
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        isAuthenticated ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: routes.LOGIN,
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
