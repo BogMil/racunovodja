@@ -8,22 +8,10 @@ body {
   position: relative;
   color: white;
   height: 100vh;
-  background-color: #232c39;
-  background-image: linear-gradient(
-    45deg,
-    rgba(0, 216, 255, 0.5) 10%,
-    rgba(0, 1, 127, 0.7)
-  );
+  /* background-color: #232c39;
+  background-image: linear-gradient(#a8dcf3, #a8dcf3); */
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   overflow-y: hidden;
-}
-
-h2 {
-  margin: 0;
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: -0.025em;
-  color: #fff;
 }
 
 p {
@@ -44,4 +32,19 @@ a:hover {
   opacity: 1;
   text-decoration: none;
   cursor: pointer;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currentlysupported by Chrome, Opera and Firefox */
+}
+
+.card,
+.btn,
+.form-control {
+  border-radius: 0;
 }

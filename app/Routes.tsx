@@ -4,9 +4,15 @@ import routes from './constants/routes.json';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
 import CounterPage from './containers/CounterPage';
-import LoginComponent from './components/auth/login/index';
+import LoginComponent from './components/auth/login/login';
+import RegisterComponent from './components/auth/register/register';
+import SuccessfulRegistrationComponent from './components/auth/register/success';
+import { useSelector } from 'react-redux';
 
 export default function Routes() {
+  const auth = useSelector((state:any)=>state.auth);
+  console.log(auth)
+  let isAuthenticated = auth.isAuthenticated;
   return (
     <App>
       <Switch>
@@ -15,29 +21,40 @@ export default function Routes() {
           <HomePage />
         </PrivateRoute>
         {/* <Route path={routes.HOME} component={HomePage} /> */}
-        <Route path={routes.LOGIN} component={LoginComponent} />
+        <GuestRoute path={routes.LOGIN} component={LoginComponent} />
+        <Route path={routes.REGISTER}  component={RegisterComponent} />
+
+        <Route path={routes.SUCCESS_REGISTRATION} component={SuccessfulRegistrationComponent} />
       </Switch>
     </App>
   );
+
+  function PrivateRoute({ children, ...rest }: any) {
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          isAuthenticated ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: routes.LOGIN,
+                state: { from: location }
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
 }
 
-function PrivateRoute({ children, ...rest }: any) {
+
+
+
+function GuestRoute({ ...rest }: any) {
   const isAuthenticated = false;
-  return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        isAuthenticated ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: routes.LOGIN,
-              state: { from: location }
-            }}
-          />
-        )
-      }
-    />
-  );
+  return isAuthenticated ==false ? <Route  {...rest} />
+  : null
 }

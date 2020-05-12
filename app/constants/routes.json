@@ -1,5 +1,7 @@
 {
   "HOME": "/",
   "LOGIN": "/login",
-  "COUNTER": "/counter"
+  "COUNTER": "/counter",
+  "REGISTER": "/register",
+  "SUCCESS_REGISTRATION": "/successRegistration"
 }
