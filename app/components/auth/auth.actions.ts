@@ -1,24 +1,28 @@
-import {Dispatch,GetState} from './auth.store.types';
-
+import { Dispatch, GetState } from './auth.store.types';
+import { Action } from '../../reducers/types';
 
 export const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
 export const DECREMENT_COUNTER = 'DECREMENT_COUNTER';
 export const SET_AUTHENTICATED = 'SET_AUTHENTICATED';
+export const NAMESPACE = 'AUTH';
 
-export function setAuthenticated() {
+export function setAuthenticated(): Action {
   return {
+    namespace: NAMESPACE,
     type: SET_AUTHENTICATED
   };
 }
 
-export function increment() {
+export function increment(): Action {
   return {
+    namespace: NAMESPACE,
     type: INCREMENT_COUNTER
   };
 }
 
-export function decrement() {
+export function decrement(): Action {
   return {
+    namespace: NAMESPACE,
     type: DECREMENT_COUNTER
   };
 }

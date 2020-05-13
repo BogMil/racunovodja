@@ -1,11 +1,17 @@
-import { Dispatch as ReduxDispatch, Store as ReduxStore, Action } from 'redux';
+import { Dispatch as ReduxDispatch, Store as ReduxStore } from 'redux';
 
-export type racunovodjaStateType = {
+export type racunovodjaStoreType = {
   counter: number;
 };
 
-export type GetState = () => racunovodjaStateType;
+export type GetState = () => racunovodjaStoreType;
 
-export type Dispatch = ReduxDispatch<Action<string>>;
+export type Dispatch = ReduxDispatch<Action>;
 
-export type Store = ReduxStore<racunovodjaStateType, Action<string>>;
+export type Store = ReduxStore<racunovodjaStoreType, Action>;
+
+export interface Action {
+  type: string;
+  namespace: string;
+  payload?: any;
+}

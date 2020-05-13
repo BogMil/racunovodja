@@ -3,14 +3,14 @@ import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
 import createRootReducer from '../reducers';
-import { Store, racunovodjaStateType } from '../reducers/types';
+import { Store, racunovodjaStoreType } from '../reducers/types';
 
 const history = createHashHistory();
 const rootReducer = createRootReducer(history);
 const router = routerMiddleware(history);
 const enhancer = applyMiddleware(thunk, router);
 
-function configureStore(initialState?: racunovodjaStateType): Store {
+function configureStore(initialState?: racunovodjaStoreType): Store {
   return createStore(rootReducer, initialState, enhancer);
 }
 

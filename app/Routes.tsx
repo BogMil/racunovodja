@@ -23,7 +23,9 @@ export default function Routes() {
         <GuestRoute path={routes.LOGIN} component={LoginComponent} />
         <Route path={routes.REGISTER}  component={RegisterComponent} />
         <Route path={routes.SUCCESS_REGISTRATION} component={SuccessfulRegistrationComponent} />
-        <Route path={routes.EMPLOYEES} component={Employees} />
+        <PrivateRoute path={routes.EMPLOYEES} >
+          <Employees />
+        </PrivateRoute>
       </Switch>
     </App>
   );

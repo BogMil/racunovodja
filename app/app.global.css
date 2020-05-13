@@ -45,6 +45,22 @@ a:hover {
 
 .card,
 .btn,
-.form-control {
+.form-control,
+.modal-dialog,
+.modal-content,
+.custom-select {
   border-radius: 0;
+}
+
+.close {
+  margin: 0px 2px 0px 0px !important;
+}
+.close,
+.modal-header,
+.modal-footer {
+  padding: 5px !important;
+}
+
+.modal-body {
+  padding: 10px !important;
 }
