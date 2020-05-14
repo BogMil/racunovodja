@@ -1,4 +1,4 @@
-import { Employee, DefaultRelation } from './models/employee';
+import { Employee, DefaultRelation } from './types';
 
 export function get(): Employee[] {
   return [
@@ -11,6 +11,7 @@ export function get(): Employee[] {
       firstName: 'Milan',
       bancAccount: '160-5800000000000-00',
       municipality: {
+        id: 2,
         code: '017',
         name: 'Smederevo'
       },
@@ -30,6 +31,7 @@ export function get(): Employee[] {
       firstName: 'Ana',
       bancAccount: '160-5800000000000-00',
       municipality: {
+        id: 1,
         code: '018',
         name: 'Kovin'
       },
@@ -53,8 +55,9 @@ export function get(): Employee[] {
       firstName: 'Lazar',
       bancAccount: '160-5800000000000-00',
       municipality: {
-        code: '07',
-        name: 'Nis'
+        code: '',
+        id: 1,
+        name: '---'
       },
       defaultRelations: []
     }
@@ -71,3 +74,32 @@ export function getAvailableDefaultRelationsForEmployee(
     { id: 7, name: 'a-b-2' }
   ];
 }
+
+export function getEmployee(id: number): Employee {
+  return {
+    id: 1,
+    active: true,
+    jmbg: '2029938765372',
+    employeeNumber: '982137',
+    lastName: 'Bogdanovic',
+    firstName: 'Milan',
+    bancAccount: '160-5800000000000-00',
+    municipality: {
+      id: 2,
+      code: '017',
+      name: 'Smederevo'
+    },
+    defaultRelations: [
+      {
+        id: 1,
+        name: 'A-B-A'
+      },
+      {
+        id: 11,
+        name: 'A-B-NOVA'
+      }
+    ]
+  };
+}
+
+export function removeDefaultRelation(id: number) {}

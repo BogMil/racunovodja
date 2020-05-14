@@ -1,42 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
-import { DefaultRelation } from '../../models/employee';
-import * as Service from '../../employeeService';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { close } from './addDefaultRelationModal.actions';
+import { AppStore } from '../../../../reducers';
+import { reloadEmployee } from '../../employees.actions';
 
 export default function AddDefaultRealtionModal() {
-  const [relations, setRelations] = useState<DefaultRelation[]>([]);
+  const dispatch = useDispatch();
+  const store = useSelector((state: AppStore) => {
+    return state.employeesCombined.addDefaultRelationModal;
+  });
 
-  const addDefaultRealtionModal = useSelector(
-    (state: any) => state.addDefaultRealtionModal
-  );
+  const handleClose = () => {
+    dispatch(close());
+  };
 
-  useEffect(() => {
-    let relations = Service.getAvailableDefaultRelationsForEmployee(1);
-    setRelations(relations);
-  }, []);
+  const handleSave = () => {
+    dispatch(reloadEmployee(store.employee.id));
+  };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Dialog className="noselect">
-        <Modal.Header closeButton style={{}}>
-          <Modal.Title as="h5">Dodavanje podrazumevane relacije</Modal.Title>
-        </Modal.Header>
+    <Modal
+      backdrop="static"
+      centered
+      show={store.show}
+      onHide={handleClose}
+      className="noselect"
+    >
+      <Modal.Header closeButton style={{}}>
+        <Modal.Title as="h5">Dodavanje podrazumevane relacije</Modal.Title>
+      </Modal.Header>
 
-        <Modal.Body>
-          <Form>
-            <Form.Control as="select" custom>
-              {relations.map(relation => {
-                <option key={relation.id}>{relation.name}</option>;
-              })}
-            </Form.Control>
-          </Form>
-        </Modal.Body>
+      <Modal.Body>
+        <div style={{ paddingBottom: 10 }}>
+          zaposlenom:{' '}
+          <b>
+            {store.employee?.lastName} {store.employee?.firstName}
+          </b>
+        </div>
+        <Form>
+          <Form.Control as="select" custom>
+            {store.availableRelations.map(relation => {
+              return <option key={relation.id}>{relation.name}</option>;
+            })}
+          </Form.Control>
+        </Form>
+      </Modal.Body>
 
-        <Modal.Footer>
-          <Button variant="primary">Dodaj</Button>
-        </Modal.Footer>
-      </Modal.Dialog>
+      <Modal.Footer>
+        <Button variant="primary" onClick={handleSave}>
+          Dodaj
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }

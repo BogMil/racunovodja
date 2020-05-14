@@ -1,15 +1,28 @@
 import React from 'react';
 import { Form, Table, Button } from 'react-bootstrap';
-import { Employee } from '../../models/employee';
+import { Employee } from '../../types';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDispatch } from 'react-redux';
+import * as AddDefaultRelationModalActions from '../addDefaultRelationModal/addDefaultRelationModal.actions';
+import { removeRelationFromEmployee } from '../../employees.actions';
 
 type Props = {
   employee: Employee;
 };
 
 export default function EmployeeComponent(props: Props) {
+  const dispatch = useDispatch();
   let employee = props.employee;
+
+  const onAddDefaultRelationClick = () => {
+    dispatch(AddDefaultRelationModalActions.open(employee));
+  };
+
+  const removeRelation = (employee: Employee, defaultRelationId: number) => {
+    dispatch(removeRelationFromEmployee(employee, defaultRelationId));
+  };
+
   return (
     <tr>
       <td
@@ -25,10 +38,8 @@ export default function EmployeeComponent(props: Props) {
       <td style={{ verticalAlign: 'middle' }}>{employee.lastName}</td>
       <td style={{ verticalAlign: 'middle' }}>{employee.firstName}</td>
       <td style={{ verticalAlign: 'middle' }}>{employee.bancAccount}</td>
-      <td style={{ width: 200, verticalAlign: 'middle' }}>
-        {employee.municipality.name}
-      </td>
-      <td style={{ width: 300, verticalAlign: 'middle' }}>
+      <td style={{ verticalAlign: 'middle' }}>{employee.municipality.name}</td>
+      <td style={{ verticalAlign: 'middle' }}>
         <Table bordered hover size="sm" style={{ marginBottom: 0 }}>
           <tbody>
             {employee.defaultRelations.map((defaultRelation, i) => (
@@ -45,6 +56,9 @@ export default function EmployeeComponent(props: Props) {
                         height: 25
                       }}
                       title="Ukloni podrazumevanu relaciju"
+                      onClick={() =>
+                        removeRelation(employee, defaultRelation.id)
+                      }
                     >
                       <FontAwesomeIcon icon={faTimes} />{' '}
                     </Button>
@@ -54,12 +68,18 @@ export default function EmployeeComponent(props: Props) {
             ))}
             <tr>
               <td style={{ padding: 0 }}>
-                <Button style={{ width: '100%', padding: 0 }}>+</Button>
+                <Button
+                  onClick={() => onAddDefaultRelationClick()}
+                  style={{ width: '100%', padding: 0 }}
+                >
+                  +
+                </Button>
               </td>
             </tr>
           </tbody>
         </Table>
       </td>
+      <td>actions</td>
     </tr>
   );
 }

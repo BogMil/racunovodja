@@ -11,6 +11,7 @@ export type Employee = {
 };
 
 export type Municipality = {
+  id: number;
   code: string;
   name: string;
 };

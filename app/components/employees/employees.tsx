@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import * as service from './employeeService';
 import EmployeeComponent from './components/employee/employee';
-import { Employee } from './models/employee';
 import AddDefaultRealtionModal from './components/addDefaultRelationModal/addDefaultRelationModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadEmployees } from './employees.actions';
+import { AppStore } from '../../reducers';
 
 export default function Employees() {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const dispatch = useDispatch();
+  const store = useSelector((state: AppStore) => {
+    return state.employeesCombined.employees;
+  });
 
   useEffect(() => {
-    let employees = service.get();
-    setEmployees(employees);
+    dispatch(loadEmployees());
   }, []);
 
   return (
@@ -29,9 +32,10 @@ export default function Employees() {
           </tr>
         </thead>
         <tbody>
-          {employees.map((employee, index) => (
-            <EmployeeComponent key={index} employee={employee} />
-          ))}
+          {store.employees &&
+            store.employees.map((employee, index) => (
+              <EmployeeComponent key={index} employee={employee} />
+            ))}
         </tbody>
       </Table>
       <AddDefaultRealtionModal />

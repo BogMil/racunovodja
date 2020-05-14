@@ -1,8 +1,17 @@
 import { combineReducers } from 'redux';
-import addDefaultRelationModal from './components/addDefaultRelationModal/addDefaultRelationModal.reducer';
+import addDefaultRelationModal, {
+  AddDefaultRelationModalStore
+} from './components/addDefaultRelationModal/addDefaultRelationModal.reducer';
+import employees, { EmployeesStore } from './employees.reducer';
 
 export default function createCombinedReducer() {
   return combineReducers({
-    addDefaultRelationModal
+    addDefaultRelationModal,
+    employees
   });
 }
+
+export type EmployeeCombinedReducer = {
+  addDefaultRelationModal: AddDefaultRelationModalStore;
+  employees: EmployeesStore;
+};
