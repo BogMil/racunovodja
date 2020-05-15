@@ -1,5 +1,6 @@
 import { Dispatch, GetState } from './auth.store.types';
 import { Action } from '../../reducers/types';
+import * as Service from './auth.service';
 
 export const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
 export const DECREMENT_COUNTER = 'DECREMENT_COUNTER';
@@ -27,22 +28,17 @@ export function decrement(): Action {
   };
 }
 
-export function incrementIfOdd() {
-  return (dispatch: Dispatch, getState: GetState) => {
-    const { counter } = getState();
-
-    if (counter % 2 === 0) {
-      return;
-    }
-
-    dispatch(increment());
-  };
-}
-
-export function incrementAsync(delay = 1000) {
+export function login(email: string, password: string) {
   return (dispatch: Dispatch) => {
-    setTimeout(() => {
-      dispatch(increment());
-    }, delay);
+    Service.login(email, password);
+    dispatch(_login(email, relations));
   };
+
+  function _login(user: User): Action {
+    return {
+      namespace: NAMESPACE,
+      type: OPEN,
+      payload: { employee, availableRelations }
+    };
+  }
 }

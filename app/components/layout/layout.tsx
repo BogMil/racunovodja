@@ -2,9 +2,14 @@ import React, { ReactNode } from 'react';
 import SideBar from './sidebar/sidebar';
 import TopBar from './topbar/topbar';
 import { useSelector } from 'react-redux';
+import { Container } from 'react-bootstrap';
 
 export default function Layout(props: { children: ReactNode }) {
   const auth = useSelector((state: any) => state.auth);
+  const vh = Math.max(
+    document.documentElement.clientHeight,
+    window.innerHeight || 0
+  );
   if (auth.isAuthenticated)
     return (
       <div>
@@ -12,7 +17,13 @@ export default function Layout(props: { children: ReactNode }) {
         <div>
           <SideBar />
           <main
-            style={{ marginLeft: 200, height: '100vh', overflowX: 'scroll' }}
+            style={{
+              marginLeft: 200,
+              height: vh - 25,
+              paddingBottom: 25,
+              overflowX: 'auto',
+              overflowY: 'auto'
+            }}
           >
             {props.children}
           </main>
@@ -25,7 +36,17 @@ export default function Layout(props: { children: ReactNode }) {
     <div>
       <TopBar />
       <div>
-        <main style={{ height: '100vh' }}>{props.children}</main>
+        <Container
+          fluid
+          style={{
+            height: vh - 25,
+            padding: 10,
+            overflowX: 'auto',
+            overflowY: 'auto'
+          }}
+        >
+          {props.children}
+        </Container>
       </div>
     </div>
   );
