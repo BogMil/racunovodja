@@ -5,6 +5,7 @@ import routes from '../../../constants/routes.json';
 import AuthenticationCard from '../components/authenticationCard';
 import { useHistory } from 'react-router-dom';
 import * as Service from '../auth.service';
+import { SUCCESS } from '../../../constants/responseStatuses';
 
 class Errors {
   email: any = null;
@@ -62,7 +63,7 @@ export default function Register() {
 
   const [errors, setErrors] = useState<Errors>(new Errors());
 
-  const register = () => {
+  const register = async () => {
     if (!isValid()) return;
 
     let newUser = new NewUser(
@@ -74,11 +75,16 @@ export default function Register() {
       street
     );
 
-    Service.register(newUser);
-    // history.push({
-    //   pathname: routes.SUCCESS_REGISTRATION,
-    //   state: { trialPeriod: '6 meseci' }
-    // });
+    let x = await Service.register(newUser);
+    if (x.status == 'fail') {
+      const { dialog } = require('electron').remote;
+      dialog.showMessageBox({ message: x.message, title: 'Greška' });
+    } else if (x.status == SUCCESS) {
+      history.push({
+        pathname: routes.SUCCESS_REGISTRATION,
+        state: { trialPeriod: x.data }
+      });
+    }
   };
 
   const isValid = () => {
