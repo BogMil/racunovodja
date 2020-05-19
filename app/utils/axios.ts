@@ -1,44 +1,57 @@
-import axios from "axios";
-import LocalStorageService from "./localStorageService";
-import { useHistory } from "react-router-dom";
-let history = useHistory();
-// LocalstorageService
-const localStorageService = LocalStorageService.getService();
+import axios from 'axios';
+import LocalStorageService from './localStorageService';
+import { BASE_URL } from '../config';
 
-axios.interceptors.request.use(
-   (config:any) => {
-       const token = localStorageService.getAccessToken();
-       if (token)
-           config.headers['Authorization'] = 'Bearer ' + token;
-       return config;
-   },
-   error => {
-       Promise.reject(error)
-   });
+export function setUp(history: any) {
+  // LocalstorageService
+  const localStorageService = LocalStorageService.getService();
 
-axios.interceptors.response.use(
-  (response) => { return response},
-   function (error) {
-    const originalRequest = error.config;
+  axios.interceptors.request.use(
+    (config: any) => {
+      const token = localStorageService.getAccessToken();
+      if (token) config.headers['Authorization'] = 'Bearer ' + token;
+      return config;
+    },
+    error => {
+      Promise.reject(error);
+    }
+  );
 
-    if (error.response.status === 401 && originalRequest.url ==='http://13.232.130.60:8081/v1/auth/token'){
+  axios.interceptors.response.use(
+    response => {
+      return response;
+    },
+    async function(error) {
+      debugger;
+      const originalRequest = error.config;
+
+      if (
+        error.response.status === 401 &&
+        originalRequest.url === `${BASE_URL}/api/auth/refresh`
+      ) {
         history.push('/login');
         return Promise.reject(error);
-    }
+      }
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-
-      originalRequest._retry = true;
-      const refreshToken = localStorageService.getRefreshToken();
-      return axios
-      .post('/auth/token',{"refresh_token": refreshToken})
-      .then((res:any) => {
-          if (res.status === 201) {
+      if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        var x = await axios
+          .post(`${BASE_URL}/api/auth/refresh`)
+          .then((res: any) => {
+            if (res.status === 201) {
               localStorageService.setToken(res.data);
-              axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorageService.getAccessToken();
+              axios.defaults.headers.common['Authorization'] =
+                'Bearer ' + localStorageService.getAccessToken();
               return axios(originalRequest);
-          }
-      })
+            }
+          })
+          .catch(e => {
+            debugger;
+          });
+
+        return x;
+      }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  });
+  );
+}

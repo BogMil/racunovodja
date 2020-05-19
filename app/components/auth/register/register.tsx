@@ -5,26 +5,15 @@ import routes from '../../../constants/routes.json';
 import AuthenticationCard from '../components/authenticationCard';
 import { useHistory } from 'react-router-dom';
 import * as Service from '../auth.service';
-import { SUCCESS } from '../../../constants/responseStatuses';
+import ErrorsBase from '../../../utils/errors';
+import { handleResponse } from '../../../utils/responseHandler';
 
-class Errors {
+class Errors extends ErrorsBase {
   email: any = null;
   password: any = null;
   name: any = null;
   city: any = null;
   street: any = null;
-
-  public hasAny: Function = (): boolean => {
-    let props = Object.getOwnPropertyNames(this).filter(
-      prop => prop != 'hasAny'
-    );
-    for (let prop of props) {
-      let value = this[prop];
-      if (value != null) return true;
-    }
-
-    return false;
-  };
 }
 
 export class NewUser {
@@ -75,16 +64,13 @@ export default function Register() {
       street
     );
 
-    let x = await Service.register(newUser);
-    if (x.status == 'fail') {
-      const { dialog } = require('electron').remote;
-      dialog.showMessageBox({ message: x.message, title: 'Greška' });
-    } else if (x.status == SUCCESS) {
+    let response = await Service.register(newUser);
+    handleResponse(response, () => {
       history.push({
         pathname: routes.SUCCESS_REGISTRATION,
-        state: { trialPeriod: x.data }
+        state: { trialPeriod: response.data }
       });
-    }
+    });
   };
 
   const isValid = () => {

@@ -6,6 +6,9 @@ import AuthenticationCard from '../components/authenticationCard';
 import { useDispatch } from 'react-redux';
 import { setAuthenticated } from '../auth.actions';
 import { useHistory } from 'react-router-dom';
+import * as Service from '../auth.service';
+import { handleResponse } from '../../../utils/responseHandler';
+
 export default function Login() {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -13,9 +16,14 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onLogin = () => {
-    dispatch(setAuthenticated());
-    history.push(routes.HOME);
+  const onLogin = async () => {
+    let response = await Service.login(email, password);
+
+    handleResponse(response, (response: any) => {
+      console.log(response.data);
+      dispatch(setAuthenticated());
+      history.push(routes.HOME);
+    });
   };
 
   return (

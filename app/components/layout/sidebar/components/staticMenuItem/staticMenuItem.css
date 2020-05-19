@@ -1,0 +1,8 @@
+.staticMenuItem {
+  padding-left: 10px;
+  color: #b7a5b7;
+}
+
+.staticMenuItemHolder:hover {
+  background-color: #320b33;
+}

@@ -11,19 +11,21 @@ import { useSelector } from 'react-redux';
 import Employees from './components/employees/employees';
 
 export default function Routes() {
-  const auth = useSelector((state:any)=>state.auth);
+  const auth = useSelector((state: any) => state.auth);
   let isAuthenticated = auth.isAuthenticated;
   return (
     <App>
       <Switch>
-        <Route path={routes.COUNTER} component={CounterPage} />
         <PrivateRoute exact path={routes.HOME}>
           <HomePage />
         </PrivateRoute>
         <GuestRoute path={routes.LOGIN} component={LoginComponent} />
-        <Route path={routes.REGISTER}  component={RegisterComponent} />
-        <Route path={routes.SUCCESS_REGISTRATION} component={SuccessfulRegistrationComponent} />
-        <PrivateRoute path={routes.EMPLOYEES} >
+        <Route path={routes.REGISTER} component={RegisterComponent} />
+        <Route
+          path={routes.SUCCESS_REGISTRATION}
+          component={SuccessfulRegistrationComponent}
+        />
+        <PrivateRoute path={routes.EMPLOYEES}>
           <Employees />
         </PrivateRoute>
       </Switch>
@@ -50,11 +52,11 @@ export default function Routes() {
     );
   }
 
-  function GuestRoute({ ...rest }: any) {  
-    return isAuthenticated
-    ? <Redirect to={routes.HOME} /> 
-    : <Route  {...rest} />
+  function GuestRoute({ ...rest }: any) {
+    return isAuthenticated ? (
+      <Redirect to={routes.HOME} />
+    ) : (
+      <Route {...rest} />
+    );
   }
 }
-
-

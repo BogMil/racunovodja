@@ -1,8 +1,9 @@
 {
   "HOME": "/",
   "LOGIN": "/login",
+  "LOGOUT": "/logout",
   "REGISTER": "/register",
   "SUCCESS_REGISTRATION": "/success-registration",
   "COUNTER": "/counter",
-  "EMPLOYEES":"/employees"
+  "EMPLOYEES": "/employees"
 }
