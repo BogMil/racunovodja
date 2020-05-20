@@ -1,14 +1,14 @@
 import axios from 'axios';
-import LocalStorageService from './localStorageService';
 import { BASE_URL } from '../config';
+import { getToken, setToken } from './tokenService';
+import { SUCCESS } from '../constants/responseStatuses';
 
 export function setUp(history: any) {
   // LocalstorageService
-  const localStorageService = LocalStorageService.getService();
 
   axios.interceptors.request.use(
     (config: any) => {
-      const token = localStorageService.getAccessToken();
+      const token = getToken();
       if (token) config.headers['Authorization'] = 'Bearer ' + token;
       return config;
     },
@@ -22,7 +22,6 @@ export function setUp(history: any) {
       return response;
     },
     async function(error) {
-      debugger;
       const originalRequest = error.config;
 
       if (
@@ -38,15 +37,12 @@ export function setUp(history: any) {
         var x = await axios
           .post(`${BASE_URL}/api/auth/refresh`)
           .then((res: any) => {
-            if (res.status === 201) {
-              localStorageService.setToken(res.data);
+            if (res.status === SUCCESS) {
+              setToken(res.data.jwt);
               axios.defaults.headers.common['Authorization'] =
-                'Bearer ' + localStorageService.getAccessToken();
+                'Bearer ' + getToken();
               return axios(originalRequest);
             }
-          })
-          .catch(e => {
-            debugger;
           });
 
         return x;

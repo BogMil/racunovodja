@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import routes from '../../../constants/routes.json';
 import AuthenticationCard from '../components/authenticationCard';
 import { useDispatch } from 'react-redux';
-import { setAuthenticated } from '../auth.actions';
+import { setUser } from '../auth.actions';
 import { useHistory } from 'react-router-dom';
 import * as Service from '../auth.service';
 import { handleResponse } from '../../../utils/responseHandler';
@@ -17,11 +17,8 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   const onLogin = async () => {
-    let response = await Service.login(email, password);
-
-    handleResponse(response, (response: any) => {
-      console.log(response.data);
-      dispatch(setAuthenticated());
+    handleResponse(await Service.login(email, password), (response: any) => {
+      dispatch(setUser(response.data.user, response.data.jwt));
       history.push(routes.HOME);
     });
   };

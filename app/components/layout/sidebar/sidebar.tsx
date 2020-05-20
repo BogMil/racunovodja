@@ -13,13 +13,29 @@ import styles from './sidebar.css';
 import Divider from './components/divider/divider';
 import StaticMenuItem from './components/staticMenuItem/staticMenuItem';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../../components/auth/auth.actions';
+import * as Service from '../../auth/auth.service';
+import { handleResponse } from '../../../utils/responseHandler';
+import { useHistory } from 'react-router-dom';
+import paths from '../../../constants/routes.json';
+import { unsetUser } from '../../auth/auth.actions';
 
 export default function SideBar() {
+  const history = useHistory();
   const dispatch = useDispatch();
-  const onLogout = () => {
-    dispatch(logout());
+
+  const onLogout = async () => {
+    handleResponse(await Service.logout(), () => {
+      dispatch(unsetUser());
+      history.push({
+        pathname: paths.LOGIN
+      });
+    });
   };
+
+  const me = () => {
+    Service.me();
+  };
+
   return (
     <div className={styles.sidebar}>
       <ul style={{ padding: 0 }}>
@@ -58,6 +74,14 @@ export default function SideBar() {
           text="Odjavi se"
           onClick={() => {
             onLogout();
+          }}
+        />
+
+        <StaticMenuItem
+          iconDefinition={faSignOutAlt}
+          text="ME"
+          onClick={() => {
+            me();
           }}
         />
       </ul>

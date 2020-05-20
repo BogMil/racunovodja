@@ -11,12 +11,13 @@ export const handleResponse = (
   else if (response.status == ERROR) onError(response);
 };
 
-const onFailDefault = (response: any) => {
+export const onFailDefault = (response: any) => {
   const { dialog } = require('electron').remote;
   dialog.showMessageBox({ message: response.message, title: 'Greška' });
 };
 
-const onErrorDefault = (response: any) => {
+export const onErrorDefault = (response: any) => {
+  console.log(response);
   const { dialog } = require('electron').remote;
   dialog.showErrorBox('Greška', response.message);
 };

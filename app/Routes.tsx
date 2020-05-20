@@ -3,7 +3,6 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import routes from './constants/routes.json';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
-import CounterPage from './containers/CounterPage';
 import LoginComponent from './components/auth/login/login';
 import RegisterComponent from './components/auth/register/register';
 import SuccessfulRegistrationComponent from './components/auth/register/success';

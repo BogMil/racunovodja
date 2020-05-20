@@ -11,14 +11,17 @@ type Props = {
   store: Store;
   history: History;
 };
-const Root = ({ store, history }: Props) => (
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <Layout>
-        <Routes />
-      </Layout>
-    </ConnectedRouter>
-  </Provider>
-);
+
+const Root = ({ store, history }: Props) => {
+  return (
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <Layout>
+          <Routes />
+        </Layout>
+      </ConnectedRouter>
+    </Provider>
+  );
+};
 
 export default hot(Root);

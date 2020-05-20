@@ -1,11 +1,13 @@
-export const storeTokenToLocalStore=token=>{
-    localStorage.setItem("jwtToken", token);
-}
+const JWT_TOKEN = 'jwt_token';
 
-export const removeToken=()=>{
-    localStorage.removeItem("jwtToken");
-}
+export const setToken = token => {
+  localStorage.setItem(JWT_TOKEN, token);
+};
 
-export const getToken = ()=>{
-    return localStorage.getItem("jwtToken")
-}
+export const removeToken = () => {
+  localStorage.removeItem(JWT_TOKEN);
+};
+
+export const getToken = () => {
+  return localStorage.getItem(JWT_TOKEN);
+};

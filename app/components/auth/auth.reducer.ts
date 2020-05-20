@@ -1,9 +1,14 @@
 // import { Action } from 'redux';
-import { SET_AUTHENTICATED, NAMESPACE } from './auth.actions';
+import {
+  SET_AUTHENTICATED,
+  NAMESPACE,
+  UNSET_AUTHENTICATED
+} from './auth.actions';
 import { Action } from '../../reducers/types';
 
 const initialState = {
-  isAuthenticated: false
+  isAuthenticated: false,
+  user: null
 };
 
 export default function auth(state = initialState, action: Action) {
@@ -11,7 +16,9 @@ export default function auth(state = initialState, action: Action) {
 
   switch (action.type) {
     case SET_AUTHENTICATED:
-      return { ...state, isAuthenticated: true };
+      return { ...state, isAuthenticated: true, user: action.payload.user };
+    case UNSET_AUTHENTICATED:
+      return { ...state, isAuthenticated: false, user: null };
     default:
       return state;
   }

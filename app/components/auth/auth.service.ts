@@ -8,6 +8,7 @@ export async function login(email: string, password: string) {
     .post(`${BASE_URL}/api/auth/login`, { email, password })
     .then(res => res.data)
     .catch(function(error) {
+      console.log(error);
       return { status: ERROR, message: error.response.data };
     });
   return res;
@@ -30,5 +31,22 @@ export async function register(newUser: NewUser) {
     .catch(function(error) {
       return { status: ERROR, message: error.response.data };
     });
+  return res;
+}
+
+export async function me() {
+  let res = await axios
+    .post(`${BASE_URL}/api/auth/me`)
+    .then(res => res.data)
+    .catch(function(error) {
+      return { status: ERROR, message: error.response.data };
+    });
+  return res;
+}
+
+export async function refresh() {
+  let res = await axios
+    .post(`${BASE_URL}/api/auth/refresh`)
+    .then(res => res.data);
   return res;
 }
