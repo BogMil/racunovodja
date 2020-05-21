@@ -3,9 +3,6 @@ import SideBar from './sidebar/sidebar';
 import TopBar from './topbar/topbar';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container } from 'react-bootstrap';
-import routes from '../../constants/routes.json';
-import { useHistory } from 'react-router-dom';
-import { getToken } from '../../utils/tokenService';
 import * as Service from '../auth/auth.service';
 import { handleResponse } from '../../utils/responseHandler';
 import { setUser } from '../auth/auth.actions';
@@ -40,14 +37,9 @@ export default function Layout(props: { children: ReactNode }) {
     refreshToken();
   }, []);
 
-  useEffect(() => {}, [isRefreshed]);
-  debugger;
-
   if (!isRefreshed) {
     return null;
-  }
-
-  if (isRefreshed) {
+  } else {
     if (auth.isAuthenticated) {
       return (
         <div>

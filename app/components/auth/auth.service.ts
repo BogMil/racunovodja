@@ -47,6 +47,9 @@ export async function me() {
 export async function refresh() {
   let res = await axios
     .post(`${BASE_URL}/api/auth/refresh`)
-    .then(res => res.data);
+    .then(res => res.data)
+    .catch(function(error) {
+      return { status: ERROR, message: error.response.data };
+    });
   return res;
 }
