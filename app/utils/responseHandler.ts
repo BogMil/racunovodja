@@ -17,7 +17,6 @@ export const onFailDefault = (response: any) => {
 };
 
 export const onErrorDefault = (response: any) => {
-  console.log(response);
   const { dialog } = require('electron').remote;
-  dialog.showErrorBox('Greška', response.message);
+  if (response.message) dialog.showErrorBox('Greška', response.message);
 };

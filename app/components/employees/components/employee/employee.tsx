@@ -34,15 +34,15 @@ export default function EmployeeComponent(props: Props) {
         <Form.Check type="checkbox" label="" checked={employee.active} />
       </td>
       <td style={{ verticalAlign: 'middle' }}>{employee.jmbg}</td>
-      <td style={{ verticalAlign: 'middle' }}>{employee.employeeNumber}</td>
-      <td style={{ verticalAlign: 'middle' }}>{employee.lastName}</td>
-      <td style={{ verticalAlign: 'middle' }}>{employee.firstName}</td>
-      <td style={{ verticalAlign: 'middle' }}>{employee.bancAccount}</td>
+      <td style={{ verticalAlign: 'middle' }}>{employee.number}</td>
+      <td style={{ verticalAlign: 'middle' }}>{employee.last_name}</td>
+      <td style={{ verticalAlign: 'middle' }}>{employee.first_name}</td>
+      <td style={{ verticalAlign: 'middle' }}>{employee.banc_account}</td>
       <td style={{ verticalAlign: 'middle' }}>{employee.municipality.name}</td>
       <td style={{ verticalAlign: 'middle' }}>
         <Table bordered hover size="sm" style={{ marginBottom: 0 }}>
           <tbody>
-            {employee.defaultRelations.map((defaultRelation, i) => (
+            {employee.default_relations.map((defaultRelation, i) => (
               <tr key={i}>
                 <td style={{ padding: 0 }}>
                   <div style={{ float: 'left' }}>{defaultRelation.name}</div>

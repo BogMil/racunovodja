@@ -1,67 +1,19 @@
 import { Employee, DefaultRelation } from './types';
+import axios from 'axios';
+import { BASE_URL } from '../../config';
+import { ERROR } from '../../constants/responseStatuses';
 
-export function get(): Employee[] {
-  return [
-    {
-      id: 1,
-      active: true,
-      jmbg: '2029938765372',
-      employeeNumber: '982137',
-      lastName: 'Bogdanovic',
-      firstName: 'Milan',
-      bancAccount: '160-5800000000000-00',
-      municipality: {
-        id: 2,
-        code: '017',
-        name: 'Smederevo'
-      },
-      defaultRelations: [
-        {
-          id: 1,
-          name: 'A-B-A'
-        }
-      ]
-    },
-    {
-      id: 2,
-      active: true,
-      jmbg: '2029938765372',
-      employeeNumber: '982137',
-      lastName: 'Andric Jovanovska',
-      firstName: 'Ana',
-      bancAccount: '160-5800000000000-00',
-      municipality: {
-        id: 1,
-        code: '018',
-        name: 'Kovin'
-      },
-      defaultRelations: [
-        {
-          id: 2,
-          name: 'C-D-C'
-        },
-        {
-          id: 3,
-          name: 'Ca-Da-Ca'
-        }
-      ]
-    },
-    {
-      id: 3,
-      active: true,
-      jmbg: '2029938255372',
-      employeeNumber: '2137',
-      lastName: 'Stevanovic',
-      firstName: 'Lazar',
-      bancAccount: '160-5800000000000-00',
-      municipality: {
-        code: '',
-        id: 1,
-        name: '---'
-      },
-      defaultRelations: []
-    }
-  ];
+export async function get() {
+  let res = await axios
+    .get(`${BASE_URL}/api/employee`)
+    .then(res => res.data)
+    .catch(function(error) {
+      if (error.response.data.message)
+        return { status: ERROR, message: error.response.data.message };
+      if (error.response.data)
+        return { status: ERROR, message: error.response.data };
+    });
+  return res;
 }
 
 export function getAvailableDefaultRelationsForEmployee(
@@ -80,16 +32,16 @@ export function getEmployee(id: number): Employee {
     id: 1,
     active: true,
     jmbg: '2029938765372',
-    employeeNumber: '982137',
-    lastName: 'Bogdanovic',
-    firstName: 'Milan',
-    bancAccount: '160-5800000000000-00',
+    number: '982137',
+    last_name: 'Bogdanovic',
+    first_name: 'Milan',
+    banc_account: '160-5800000000000-00',
     municipality: {
       id: 2,
       code: '017',
       name: 'Smederevo'
     },
-    defaultRelations: [
+    default_relations: [
       {
         id: 1,
         name: 'A-B-A'

@@ -35,7 +35,7 @@ export default function AddDefaultRealtionModal() {
         <div style={{ paddingBottom: 10 }}>
           zaposlenom:{' '}
           <b>
-            {store.employee?.lastName} {store.employee?.firstName}
+            {store.employee?.last_name} {store.employee?.first_name}
           </b>
         </div>
         <Form>

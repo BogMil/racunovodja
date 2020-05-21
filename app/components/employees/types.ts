@@ -2,12 +2,12 @@ export type Employee = {
   id: number;
   active: boolean;
   jmbg: string;
-  employeeNumber: string;
-  lastName: string;
-  firstName: string;
-  bancAccount: string;
+  number: string;
+  last_name: string;
+  first_name: string;
+  banc_account: string;
   municipality: Municipality;
-  defaultRelations: DefaultRelation[];
+  default_relations: DefaultRelation[];
 };
 
 export type Municipality = {
