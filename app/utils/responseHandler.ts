@@ -12,11 +12,20 @@ export const handleResponse = (
 };
 
 export const onFailDefault = (response: any) => {
-  const { dialog } = require('electron').remote;
-  dialog.showMessageBox({ message: response.message, title: 'Greška' });
+  const { dialog, getCurrentWindow } = require('electron').remote;
+  dialog.showMessageBox(getCurrentWindow(), {
+    message: response.message,
+    title: 'Greška',
+    type: 'warning'
+  });
 };
 
 export const onErrorDefault = (response: any) => {
-  const { dialog } = require('electron').remote;
-  if (response.message) dialog.showErrorBox('Greška', response.message);
+  const { dialog, getCurrentWindow } = require('electron').remote;
+  if (response.message)
+    dialog.showMessageBox(getCurrentWindow(), {
+      title: 'Greška',
+      message: response.message,
+      type: 'error'
+    });
 };

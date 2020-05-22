@@ -2,6 +2,7 @@ import axios from 'axios';
 import { NewUser } from './register/register';
 import { BASE_URL } from '../../config';
 import { ERROR } from '../../constants/responseStatuses';
+import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
 
 export async function login(email: string, password: string) {
   let res = await axios
@@ -48,8 +49,6 @@ export async function refresh() {
   let res = await axios
     .post(`${BASE_URL}/api/auth/refresh`)
     .then(res => res.data)
-    .catch(function(error) {
-      return { status: ERROR, message: error.response.data };
-    });
+    .catch(axiosErrorHandler);
   return res;
 }

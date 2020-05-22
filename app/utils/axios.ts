@@ -22,6 +22,23 @@ export function setUp(history: any) {
       return response;
     },
     async function(error) {
+      if (error.message == 'Network Error') {
+        const { dialog, getCurrentWindow } = require('electron').remote;
+        dialog
+          .showMessageBox(getCurrentWindow(), {
+            message: 'Problem sa internet konekcijom',
+            title: 'Greška',
+            type: 'warning',
+            buttons: ['x']
+          })
+          .then((result: any) => {
+            if (result.response === 0) {
+              const remote = require('electron').remote;
+              var window = remote.getCurrentWindow();
+              window.close();
+            }
+          });
+      }
       const originalRequest = error.config;
 
       if (

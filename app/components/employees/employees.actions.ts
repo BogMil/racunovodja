@@ -26,6 +26,10 @@ export function loadEmployees() {
   }
 }
 
+export function reloadEmployees() {
+  return loadEmployees();
+}
+
 export function reloadEmployee(id: number) {
   return (dispatch: Dispatch) => {
     let employee = service.getEmployee(id);

@@ -2,11 +2,13 @@ import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import EmployeeComponent from './components/employee/employee';
 import AddDefaultRealtionModal from './components/addDefaultRelationModal/addDefaultRelationModal';
+import EmployeeModal from './components/employeeModal/employeeModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadEmployees } from './employees.actions';
 import { AppStore } from '../../reducers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { openCreate } from './components/employeeModal/employeeModal.actions';
 
 export default function Employees() {
   const dispatch = useDispatch();
@@ -17,6 +19,10 @@ export default function Employees() {
   useEffect(() => {
     dispatch(loadEmployees());
   }, []);
+
+  const openCreateDialog = () => {
+    dispatch(openCreate());
+  };
 
   return (
     <>
@@ -33,7 +39,9 @@ export default function Employees() {
             <th>Podrazumevana relacija</th>
             <th style={{ textAlign: 'center' }}>
               <Button
+                onClick={openCreateDialog}
                 title="Kreiraj novog zaposlenog"
+                variant="success"
                 style={{
                   paddingLeft: 5,
                   paddingRight: 5,
@@ -66,6 +74,7 @@ export default function Employees() {
         </tbody>
       </Table>
       <AddDefaultRealtionModal />
+      <EmployeeModal />
     </>
   );
 }

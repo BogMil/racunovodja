@@ -1,7 +1,8 @@
-import { Employee, DefaultRelation } from './types';
+import { Employee, DefaultRelation, EmployeeCDTO } from './types';
 import axios from 'axios';
 import { BASE_URL } from '../../config';
 import { ERROR } from '../../constants/responseStatuses';
+import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
 
 export async function get() {
   let res = await axios
@@ -55,3 +56,19 @@ export function getEmployee(id: number): Employee {
 }
 
 export function removeDefaultRelation(id: number) {}
+
+export async function getMunicipalityOptions() {
+  let res = await axios
+    .get(`${BASE_URL}/api/municipality`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function createEmployee(employee: EmployeeCDTO) {
+  let res = await axios
+    .post(`${BASE_URL}/api/employee`, { ...employee })
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
