@@ -1,7 +1,12 @@
 import React from 'react';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { close, updateEmployeeState } from './employeeModal.actions';
+import {
+  close,
+  updateEmployeeState,
+  CREATE_MODE,
+  EDIT_MODE
+} from './employeeModal.actions';
 import { AppStore } from '../../../../reducers';
 import { reloadEmployees } from '../../employees.actions';
 import * as Service from '../../employeeService';
@@ -23,16 +28,21 @@ export default function CreateEmployeeModal() {
 
     if (name == 'active') value = e.target.checked;
 
-    console.log(value);
     dispatch(updateEmployeeState(name, value));
   };
 
   const handleSave = async () => {
-    handleResponse(await Service.createEmployee(store.employee), (res: any) => {
-      dispatch(reloadEmployees());
-    });
+    if (store.mode == CREATE_MODE)
+      handleResponse(await Service.createEmployee(store.employee), () => {
+        dispatch(reloadEmployees());
+        dispatch(close());
+      });
+    else if (store.mode == EDIT_MODE)
+      handleResponse(await Service.updateEmployee(store.employee), () => {
+        dispatch(reloadEmployees());
+        dispatch(close());
+      });
   };
-  console.log(store.employee);
   return (
     <Modal
       backdrop="static"
@@ -115,6 +125,7 @@ export default function CreateEmployeeModal() {
                   custom
                   name="municipality_id"
                   onChange={handleChange}
+                  value={store.employee.municipality_id}
                 >
                   {store.municipalityOptions.map(municipality => {
                     return (

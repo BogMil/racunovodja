@@ -7,7 +7,8 @@ import {
   faHome,
   faPaperPlane,
   faUsers,
-  faSignOutAlt
+  faSignOutAlt,
+  faRoute
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './sidebar.css';
 import Divider from './components/divider/divider';
@@ -68,6 +69,13 @@ export default function SideBar() {
           navigateTo={routes.EMPLOYEES}
           text="Zaposleni"
         />
+        <SubMenu text="Šifarnici">
+          <MenuItem
+            iconDefinition={faRoute}
+            navigateTo={routes.RELATIONS}
+            text="Relacije"
+          />
+        </SubMenu>
         <Divider />
         <StaticMenuItem
           iconDefinition={faSignOutAlt}

@@ -1,25 +1,22 @@
 import { Employee, DefaultRelation, EmployeeCDTO } from './types';
 import axios from 'axios';
 import { BASE_URL } from '../../config';
-import { ERROR } from '../../constants/responseStatuses';
 import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
 
 export async function get() {
   let res = await axios
     .get(`${BASE_URL}/api/employee`)
     .then(res => res.data)
-    .catch(function(error) {
-      if (error.response.data.message)
-        return { status: ERROR, message: error.response.data.message };
-      if (error.response.data)
-        return { status: ERROR, message: error.response.data };
-    });
+    .catch(axiosErrorHandler);
   return res;
 }
 
-export function getAvailableDefaultRelationsForEmployee(
-  id: number
-): DefaultRelation[] {
+export async function getAvailableDefaultRelationsForEmployee(id: number) {
+  let res = await axios
+    .get(`${BASE_URL}/api/employee/`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
   return [
     { id: 1, name: 'a-b-zza' },
     { id: 2, name: 'a-b-asda' },
@@ -68,6 +65,22 @@ export async function getMunicipalityOptions() {
 export async function createEmployee(employee: EmployeeCDTO) {
   let res = await axios
     .post(`${BASE_URL}/api/employee`, { ...employee })
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function removeEmployee(employeeId: number) {
+  let res = await axios
+    .delete(`${BASE_URL}/api/employee/${employeeId}`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function updateEmployee(employee: EmployeeCDTO) {
+  let res = await axios
+    .put(`${BASE_URL}/api/employee/${employee.id}`, { ...employee })
     .then(res => res.data)
     .catch(axiosErrorHandler);
   return res;

@@ -8,6 +8,7 @@ import RegisterComponent from './components/auth/register/register';
 import SuccessfulRegistrationComponent from './components/auth/register/success';
 import { useSelector } from 'react-redux';
 import Employees from './components/employees/employees';
+import Relations from './components/relations/relations';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);
@@ -26,6 +27,9 @@ export default function Routes() {
         />
         <PrivateRoute path={routes.EMPLOYEES}>
           <Employees />
+        </PrivateRoute>
+        <PrivateRoute exact path={routes.RELATIONS}>
+          <Relations />
         </PrivateRoute>
       </Switch>
     </App>

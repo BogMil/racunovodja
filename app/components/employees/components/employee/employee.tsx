@@ -1,12 +1,20 @@
 import React from 'react';
 import { Form, Table, Button } from 'react-bootstrap';
-import { Employee } from '../../types';
+import { Employee, EmployeeCDTO } from '../../types';
 import { faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch } from 'react-redux';
 import * as AddDefaultRelationModalActions from '../addDefaultRelationModal/addDefaultRelationModal.actions';
-import { removeRelationFromEmployee } from '../../employees.actions';
+import {
+  removeRelationFromEmployee,
+  reloadEmployees
+} from '../../employees.actions';
 import styles from './employee.css';
+import * as Service from '../../employeeService';
+import { handleResponse } from '../../../../utils/responseHandler';
+import { openEdit } from '../employeeModal/employeeModal.actions';
+
+const { dialog, getCurrentWindow } = require('electron').remote;
 
 type Props = {
   employee: Employee;
@@ -22,6 +30,28 @@ export default function EmployeeComponent(props: Props) {
 
   const removeRelation = (employee: Employee, defaultRelationId: number) => {
     dispatch(removeRelationFromEmployee(employee, defaultRelationId));
+  };
+
+  const removeEmployee = () => {
+    let options = {
+      title: 'Brisanje zaposlenog',
+      buttons: ['Da', 'Ne'],
+      message: 'Da li ste sigurni?'
+    };
+    dialog
+      .showMessageBox(getCurrentWindow(), options)
+      .then(async (result: any) => {
+        if (result.response == 0)
+          handleResponse(await Service.removeEmployee(employee.id), () => {
+            dispatch(reloadEmployees());
+          });
+      });
+  };
+
+  const editEmployee = () => {
+    let cdto = (employee as unknown) as EmployeeCDTO;
+    cdto.municipality_id = employee.municipality.id;
+    dispatch(openEdit(cdto));
   };
 
   return (
@@ -87,6 +117,7 @@ export default function EmployeeComponent(props: Props) {
       </td>
       <td style={{ textAlign: 'center' }}>
         <Button
+          onClick={editEmployee}
           variant="warning"
           title="Ažuriranje zaposlenog"
           style={{
@@ -104,6 +135,7 @@ export default function EmployeeComponent(props: Props) {
         <Button
           variant="danger"
           title="Brisanje zaposlenog"
+          onClick={removeEmployee}
           style={{
             paddingTop: 0,
             paddingBottom: 0,

@@ -28,7 +28,7 @@ export const newEmployeeCDTO = () => {
     last_name: '',
     first_name: '',
     banc_account: '',
-    municipality_id: -1,
+    municipality_id: 1,
     active: true
   } as EmployeeCDTO;
 };

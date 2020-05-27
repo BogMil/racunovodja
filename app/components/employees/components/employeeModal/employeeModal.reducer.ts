@@ -1,17 +1,13 @@
 import { Action } from '../../../../reducers/types';
-import {
-  NAMESPACE,
-  CLOSE,
-  OPEN_CREATE,
-  UPDATE_EMPLOYEE
-} from './employeeModal.actions';
+import { NAMESPACE, CLOSE, OPEN, HANDLE_CHANGE } from './employeeModal.actions';
 import { Municipality, EmployeeCDTO, newEmployeeCDTO } from '../../types';
 
 const initialState: EmployeeModalStore = {
   show: false,
   municipalityOptions: [],
   title: '',
-  employee: {} as EmployeeCDTO
+  employee: {} as EmployeeCDTO,
+  mode: ''
 };
 
 export type EmployeeModalStore = {
@@ -19,6 +15,7 @@ export type EmployeeModalStore = {
   municipalityOptions: Municipality[];
   title: string;
   employee: EmployeeCDTO;
+  mode: string;
 };
 
 export default function employeeModal(
@@ -27,22 +24,29 @@ export default function employeeModal(
 ) {
   if (action.namespace != NAMESPACE) return state;
   switch (action.type) {
-    case OPEN_CREATE:
-      let { municipalityOptions, employee } = action.payload;
+    case OPEN:
+      let { municipalityOptions, employee, title, mode } = action.payload;
       return {
         ...state,
         show: true,
         employee: employee,
         municipalityOptions,
-        title: 'Kreiranje novog zaposlenog'
+        title: title,
+        mode: mode
       };
 
     case CLOSE:
-      return { ...state, show: false, employee: newEmployeeCDTO() };
+      return {
+        ...state,
+        show: false,
+        employee: newEmployeeCDTO(),
+        title: '',
+        mode: ''
+      };
 
-    case UPDATE_EMPLOYEE:
+    case HANDLE_CHANGE:
       let { name, value } = action.payload;
-      let newEmployeeState = state.employee;
+      let newEmployeeState = { ...state.employee };
       newEmployeeState[name] = value;
       return { ...state, employee: newEmployeeState };
 
