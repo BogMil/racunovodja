@@ -9,7 +9,7 @@ import {
 } from './employeeModal.actions';
 import { AppStore } from '../../../../reducers';
 import { reloadEmployees } from '../../employees.actions';
-import * as Service from '../../employeeService';
+import * as Service from '../../employee.service';
 import { handleResponse } from '../../../../utils/responseHandler';
 
 export default function CreateEmployeeModal() {

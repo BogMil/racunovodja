@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../reducers';
 import { loadRelations } from './relations.actions';
 import { Relation } from './relations.types';
-import { removeEmployee } from '../employees/employeeService';
+import { removeEmployee } from '../employees/employee.service';
 import DeleteRowButton from '../common/rowButtons/deleteRowButton';
 import { openCreate } from './components/relationModal/relationModal.actions';
 import RelationModal from './components/relationModal/relationModal';

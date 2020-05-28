@@ -9,14 +9,15 @@ type Props = {
 export function areYouSure(props: Props) {
   let options = {
     title: props.title,
-    buttons: ['Da', 'Ne'],
+    buttons: ['Ne', 'Da'],
     message: 'Da li ste sigurni?'
   };
 
   dialog
     .showMessageBox(getCurrentWindow(), options)
     .then(async (result: any) => {
-      if (result.response == 0) props.onYes();
+      console.log(result.response);
+      if (result.response == 1) props.onYes();
       else props.onNo ? props.onNo() : () => {};
     });
 }

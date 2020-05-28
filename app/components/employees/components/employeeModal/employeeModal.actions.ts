@@ -1,6 +1,6 @@
 import { Action } from '../../../../reducers/types';
 import { Municipality, newEmployeeCDTO, EmployeeCDTO } from '../../types';
-import * as service from '../../employeeService';
+import * as service from '../../employee.service';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
 

@@ -1,17 +1,24 @@
 import { Action } from '../../../../reducers/types';
-import { NAMESPACE, CLOSE, OPEN } from './addDefaultRelationModal.actions';
+import {
+  NAMESPACE,
+  CLOSE,
+  OPEN,
+  HANDLE_CHANGE
+} from './addDefaultRelationModal.actions';
 import { Employee, DefaultRelation } from '../../types';
 
 const initialState: AddDefaultRelationModalStore = {
   show: false,
   employee: {} as Employee,
-  availableRelations: []
+  availableRelations: [],
+  selectedRelation: -1
 };
 
 export type AddDefaultRelationModalStore = {
   show: boolean;
   employee: Employee;
   availableRelations: DefaultRelation[];
+  selectedRelation: number;
 };
 
 export default function addDefaultRelationModal(
@@ -31,7 +38,17 @@ export default function addDefaultRelationModal(
       };
 
     case CLOSE:
-      return { ...state, show: false, employee: {}, availableRelations: [] };
+      return {
+        ...state,
+        show: false,
+        employee: {},
+        availableRelations: [],
+        selectedRelation: -1
+      };
+
+    case HANDLE_CHANGE:
+      let { value } = action.payload;
+      return { ...state, selectedRelation: value };
 
     default:
       return state;

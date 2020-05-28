@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { close } from './addDefaultRelationModal.actions';
+import { close, handleChange } from './addDefaultRelationModal.actions';
 import { AppStore } from '../../../../reducers';
-import { reloadEmployee } from '../../employees.actions';
+import { reloadEmployees } from '../../employees.actions';
+import * as service from '../../employee.service';
 
 export default function AddDefaultRealtionModal() {
   const dispatch = useDispatch();
@@ -16,7 +17,24 @@ export default function AddDefaultRealtionModal() {
   };
 
   const handleSave = () => {
-    dispatch(reloadEmployee(store.employee.id));
+    if (store.selectedRelation <= 0) {
+      const { dialog, getCurrentWindow } = require('electron').remote;
+
+      dialog.showMessageBox(getCurrentWindow(), {
+        title: 'Greška',
+        message: 'Odaberite podrazumevanu relaciju',
+        type: 'warning'
+      });
+
+      return;
+    }
+    service.addDefaultRelation(store.employee.id, store.selectedRelation);
+    dispatch(reloadEmployees());
+    dispatch(close());
+  };
+
+  const onHandleChange = (e: any) => {
+    dispatch(handleChange(e.target.value));
   };
 
   return (
@@ -39,9 +57,19 @@ export default function AddDefaultRealtionModal() {
           </b>
         </div>
         <Form>
-          <Form.Control as="select" custom>
+          <Form.Control
+            as="select"
+            custom
+            value={store.selectedRelation}
+            onChange={onHandleChange}
+          >
+            <option value="-1">---</option>
             {store.availableRelations.map(relation => {
-              return <option key={relation.id}>{relation.name}</option>;
+              return (
+                <option key={relation.id} value={relation.id}>
+                  {relation.name}
+                </option>
+              );
             })}
           </Form.Control>
         </Form>
