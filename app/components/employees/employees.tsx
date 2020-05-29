@@ -9,6 +9,8 @@ import { AppStore } from '../../reducers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import { openCreate } from './components/employeeModal/employeeModal.actions';
+import UploadFileModal from './components/uploadFileModal/uploadFileModal';
+import { open } from './components/uploadFileModal/uploadFileModal.actions';
 
 export default function Employees() {
   const dispatch = useDispatch();
@@ -22,6 +24,10 @@ export default function Employees() {
 
   const openCreateDialog = () => {
     dispatch(openCreate());
+  };
+
+  const openUploadDialog = () => {
+    dispatch(open());
   };
 
   return (
@@ -60,6 +66,7 @@ export default function Employees() {
                   paddingTop: 0,
                   paddingBottom: 0
                 }}
+                onClick={openUploadDialog}
               >
                 <FontAwesomeIcon icon={faFileUpload} />
               </Button>
@@ -75,6 +82,7 @@ export default function Employees() {
       </Table>
       <AddDefaultRealtionModal />
       <EmployeeModal />
+      <UploadFileModal />
     </>
   );
 }

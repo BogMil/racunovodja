@@ -3,7 +3,7 @@ import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { close, handleChange } from './relationModal.actions';
 import { AppStore } from '../../../../reducers';
-import { loadRelations, reloadRelations } from '../../relations.actions';
+import { reloadRelations } from '../../relations.actions';
 import * as service from '../../relations.service';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';

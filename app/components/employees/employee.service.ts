@@ -1,4 +1,4 @@
-import { Employee, DefaultRelation, EmployeeCDTO } from './types';
+import { EmployeeCDTO } from './types';
 import axios from 'axios';
 import { BASE_URL } from '../../config';
 import { axiosErrorHandler } from '../../utils/axiosErrorHandler';

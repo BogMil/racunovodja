@@ -7,12 +7,16 @@ import employees, { EmployeesStore } from './employees.reducer';
 import employeeModal, {
   EmployeeModalStore
 } from './components/employeeModal/employeeModal.reducer';
+import uploadModal, {
+  UploadFileModalStore
+} from './components/uploadFileModal/uploadFileModal.reducer';
 
 export default function createCombinedReducer() {
   return combineReducers({
     addDefaultRelationModal,
     employees,
-    employeeModal
+    employeeModal,
+    uploadModal
   });
 }
 
@@ -20,4 +24,5 @@ export type EmployeeCombinedReducer = {
   addDefaultRelationModal: AddDefaultRelationModalStore;
   employees: EmployeesStore;
   employeeModal: EmployeeModalStore;
+  uploadModal: UploadFileModalStore;
 };

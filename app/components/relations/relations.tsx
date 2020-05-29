@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../reducers';
 import { loadRelations } from './relations.actions';
 import { Relation } from './relations.types';
-import { removeEmployee } from '../employees/employee.service';
-import DeleteRowButton from '../common/rowButtons/deleteRowButton';
 import { openCreate } from './components/relationModal/relationModal.actions';
 import RelationModal from './components/relationModal/relationModal';
 import RelationComponent from './components/relation/relation';

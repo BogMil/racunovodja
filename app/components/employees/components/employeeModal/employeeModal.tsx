@@ -1,16 +1,12 @@
 import React from 'react';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  close,
-  updateEmployeeState,
-  CREATE_MODE,
-  EDIT_MODE
-} from './employeeModal.actions';
+import { close, updateEmployeeState } from './employeeModal.actions';
 import { AppStore } from '../../../../reducers';
 import { reloadEmployees } from '../../employees.actions';
 import * as Service from '../../employee.service';
 import { handleResponse } from '../../../../utils/responseHandler';
+import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
 
 export default function CreateEmployeeModal() {
   const dispatch = useDispatch();

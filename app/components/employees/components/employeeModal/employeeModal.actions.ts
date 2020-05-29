@@ -3,15 +3,13 @@ import { Municipality, newEmployeeCDTO, EmployeeCDTO } from '../../types';
 import * as service from '../../employee.service';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
+import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
 
 export const OPEN = 'OPEN';
 export const CLOSE = 'CLOSE';
 export const HANDLE_CHANGE = 'HANDLE_CHANGE';
 
 export const NAMESPACE = 'EMPLOYEE_MODAL';
-
-export const EDIT_MODE = 'EDIT_MODE';
-export const CREATE_MODE = 'CREATE_MODE';
 
 export function openCreate() {
   return async (dispatch: Dispatch) => {

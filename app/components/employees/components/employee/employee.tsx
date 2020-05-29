@@ -15,8 +15,6 @@ import DeleteRowButton from '../../../common/rowButtons/deleteRowButton';
 import EditRowButton from '../../../common/rowButtons/editRowButton';
 import { areYouSure } from '../../../../utils/yesNoModal';
 
-const { dialog, getCurrentWindow } = require('electron').remote;
-
 type Props = {
   employee: Employee;
 };
