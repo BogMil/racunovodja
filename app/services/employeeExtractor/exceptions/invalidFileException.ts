@@ -1,5 +1,5 @@
 export class InvalidFileException extends Error {
   constructor() {
-    super('Nije validan file');
+    super('Fajl nije validan!');
   }
 }

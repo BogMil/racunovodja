@@ -35,7 +35,7 @@ export function setUp(history: any) {
             if (result.response === 0) {
               const remote = require('electron').remote;
               var window = remote.getCurrentWindow();
-              window.close();
+              // window.close();
             }
           });
       }

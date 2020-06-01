@@ -74,3 +74,11 @@ export async function updateEmployee(employee: EmployeeCDTO) {
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function getMissingJmbgs(jmbgs: string[]) {
+  let res = await axios
+    .post(`${BASE_URL}/api/user/getMissingJmbgs`, { jmbgs })
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

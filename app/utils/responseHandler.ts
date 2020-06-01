@@ -22,10 +22,18 @@ export const onFailDefault = (response: any) => {
 
 export const onErrorDefault = (response: any) => {
   const { dialog, getCurrentWindow } = require('electron').remote;
+
   if (response.message)
-    dialog.showMessageBox(getCurrentWindow(), {
-      title: 'Greška',
-      message: response.message,
-      type: 'error'
-    });
+    if (typeof response.message == 'string')
+      dialog.showMessageBox(getCurrentWindow(), {
+        title: 'Greška',
+        message: response.message,
+        type: 'error'
+      });
+    else
+      dialog.showMessageBox(getCurrentWindow(), {
+        title: 'Greška',
+        message: 'Nepredviđena greška',
+        type: 'error'
+      });
 };

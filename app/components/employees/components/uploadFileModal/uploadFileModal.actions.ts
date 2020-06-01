@@ -22,11 +22,3 @@ export function close(): Action {
     type: CLOSE
   };
 }
-
-export function handleChange(name: string, value: any): Action {
-  return {
-    namespace: NAMESPACE,
-    type: HANDLE_CHANGE,
-    payload: { name, value }
-  };
-}

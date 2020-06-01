@@ -35,12 +35,6 @@ export default function employeeModal(
         fileName: ''
       };
 
-    case HANDLE_CHANGE:
-      let { name, value } = action.payload;
-      let newEmployeeState = { ...state.employee };
-      newEmployeeState[name] = value;
-      return { ...state, employee: newEmployeeState };
-
     default:
       return state;
   }

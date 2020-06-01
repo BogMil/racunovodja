@@ -15,8 +15,8 @@ export class PLv1EmployeeExtractor implements IEmployeeExtractor {
   }
   private setFullName = (line: string) => {
     let separator = line.lastIndexOf(' ');
-    this._employee.lastName = line.substr(0, separator);
-    this._employee.firstName = line.substr(separator + 1);
+    this._employee.last_name = line.substr(0, separator);
+    this._employee.first_name = line.substr(separator + 1);
   };
 
   private setNumber = (line: string) => {
