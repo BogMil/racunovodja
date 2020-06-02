@@ -6,5 +6,6 @@
   "SUCCESS_REGISTRATION": "/success-registration",
   "COUNTER": "/counter",
   "EMPLOYEES": "/employees",
-  "RELATIONS": "/relations"
+  "RELATIONS": "/relations",
+  "TRAVEL_EXPENSES": "/travelExpenses"
 }

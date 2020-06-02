@@ -61,8 +61,7 @@ export default function SideBar() {
           text="Dostavljač platnih listića"
         />
         <SubMenu text="Dodatni prihodi">
-          <MenuItem navigateTo={routes.HOME} text="Putni troškovi" />
-          <MenuItem navigateTo={routes.LOGIN} text="prijavi se" />
+          <MenuItem navigateTo={routes.TRAVEL_EXPENSES} text="Putni troškovi" />
         </SubMenu>
         <MenuItem
           iconDefinition={faUsers}
