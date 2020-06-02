@@ -6,7 +6,8 @@ import {
   Row,
   Col,
   InputGroup,
-  Table
+  Table,
+  ProgressBar
 } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
@@ -20,6 +21,7 @@ import { InvalidFileException } from '../../../../services/employeeExtractor/exc
 import { Employee } from '../../../../services/employeeExtractor/employeeExtractor.types';
 import ClipLoader from 'react-spinners/ClipLoader';
 import * as service from '../../employee.service';
+import { EmployeeCDTO } from '../../types';
 
 const employeeExtractor = new PdfEmployeeExtractor();
 
@@ -35,6 +37,7 @@ export default function UploadFileModal() {
     setError('');
     setMissingEmployees([]);
     setFetchingMissingEmployees(false);
+    setInsertingEmployees(false);
   };
   const [filePath, setFilePath] = React.useState('');
   const [error, setError] = React.useState('');
@@ -42,6 +45,7 @@ export default function UploadFileModal() {
     fetchingMissingEmployees,
     setFetchingMissingEmployees
   ] = React.useState(false);
+  const [insertingProgress, setInsertingProgress] = React.useState(0);
   const [insertingEmployees, setInsertingEmployees] = React.useState(false);
   const [missingEmployees, setMissingEmployees] = React.useState<Employee[]>(
     []
@@ -65,11 +69,20 @@ export default function UploadFileModal() {
     });
   };
 
-  const insertEmployees = () => {
+  const insertEmployees = async () => {
+    setInsertingProgress(0);
     setInsertingEmployees(true);
-    missingEmployees.forEach(employee=>{
-      service.
-    })
+
+    let progressStep = 100 / missingEmployees.length;
+
+    missingEmployees.forEach(async (employee, i) => {
+      let e = employee as EmployeeCDTO;
+      e.active = true;
+      handleResponse(await service.createEmployee(e), () => {
+        setInsertingProgress(progressStep * (i + 1));
+      });
+    });
+    dispatch(reloadEmployees());
   };
   useEffect(() => {
     let file = files ? files[0] : null;
@@ -78,6 +91,7 @@ export default function UploadFileModal() {
     setFilePath(file.path);
     loadEmployees(file.path);
     setMissingEmployees([]);
+    setInsertingEmployees(false);
 
     async function loadEmployees(path: string) {
       try {
@@ -174,6 +188,13 @@ export default function UploadFileModal() {
             </Row>
           </>
         )}
+        {insertingEmployees && (
+          <ProgressBar
+            style={{ marginTop: 10 }}
+            variant="success"
+            now={insertingProgress}
+          />
+        )}
       </Modal.Body>
 
       <Modal.Footer>
@@ -185,7 +206,7 @@ export default function UploadFileModal() {
               loading={fetchingMissingEmployees}
             />
           ) : insertingEmployees ? (
-            <div>loading</div>
+            ''
           ) : (
             missingEmployees.length > 0 && (
               <Button variant="primary" onClick={insertEmployees}>

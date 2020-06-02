@@ -14,7 +14,7 @@ export default function EditRowButton(props: Props) {
   return (
     <Button
       variant="warning"
-      title="Brisanje zaposlenog"
+      title={props.title}
       onClick={props.onClick}
       style={{
         paddingTop: 0,

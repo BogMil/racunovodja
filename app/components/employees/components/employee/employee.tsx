@@ -56,7 +56,9 @@ export default function EmployeeComponent(props: Props) {
 
   const editEmployee = () => {
     let cdto = (employee as unknown) as EmployeeCDTO;
-    cdto.municipality_id = employee.municipality.id;
+    cdto.municipality_id = employee.municipality
+      ? employee.municipality.id
+      : -1;
     dispatch(openEdit(cdto));
   };
 
@@ -80,7 +82,9 @@ export default function EmployeeComponent(props: Props) {
       <td className={styles.employeeCell}>{employee.last_name}</td>
       <td className={styles.employeeCell}>{employee.first_name}</td>
       <td className={styles.employeeCell}>{employee.banc_account}</td>
-      <td className={styles.employeeCell}>{employee.municipality.name}</td>
+      <td className={styles.employeeCell}>
+        {employee.municipality ? employee.municipality.name : '---'}
+      </td>
       <td className={styles.employeeCell}>
         <Table bordered hover size="sm" style={{ marginBottom: 0 }}>
           <tbody>
@@ -103,6 +107,7 @@ export default function EmployeeComponent(props: Props) {
                   variant="success"
                   onClick={() => onAddDefaultRelationClick()}
                   style={{ width: '100%', padding: 0, height: 25 }}
+                  title="Dodaj podrazumevanu relaciju"
                 >
                   +
                 </Button>
