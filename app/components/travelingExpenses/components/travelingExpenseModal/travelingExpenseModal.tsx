@@ -6,10 +6,7 @@ import {
   updateTravelingExpenseState
 } from './travelingExpenseModal.actions';
 import { AppStore } from '../../../../reducers';
-import { reloadEmployees } from '../../travelingExpenses.actions';
-import * as Service from '../../travelingExpenses.service';
-import { handleResponse } from '../../../../utils/responseHandler';
-import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
+import EmployeeComponent from './components/employee';
 
 export default function TravelingExpenseModal() {
   const dispatch = useDispatch();
@@ -100,6 +97,11 @@ export default function TravelingExpenseModal() {
           </Row>
           <Row>
             <Col>
+              Izbor zaposlenih kojima će se obračunavati putni troškovi :
+            </Col>
+          </Row>
+          <Row>
+            <Col>
               <div
                 style={{
                   maxHeight: 500,
@@ -111,6 +113,16 @@ export default function TravelingExpenseModal() {
                 <Table striped bordered hover>
                   <thead>
                     <tr>
+                      <th style={{ textAlign: 'center' }}>
+                        {' '}
+                        <Form.Check
+                          custom
+                          name="active"
+                          type="checkbox"
+                          label=""
+                          onChange={handleChange}
+                        />
+                      </th>
                       <th>JMBG</th>
                       <th>Broj zaposlenog</th>
                       <th>Prezime</th>
@@ -118,13 +130,8 @@ export default function TravelingExpenseModal() {
                     </tr>
                   </thead>
                   <tbody>
-                    {employees.map(e => (
-                      <tr key={e.jmbg}>
-                        <td>{e.jmbg}</td>
-                        <td>{e.number}</td>
-                        <td>{e.last_name}</td>
-                        <td>{e.first_name}</td>
-                      </tr>
+                    {store.employees.map(e => (
+                      <EmployeeComponent key={e.id} employee={e} />
                     ))}
                   </tbody>
                 </Table>

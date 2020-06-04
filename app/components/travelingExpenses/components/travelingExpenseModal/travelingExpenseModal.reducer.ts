@@ -4,7 +4,8 @@ import {
   NAMESPACE,
   CLOSE,
   OPEN,
-  HANDLE_CHANGE
+  HANDLE_CHANGE,
+  CHECK_EMPLOYEE
 } from './travelingExpenseModal.actions';
 import {
   TravelingExpenseCDTO,
@@ -34,13 +35,14 @@ export default function employeeModal(
   if (action.namespace != NAMESPACE) return state;
   switch (action.type) {
     case OPEN:
-      let { travelingExpense, title, mode } = action.payload;
+      let { employees, travelingExpense, title, mode } = action.payload;
       return {
         ...state,
         show: true,
         travelingExpense: travelingExpense,
         title: title,
-        mode: mode
+        mode: mode,
+        employees: employees
       };
 
     case CLOSE:
@@ -52,11 +54,23 @@ export default function employeeModal(
         mode: ''
       };
 
+    case CHECK_EMPLOYEE:
+      let { id } = action.payload;
+      let newEmployees = state.employees.map(e => {
+        if (e.id == id) e.checked = !e.checked;
+        return e;
+      });
+      return {
+        ...state,
+        employees: newEmployees
+      };
+
     case HANDLE_CHANGE:
       let { name, value } = action.payload;
       let newState = { ...state.travelingExpense };
       newState[name] = value;
-      return { ...state, travelingExpenses: newState };
+      console.log(newState);
+      return { ...state, travelingExpense: newState };
 
     default:
       return state;

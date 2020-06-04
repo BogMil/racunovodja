@@ -1,39 +1,43 @@
 import { Action } from '../../../../reducers/types';
 import {
   TravelingExpenseCDTO,
-  newTravelingExpenseCDTO,
-  TravelingExpense
+  newTravelingExpenseCDTO
 } from '../../travelingExpenses.types';
 import { Dispatch } from 'redux';
-import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
+import { CREATE_MODE } from '../../../../constants/modalModes';
+import * as employeeService from '../../../employees/employee.service';
+import { handleResponse } from '../../../../utils/responseHandler';
+import { Employee } from './travelingExpenseModal.types';
 
 export const OPEN = 'OPEN';
 export const CLOSE = 'CLOSE';
 export const HANDLE_CHANGE = 'HANDLE_CHANGE';
+export const CHECK_EMPLOYEE = 'CHECK_EMPLOYEE';
 
 export const NAMESPACE = 'TRAVELING_EXPENSE_MODAL';
 
 export function openCreate() {
   return async (dispatch: Dispatch) => {
-    dispatch(
-      _open(
-        newTravelingExpenseCDTO(),
-        'Kreiranje novog obračuna putnih troskova',
-        CREATE_MODE
-      )
-    );
-  };
-}
-
-export function openEdit(travelingExpenses: TravelingExpense) {
-  return async (dispatch: Dispatch) => {
-    dispatch(
-      _open(travelingExpenses, 'Ažuriranje obračuna putnih troskova', EDIT_MODE)
-    );
+    handleResponse(await employeeService.get(), (res: any) => {
+      let employees = res.data;
+      employees.map((e: any) => {
+        e.checked = true;
+        return e as Employee;
+      });
+      dispatch(
+        _open(
+          res.data,
+          newTravelingExpenseCDTO(),
+          'Kreiranje novog obračuna putnih troskova',
+          CREATE_MODE
+        )
+      );
+    });
   };
 }
 
 function _open(
+  employees: Employee[],
   travelingExpense: TravelingExpenseCDTO,
   title: string,
   mode: string
@@ -41,7 +45,15 @@ function _open(
   return {
     namespace: NAMESPACE,
     type: OPEN,
-    payload: { travelingExpense, title, mode }
+    payload: { employees, travelingExpense, title, mode }
+  };
+}
+
+export function checkEmployee(id: number): Action {
+  return {
+    namespace: NAMESPACE,
+    type: CHECK_EMPLOYEE,
+    payload: { id }
   };
 }
 
