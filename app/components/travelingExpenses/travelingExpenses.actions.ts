@@ -26,6 +26,6 @@ export function loadTravelingExpenses() {
   }
 }
 
-export function reloadEmployees() {
+export function reloadTravelingExpenses() {
   return loadTravelingExpenses();
 }

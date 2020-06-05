@@ -1,8 +1,7 @@
 import { Action } from '../../reducers/types';
 import {
   NAMESPACE,
-  LOAD_TRAVELING_EXPENSES,
-  RELOAD_TRAVELING_EXPENSES
+  LOAD_TRAVELING_EXPENSES
 } from './travelingExpenses.actions';
 import { TravelingExpense } from './travelingExpenses.types';
 
@@ -24,10 +23,10 @@ export default function employeesReducer(
 
   switch (action.type) {
     case LOAD_TRAVELING_EXPENSES:
-      travelExpenses = action.payload.travelExpenses;
+      travelExpenses = action.payload.travelingExpenses;
       return {
         ...state,
-        travelExpenses
+        travelingExpenses: travelExpenses
       };
 
     default:

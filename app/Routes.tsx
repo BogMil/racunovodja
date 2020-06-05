@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import Employees from './components/employees/employees';
 import Relations from './components/relations/relations';
 import TravelExpenses from './components/travelingExpenses/travelingExpenses';
+import TravelExpensesDetails from './components/travelingExpenses/components/details/details';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);
@@ -34,6 +35,10 @@ export default function Routes() {
         </PrivateRoute>
         <PrivateRoute exact path={routes.TRAVEL_EXPENSES}>
           <TravelExpenses />
+        </PrivateRoute>
+
+        <PrivateRoute path={routes.TRAVEL_EXPENSES_DETAILS + '/:id'}>
+          <TravelExpensesDetails />
         </PrivateRoute>
       </Switch>
     </App>

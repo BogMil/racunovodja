@@ -3,10 +3,15 @@ import { Button, Modal, Form, Row, Col, Table } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   close,
-  updateTravelingExpenseState
+  updateTravelingExpenseState,
+  checkAll
 } from './travelingExpenseModal.actions';
 import { AppStore } from '../../../../reducers';
 import EmployeeComponent from './components/employee';
+import * as service from '../../travelingExpenses.service';
+import { CREATE_MODE } from '../../../../constants/modalModes';
+import { handleResponse } from '../../../../utils/responseHandler';
+import { reloadTravelingExpenses } from '../../travelingExpenses.actions';
 
 export default function TravelingExpenseModal() {
   const dispatch = useDispatch();
@@ -25,12 +30,28 @@ export default function TravelingExpenseModal() {
     dispatch(updateTravelingExpenseState(name, value));
   };
 
+  const onCheckAll = () => {
+    dispatch(checkAll());
+  };
+
   const handleSave = async () => {
-    // if (store.mode == CREATE_MODE)
-    //   handleResponse(await Service.createEmployee(store.employee), () => {
-    //     dispatch(reloadEmployees());
-    //     dispatch(close());
-    //   });
+    let employeeIds = store.employees
+      .filter(e => {
+        if (e.checked) return e.id;
+      })
+      .map(r => r.id);
+
+    let x = {
+      employees: employeeIds,
+      month: store.travelingExpense.month,
+      year: store.travelingExpense.year
+    };
+
+    if (store.mode == CREATE_MODE)
+      handleResponse(await service.create(x), () => {
+        dispatch(reloadTravelingExpenses());
+        dispatch(close());
+      });
     // else if (store.mode == EDIT_MODE)
     //   handleResponse(await Service.updateEmployee(store.employee), () => {
     //     dispatch(reloadEmployees());
@@ -116,11 +137,11 @@ export default function TravelingExpenseModal() {
                       <th style={{ textAlign: 'center' }}>
                         {' '}
                         <Form.Check
-                          custom
                           name="active"
                           type="checkbox"
                           label=""
-                          onChange={handleChange}
+                          checked={store.checkAll}
+                          onChange={onCheckAll}
                         />
                       </th>
                       <th>JMBG</th>

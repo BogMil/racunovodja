@@ -12,7 +12,6 @@ export default function EmployeeComponent(props: Props) {
   const dispatch = useDispatch();
 
   const onCheckEmployee = () => {
-    debugger;
     dispatch(checkEmployee(employee.id));
   };
 
@@ -20,7 +19,6 @@ export default function EmployeeComponent(props: Props) {
     <tr key={employee.jmbg}>
       <td style={{ textAlign: 'center' }}>
         <Form.Check
-          // custom
           type="checkbox"
           label=""
           checked={employee.checked}

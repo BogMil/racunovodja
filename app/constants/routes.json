@@ -7,5 +7,6 @@
   "COUNTER": "/counter",
   "EMPLOYEES": "/employees",
   "RELATIONS": "/relations",
-  "TRAVEL_EXPENSES": "/travelExpenses"
+  "TRAVEL_EXPENSES": "/travelExpenses",
+  "TRAVEL_EXPENSES_DETAILS": "/travel_expenses_details"
 }

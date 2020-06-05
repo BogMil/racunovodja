@@ -1,3 +1,6 @@
+import { Employee } from '../employees/types';
+import { Relation } from '../relations/relations.types';
+
 export type TravelingExpense = {
   id: number;
   year: number;
@@ -25,4 +28,29 @@ export const newTravelingExpenseCDTO = () => {
     month: month,
     creation_date: ''
   } as TravelingExpenseCDTO;
+};
+
+export type TravelingExpenseWithDetails = {
+  id: number;
+  year: number;
+  month: number;
+  creation_date: string;
+  user_id: number;
+  employees_with_relation: EmployeeWithRelation[];
+};
+
+export type EmployeeWithRelation = {
+  id: number;
+  employee_id: number;
+  traveling_expense_id: number;
+  employee: Employee;
+  relations_with_days: RelationWithDays[];
+};
+
+export type RelationWithDays = {
+  days: 0;
+  id: 5;
+  relation_id: 1;
+  traveling_expense_employee_id: 15;
+  relation: Relation;
 };

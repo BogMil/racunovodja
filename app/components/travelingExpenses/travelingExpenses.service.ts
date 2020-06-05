@@ -11,3 +11,23 @@ export async function get() {
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function create(data: {
+  employees: number[];
+  month: number;
+  year: number;
+}) {
+  let res = await axios
+    .post(`${API_URL}`, { ...data })
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function details(id: number) {
+  let res = await axios
+    .get(`${API_URL}/${id}/details`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

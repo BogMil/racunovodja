@@ -5,7 +5,8 @@ import {
   CLOSE,
   OPEN,
   HANDLE_CHANGE,
-  CHECK_EMPLOYEE
+  CHECK_EMPLOYEE,
+  CHECK_ALL
 } from './travelingExpenseModal.actions';
 import {
   TravelingExpenseCDTO,
@@ -17,7 +18,8 @@ const initialState: TravelingExpenseModalStore = {
   title: '',
   travelingExpense: {} as TravelingExpenseCDTO,
   mode: '',
-  employees: []
+  employees: [],
+  checkAll: true
 };
 
 export type TravelingExpenseModalStore = {
@@ -26,6 +28,7 @@ export type TravelingExpenseModalStore = {
   travelingExpense: TravelingExpenseCDTO;
   mode: string;
   employees: Employee[];
+  checkAll: boolean;
 };
 
 export default function employeeModal(
@@ -42,7 +45,8 @@ export default function employeeModal(
         travelingExpense: travelingExpense,
         title: title,
         mode: mode,
-        employees: employees
+        employees: employees,
+        checkAll: true
       };
 
     case CLOSE:
@@ -51,7 +55,8 @@ export default function employeeModal(
         show: false,
         travelingExpense: newTravelingExpenseCDTO(),
         title: '',
-        mode: ''
+        mode: '',
+        employees: []
       };
 
     case CHECK_EMPLOYEE:
@@ -63,6 +68,17 @@ export default function employeeModal(
       return {
         ...state,
         employees: newEmployees
+      };
+
+    case CHECK_ALL:
+      let all = state.employees.map(e => {
+        e.checked = !state.checkAll;
+        return e;
+      });
+      return {
+        ...state,
+        employees: all,
+        checkAll: !state.checkAll
       };
 
     case HANDLE_CHANGE:

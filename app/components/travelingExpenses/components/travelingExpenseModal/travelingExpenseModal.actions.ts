@@ -13,12 +13,13 @@ export const OPEN = 'OPEN';
 export const CLOSE = 'CLOSE';
 export const HANDLE_CHANGE = 'HANDLE_CHANGE';
 export const CHECK_EMPLOYEE = 'CHECK_EMPLOYEE';
+export const CHECK_ALL = 'CHECK_ALL';
 
 export const NAMESPACE = 'TRAVELING_EXPENSE_MODAL';
 
 export function openCreate() {
   return async (dispatch: Dispatch) => {
-    handleResponse(await employeeService.get(), (res: any) => {
+    handleResponse(await employeeService.getActiveOnes(), (res: any) => {
       let employees = res.data;
       employees.map((e: any) => {
         e.checked = true;
@@ -54,6 +55,13 @@ export function checkEmployee(id: number): Action {
     namespace: NAMESPACE,
     type: CHECK_EMPLOYEE,
     payload: { id }
+  };
+}
+
+export function checkAll(): Action {
+  return {
+    namespace: NAMESPACE,
+    type: CHECK_ALL
   };
 }
 

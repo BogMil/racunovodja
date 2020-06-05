@@ -13,6 +13,14 @@ export async function get() {
   return res;
 }
 
+export async function getActiveOnes() {
+  let res = await axios
+    .get(`${API_URL}/active`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
 export async function getAvailableDefaultRelationsForEmployee(id: number) {
   let res = await axios
     .get(`${API_URL}/${id}/availableRelations`)
