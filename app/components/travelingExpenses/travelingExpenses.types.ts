@@ -36,10 +36,10 @@ export type TravelingExpenseWithDetails = {
   month: number;
   creation_date: string;
   user_id: number;
-  employees_with_relation: EmployeeWithRelation[];
+  employees_with_relation: EmployeeWithRelations[];
 };
 
-export type EmployeeWithRelation = {
+export type EmployeeWithRelations = {
   id: number;
   employee_id: number;
   traveling_expense_id: number;

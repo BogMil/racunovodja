@@ -14,7 +14,7 @@ export default function DeleteRowButton(props: Props) {
   return (
     <Button
       variant="danger"
-      title="Brisanje zaposlenog"
+      title={props.title}
       onClick={props.onClick}
       style={{
         paddingTop: 0,

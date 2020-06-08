@@ -11,9 +11,13 @@ import { AppStore } from '../../../../reducers';
 import { loadTravelingExpenseDetails } from './details.actions';
 import getMonthName from '../../../../utils/getMonthName';
 import {
-  EmployeeWithRelation,
+  EmployeeWithRelations,
   RelationWithDays
 } from '../../travelingExpenses.types';
+import OneRelationTemplate from './components/oneRelationTemplate';
+import NoRelationTemplate from './components/noRelationTemplate';
+import MultipleRelationsTemplate from './components/mulitpleRelationsTemplate';
+import EditDaysModal from './components/editDaysModal/editDaysModal';
 
 export default function Details() {
   const { id } = useParams();
@@ -26,8 +30,28 @@ export default function Details() {
   }, []);
   console.log(store);
   return (
-    <Container style={{}}>
-      <Row>
+    <Container
+      fluid
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap'
+      }}
+      className="noselect"
+    >
+      <Row
+        style={{
+          flexShrink: 0,
+          // position: 'fixed',
+          // top: 25,
+          backgroundColor: '#d8eacd'
+          // width: '100%',
+          // height: 30,
+          // zIndex: 999
+        }}
+      >
         <Col md={1} style={{ float: 'right', paddingLeft: 0 }}>
           <NavLink
             to={{
@@ -40,13 +64,23 @@ export default function Details() {
           </NavLink>
         </Col>
 
-        <Col style={{ textAlign: 'center' }} md={10}>
-          Obračun putnih troškova za {getMonthName(store.month)} / {store.year}.
+        <Col md={11}>
+          <b>
+            Obračun putnih troškova za {getMonthName(store.month)} /{' '}
+            {store.year}.
+          </b>
         </Col>
       </Row>
-      <Row>
+      <Row
+        style={{
+          // marginBottom: 50, marginTop: 30
+          flexGrow: 1,
+          overflow: 'auto',
+          minHeight: '2em'
+        }}
+      >
         <Col style={{ padding: 0 }}>
-          <Table striped bordered hover size="sm">
+          <Table striped bordered hover size="sm" style={{}}>
             <thead>
               <tr>
                 <th>JMBG</th>
@@ -57,7 +91,7 @@ export default function Details() {
                 <th>Ukupno</th>
                 <th>Neopor.</th>
                 <th>Opor.</th>
-                <th style={{ textAlign: 'center', width: 50 }}>
+                <th style={{ textAlign: 'center' }}>
                   <Button
                     // onClick={openCreateDialog}
                     title="Kreiraj novi obračun putnih troškova"
@@ -75,83 +109,64 @@ export default function Details() {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody
+              style={{
+                overflowY: 'auto',
+                height: 500
+              }}
+            >
               {store.employees_with_relation &&
                 store.employees_with_relation.map(
-                  (employeeWithRelation: EmployeeWithRelation, index) => (
-                    <tr key={index}>
-                      <td>{employeeWithRelation.employee.jmbg}</td>
-                      <td>
-                        {employeeWithRelation.employee.last_name}{' '}
-                        {employeeWithRelation.employee.first_name}
-                      </td>
-                      <td>
-                        <Table style={{ marginBottom: 0 }}>
-                          <tbody>
-                            {employeeWithRelation.relations_with_days &&
-                              employeeWithRelation.relations_with_days.map(
-                                (relationWithDays: RelationWithDays, i) => (
-                                  <tr>
-                                    <td>{relationWithDays.relation.name}</td>
-                                  </tr>
-                                )
-                              )}
-                          </tbody>
-                        </Table>
-                      </td>
-                      <td>
-                        <Table>
-                          <tbody>
-                            {employeeWithRelation.relations_with_days &&
-                              employeeWithRelation.relations_with_days.map(
-                                (relationWithDays: RelationWithDays, i) => (
-                                  <tr>
-                                    <td>{relationWithDays.relation.price}</td>
-                                  </tr>
-                                )
-                              )}
-                          </tbody>
-                        </Table>
-                      </td>
-                      <td>
-                        <Table>
-                          <tbody>
-                            {employeeWithRelation.relations_with_days &&
-                              employeeWithRelation.relations_with_days.map(
-                                (relationWithDays: RelationWithDays, i) => (
-                                  <tr>
-                                    <td>{relationWithDays.days}</td>
-                                  </tr>
-                                )
-                              )}
-                          </tbody>
-                        </Table>
-                      </td>
+                  (employeeWithRelation: EmployeeWithRelations, index) => {
+                    if (employeeWithRelation.relations_with_days.length == 0)
+                      return (
+                        <NoRelationTemplate
+                          key={index}
+                          employeeWithRelation={employeeWithRelation}
+                        />
+                      );
+                    else if (
+                      employeeWithRelation.relations_with_days.length == 1
+                    )
+                      return (
+                        <OneRelationTemplate
+                          key={index}
+                          employeeWithRelation={employeeWithRelation}
+                        />
+                      );
+                    else if (
+                      employeeWithRelation.relations_with_days.length > 1
+                    )
+                      return (
+                        <MultipleRelationsTemplate
+                          key={index}
+                          employeeWithRelation={employeeWithRelation}
+                        />
+                      );
 
-                      <td>
-                        <Table>
-                          <tbody>
-                            {employeeWithRelation.relations_with_days &&
-                              employeeWithRelation.relations_with_days.map(
-                                (relationWithDays: RelationWithDays, i) => (
-                                  <tr>
-                                    <td>
-                                      {relationWithDays.days *
-                                        relationWithDays.relation.price}
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                          </tbody>
-                        </Table>
-                      </td>
-                    </tr>
-                  )
+                    return null;
+                  }
                 )}
             </tbody>
           </Table>
         </Col>
       </Row>
+
+      <Row
+        style={{
+          // position: 'fixed',
+          // bottom: 0,
+          backgroundColor: '#d8eacd',
+          // width: '100%',
+          // height: 50
+          flexShrink: 0
+        }}
+      >
+        <Col>
+          <div>asdasd</div>
+        </Col>
+      </Row>
+      <EditDaysModal year={store.year} month={store.month} />
     </Container>
   );
 }

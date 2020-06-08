@@ -50,7 +50,7 @@ export default function Layout(props: { children: ReactNode }) {
               style={{
                 marginLeft: 200,
                 height: vh - 25,
-                paddingBottom: 25,
+                // paddingBottom: 25,
                 overflowX: 'auto',
                 overflowY: 'auto'
               }}
