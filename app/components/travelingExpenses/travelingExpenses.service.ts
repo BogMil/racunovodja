@@ -49,3 +49,30 @@ export async function removeEmployeeWithRelations(
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function getAvailableEmployees(employeeWithRelationsId: number) {
+  let res = await axios
+    .get(`${API_URL}/${employeeWithRelationsId}/availableEmployees`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function addEmployee(
+  employeeId: number,
+  travelingExpenseId: number
+) {
+  let res = await axios
+    .post(`${API_URL}/${travelingExpenseId}/addEmployee/${employeeId}`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function removeRelation(relationWithDaysId: number) {
+  let res = await axios
+    .delete(`${API_URL}/relation/${relationWithDaysId}`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

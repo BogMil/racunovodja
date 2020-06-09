@@ -4,20 +4,18 @@ import { Row, Col, Button, Container, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import routes from '../../../../constants/routes.json';
-import { handleResponse } from '../../../../utils/responseHandler';
-import * as service from '../../travelingExpenses.service';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
 import { loadTravelingExpenseDetails } from './details.actions';
 import getMonthName from '../../../../utils/getMonthName';
-import {
-  EmployeeWithRelations,
-  RelationWithDays
-} from '../../travelingExpenses.types';
-import OneRelationTemplate from './components/oneRelationTemplate';
-import NoRelationTemplate from './components/noRelationTemplate';
-import MultipleRelationsTemplate from './components/mulitpleRelationsTemplate';
+import { EmployeeWithRelations } from '../../travelingExpenses.types';
+import OneRelationTemplate from './components/relationTemplates/oneRelationTemplate';
+import NoRelationTemplate from './components/relationTemplates/noRelationTemplate';
+import MultipleRelationsTemplate from './components/relationTemplates/mulitpleRelationsTemplate';
 import EditDaysModal from './components/editDaysModal/editDaysModal';
+import { open } from './components/addEmployeeModal/addEmployeeModal.actions';
+import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
+import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 
 export default function Details() {
   const { id } = useParams();
@@ -28,7 +26,11 @@ export default function Details() {
   useEffect(() => {
     dispatch(loadTravelingExpenseDetails(id));
   }, []);
-  console.log(store);
+
+  const openAddEmployeeDialog = async () => {
+    dispatch(open(store.id));
+  };
+
   return (
     <Container
       fluid
@@ -93,8 +95,8 @@ export default function Details() {
                 <th>Opor.</th>
                 <th style={{ textAlign: 'center' }}>
                   <Button
-                    // onClick={openCreateDialog}
-                    title="Kreiraj novi obračun putnih troškova"
+                    onClick={openAddEmployeeDialog}
+                    title="Dodaj zaposlenog"
                     variant="success"
                     style={{
                       paddingLeft: 5,
@@ -167,6 +169,8 @@ export default function Details() {
         </Col>
       </Row>
       <EditDaysModal year={store.year} month={store.month} />
+      <AddEmployeeModal />
+      <AddRelationWithDaysModal />
     </Container>
   );
 }

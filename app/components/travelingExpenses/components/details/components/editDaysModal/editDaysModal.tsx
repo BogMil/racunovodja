@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 
 import { close } from './editDaysModal.actions';
 import { useDispatch, useSelector } from 'react-redux';

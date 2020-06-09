@@ -37,7 +37,8 @@ export default function TravelingExpenseModal() {
   const handleSave = async () => {
     let employeeIds = store.employees
       .filter(e => {
-        if (e.checked) return e.id;
+        if (e.checked) return true;
+        return false;
       })
       .map(r => r.id);
 
@@ -52,11 +53,6 @@ export default function TravelingExpenseModal() {
         dispatch(reloadTravelingExpenses());
         dispatch(close());
       });
-    // else if (store.mode == EDIT_MODE)
-    //   handleResponse(await Service.updateEmployee(store.employee), () => {
-    //     dispatch(reloadEmployees());
-    //     dispatch(close());
-    //   });
   };
 
   return (

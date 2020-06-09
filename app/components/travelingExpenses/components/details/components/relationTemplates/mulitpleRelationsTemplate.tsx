@@ -3,13 +3,16 @@ import { Table, Button } from 'react-bootstrap';
 import {
   EmployeeWithRelations,
   RelationWithDays
-} from '../../../travelingExpenses.types';
-import DeleteRowButton from '../../../../common/rowButtons/deleteRowButton';
-import { areYouSure } from '../../../../../utils/yesNoModal';
-import { handleResponse } from '../../../../../utils/responseHandler';
+} from '../../../../travelingExpenses.types';
+import DeleteRowButton from '../../../../../common/rowButtons/deleteRowButton';
+import { areYouSure } from '../../../../../../utils/yesNoModal';
+import { handleResponse } from '../../../../../../utils/responseHandler';
 import { useDispatch } from 'react-redux';
-import * as service from '../../../travelingExpenses.service';
-import { reloadTravelingExpenseDetails } from '../details.actions';
+import * as service from '../../../../travelingExpenses.service';
+import { reloadTravelingExpenseDetails } from '../../details.actions';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRoute } from '@fortawesome/free-solid-svg-icons';
+import { open } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
@@ -39,6 +42,26 @@ export default function MultipleRelationsTemplate(props: Props) {
     }
   };
 
+  const onRemoveRelation = async (relationWithDaysId: number) => {
+    areYouSure({
+      onYes: onYes,
+      title: 'Brisanje relacije'
+    });
+    async function onYes() {
+      handleResponse(await service.removeRelation(relationWithDaysId), () => {
+        dispatch(
+          reloadTravelingExpenseDetails(
+            props.employeeWithRelation.traveling_expense_id
+          )
+        );
+      });
+    }
+  };
+
+  const onAddRelationWithDays = () => {
+    dispatch(open(props.employeeWithRelation.traveling_expense_id));
+  };
+
   let sum = 0;
   for (let relationsWithDays of props.employeeWithRelation
     .relations_with_days) {
@@ -64,8 +87,20 @@ export default function MultipleRelationsTemplate(props: Props) {
           rowSpan={2}
           style={{ borderBottom: '2px solid #3f0e40', verticalAlign: 'middle' }}
         >
-          {props.employeeWithRelation.employee.last_name}{' '}
-          {props.employeeWithRelation.employee.first_name}
+          <div style={{ display: 'inline-block' }}>
+            {props.employeeWithRelation.employee.last_name}{' '}
+            {props.employeeWithRelation.employee.first_name}
+          </div>
+          <div style={{ display: 'inline-block', float: 'right' }}>
+            <Button
+              onClick={() => onAddRelationWithDays()}
+              style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
+              variant="success"
+              title="Dodaj novu relaciju"
+            >
+              <FontAwesomeIcon icon={faRoute} />{' '}
+            </Button>
+          </div>
         </td>
         <td style={{ padding: 0 }}>
           <Table style={{ marginBottom: 0 }}>
@@ -81,7 +116,13 @@ export default function MultipleRelationsTemplate(props: Props) {
                         <div
                           style={{ display: 'inline-block', float: 'right' }}
                         >
-                          <a style={{ color: 'red' }} title="Ukloni relaciju">
+                          <a
+                            style={{ color: 'red' }}
+                            title="Ukloni relaciju"
+                            onClick={() => {
+                              onRemoveRelation(relationWithDays.id);
+                            }}
+                          >
                             <b>x</b>
                           </a>
                         </div>

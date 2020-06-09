@@ -11,13 +11,21 @@ import travelingExpenseDetails, {
 import editDaysModal, {
   EditDaysModalStore
 } from './components/details/components/editDaysModal/editDaysModal.reducer';
+import addEmployeeModal, {
+  AddEmployeeModalStore
+} from './components/details/components/addEmployeeModal/addEmployeeModal.reducer';
+import addRelationWithDays, {
+  AddRelationWithDaysModalStore
+} from './components/details/components/addRelationWithDaysModal/addRelationWithDaysModal.reducer';
 
 export default function createCombinedReducer() {
   return combineReducers({
     travelingExpenses,
     travelingExpenseModal,
     travelingExpenseDetails,
-    editDaysModal
+    editDaysModal,
+    addEmployeeModal,
+    addRelationWithDays
   });
 }
 
@@ -26,4 +34,6 @@ export type TravelingExpenseCombinedReducer = {
   travelingExpenseDetails: TravelingExpenseDetailsStore;
   travelingExpenseModal: TravelingExpenseModalStore;
   editDaysModal: EditDaysModalStore;
+  addEmployeeModal: AddEmployeeModalStore;
+  addRelationWithDays: AddRelationWithDaysModalStore;
 };
