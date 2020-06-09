@@ -31,3 +31,21 @@ export async function details(id: number) {
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function remove(travelingExpenseId: number) {
+  let res = await axios
+    .delete(`${API_URL}/${travelingExpenseId}`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function removeEmployeeWithRelations(
+  employeeWithRelationsId: number
+) {
+  let res = await axios
+    .delete(`${API_URL}/employee/${employeeWithRelationsId}`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

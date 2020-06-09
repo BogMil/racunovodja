@@ -4,12 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../reducers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { loadTravelingExpenses } from './travelingExpenses.actions';
+import {
+  loadTravelingExpenses,
+  reloadTravelingExpenses
+} from './travelingExpenses.actions';
 import { openCreate } from './components/travelingExpenseModal/travelingExpenseModal.actions';
 import TravelingExpenseModal from './components/travelingExpenseModal/travelingExpenseModal';
 import DetailsRowButton from '../common/rowButtons/detailsRowButton';
 import { NavLink } from 'react-router-dom';
 import routes from '../../constants/routes.json';
+import DeleteRowButton from '../common/rowButtons/deleteRowButton';
+import { areYouSure } from '../../utils/yesNoModal';
+import { handleResponse } from '../../utils/responseHandler';
+import * as service from './travelingExpenses.service';
 
 export default function TravelExpenses() {
   const dispatch = useDispatch();
@@ -25,9 +32,16 @@ export default function TravelExpenses() {
     dispatch(openCreate());
   };
 
-  // const openUploadDialog = () => {
-  //   dispatch(open());
-  // };
+  const onRemoveTravelingExpense = (id: number) => {
+    areYouSure({
+      onYes: async () => {
+        handleResponse(await service.remove(id), () => {
+          dispatch(reloadTravelingExpenses());
+        });
+      },
+      title: 'Brisanje obračuna putnih troškova'
+    });
+  };
   return (
     <>
       <Table striped bordered hover size="sm">
@@ -36,7 +50,7 @@ export default function TravelExpenses() {
             <th>Mesec</th>
             <th>Godina</th>
             <th>Datum kreiranja</th>
-            <th style={{ textAlign: 'center', width: 50 }}>
+            <th style={{ textAlign: 'center', width: 70 }}>
               <Button
                 onClick={openCreateDialog}
                 title="Kreiraj novi obračun putnih troškova"
@@ -69,6 +83,11 @@ export default function TravelExpenses() {
                   >
                     <DetailsRowButton title="Detalji" onClick={() => {}} />
                   </NavLink>
+                  <DeleteRowButton
+                    style={{ marginLeft: 5 }}
+                    title="Ukloni obračun putnih troškova!"
+                    onClick={() => onRemoveTravelingExpense(te.id)}
+                  />
                 </td>
               </tr>
             ))}

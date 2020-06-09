@@ -16,7 +16,6 @@ export function areYouSure(props: Props) {
   dialog
     .showMessageBox(getCurrentWindow(), options)
     .then(async (result: any) => {
-      console.log(result.response);
       if (result.response == 1) props.onYes();
       else props.onNo ? props.onNo() : () => {};
     });

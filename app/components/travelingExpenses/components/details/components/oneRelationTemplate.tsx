@@ -7,6 +7,10 @@ import {
 import DeleteRowButton from '../../../../common/rowButtons/deleteRowButton';
 import { useDispatch } from 'react-redux';
 import { open } from './editDaysModal/editDaysModal.actions';
+import { handleResponse } from '../../../../../utils/responseHandler';
+import * as service from '../../../travelingExpenses.service';
+import { reloadTravelingExpenseDetails } from '../details.actions';
+import { areYouSure } from '../../../../../utils/yesNoModal';
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
@@ -17,6 +21,28 @@ export default function OneRelationTemplate(props: Props) {
   function onDoubleClick(relationWithDays: RelationWithDays) {
     dispatch(open(relationWithDays, props.employeeWithRelation.employee));
   }
+
+  const onRemoveEmployeeFromTravelingExpense = async () => {
+    areYouSure({
+      onYes: onYes,
+      title: 'Brisanje zaposlenog sa svim njegovim relacijama iz obračuna'
+    });
+
+    async function onYes() {
+      handleResponse(
+        await service.removeEmployeeWithRelations(
+          props.employeeWithRelation.id
+        ),
+        () => {
+          dispatch(
+            reloadTravelingExpenseDetails(
+              props.employeeWithRelation.traveling_expense_id
+            )
+          );
+        }
+      );
+    }
+  };
 
   return (
     <tr style={{ borderBottom: '2px solid #3f0e40' }}>
@@ -156,7 +182,9 @@ export default function OneRelationTemplate(props: Props) {
         }}
       >
         <DeleteRowButton
-          onClick={() => {}}
+          onClick={() => {
+            onRemoveEmployeeFromTravelingExpense();
+          }}
           title="Ukloni zaposlenog iz obračuna"
         />
       </td>
