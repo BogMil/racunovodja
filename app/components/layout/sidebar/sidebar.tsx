@@ -45,21 +45,6 @@ export default function SideBar() {
           navigateTo={routes.HOME}
           text="Početna"
         />
-        <MenuItem
-          iconDefinition={faCoffee}
-          navigateTo={routes.COUNTER}
-          text="brojac"
-        />
-        <SubMenu text="asd">
-          <MenuItem navigateTo={routes.HOME} text="Pocetna" />
-          <MenuItem navigateTo={routes.LOGIN} text="prijavi se" />
-        </SubMenu>
-        <MenuItem navigateTo={routes.HOME} text="Pocetna" />
-        <MenuItem
-          iconDefinition={faPaperPlane}
-          navigateTo={routes.HOME}
-          text="Dostavljač platnih listića"
-        />
         <SubMenu text="Dodatni prihodi">
           <MenuItem navigateTo={routes.TRAVEL_EXPENSES} text="Putni troškovi" />
         </SubMenu>

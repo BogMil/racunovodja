@@ -13,6 +13,7 @@ import { reloadTravelingExpenseDetails } from '../../details.actions';
 import { areYouSure } from '../../../../../../utils/yesNoModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
+import { columnWidths, innerTableWidth } from '../../details.columnWidths';
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
@@ -82,14 +83,14 @@ export default function OneRelationTemplate(props: Props) {
           </Button>
         </div>
       </td>
-      <td style={{ padding: 0 }}>
-        <Table style={{ marginBottom: 0 }}>
+      <td style={{ padding: 0 }} colSpan={4}>
+        <Table style={{ marginBottom: 0 ,width:innerTableWidth}}>
           <tbody>
             {props.employeeWithRelation.relations_with_days &&
               props.employeeWithRelation.relations_with_days.map(
                 (relationWithDays: RelationWithDays, i) => (
                   <tr key={i}>
-                    <td>
+                    <td style={{width:columnWidths.relationName}}>
                       <div style={{ display: 'inline-block' }}>
                         {relationWithDays.relation.name}
                       </div>
@@ -105,110 +106,56 @@ export default function OneRelationTemplate(props: Props) {
                         </a>
                       </div>
                     </td>
-                  </tr>
-                )
-              )}
-          </tbody>
-        </Table>
-      </td>
-      <td style={{ padding: 0 }}>
-        <Table style={{ marginBottom: 0 }}>
-          <tbody>
-            {props.employeeWithRelation.relations_with_days &&
-              props.employeeWithRelation.relations_with_days.map(
-                (relationWithDays: RelationWithDays, i) => (
-                  <tr key={i}>
-                    <td style={{ textAlign: 'right' }}>
+                    <td style={{ textAlign: 'right',width:columnWidths.relationPrice }}>
                       {relationWithDays.relation.price}
                     </td>
-                  </tr>
-                )
-              )}
-          </tbody>
-        </Table>
-      </td>
-      <td style={{ padding: 0 }}>
-        <Table style={{ marginBottom: 0 }}>
-          <tbody>
-            {props.employeeWithRelation.relations_with_days &&
-              props.employeeWithRelation.relations_with_days.map(
-                (relationWithDays: RelationWithDays, i) => (
-                  <tr key={i}>
                     <td
-                      style={{ textAlign: 'center' }}
+                      style={{ textAlign: 'center',width:columnWidths.days }}
                       onDoubleClick={() => onDoubleClick(relationWithDays)}
                     >
                       {relationWithDays.days}
                     </td>
-                  </tr>
-                )
-              )}
-          </tbody>
-        </Table>
-      </td>
-      <td style={{ padding: 0 }}>
-        <Table style={{ marginBottom: 0 }}>
-          <tbody style={{ backgroundColor: '#ec8989' }}>
-            {props.employeeWithRelation.relations_with_days &&
-              props.employeeWithRelation.relations_with_days.map(
-                (relationWithDays: RelationWithDays, i) => (
-                  <tr key={i}>
-                    <td style={{ textAlign: 'right' }}>
+                    <td style={{ textAlign: 'right',  backgroundColor: '#ec8989' ,width:columnWidths.sumPerEmployee}}>
                       {relationWithDays.relation.price * relationWithDays.days}
                     </td>
+
                   </tr>
                 )
               )}
           </tbody>
         </Table>
       </td>
-      <td style={{ padding: 0 }}>
-        <Table style={{ marginBottom: 0 }}>
-          <tbody>
-            {props.employeeWithRelation.relations_with_days &&
-              props.employeeWithRelation.relations_with_days.map(
-                (relationWithDays: RelationWithDays, i) => {
-                  let neoporezivo;
-                  let neoporezivDeo = 3878.0;
-                  let ukupno =
-                    relationWithDays.relation.price * relationWithDays.days;
 
-                  if (ukupno <= neoporezivDeo) neoporezivo = ukupno;
-                  else neoporezivo = neoporezivDeo;
-                  return (
-                    <tr key={i}>
-                      <td style={{ textAlign: 'right' }}>{neoporezivo}</td>
-                    </tr>
-                  );
-                }
-              )}
-          </tbody>
-        </Table>
-      </td>
+      {props.employeeWithRelation.relations_with_days &&
+                      props.employeeWithRelation.relations_with_days.map(
+                        (relationWithDays: RelationWithDays, i) => {
+                          let neoporezivo;
+                          let neoporezivDeo = 3878.0;
+                          let ukupno =
+                            relationWithDays.relation.price * relationWithDays.days;
 
-      <td style={{ padding: 0 }}>
-        <Table style={{ marginBottom: 0 }}>
-          <tbody>
-            {props.employeeWithRelation.relations_with_days &&
-              props.employeeWithRelation.relations_with_days.map(
-                (relationWithDays: RelationWithDays, i) => {
-                  let oporezivo;
-                  let neoporezivDeo = 3878.0;
-                  let ukupno =
-                    relationWithDays.relation.price * relationWithDays.days;
+                          if (ukupno <= neoporezivDeo) neoporezivo = ukupno;
+                          else neoporezivo = neoporezivDeo;
+                          return (
+                              <td key={i} style={{ textAlign: 'right',width:columnWidths.nonTaxablePrice }}>{neoporezivo}</td>
+                          );
+                        }
+                      )}
+                       {props.employeeWithRelation.relations_with_days &&
+                        props.employeeWithRelation.relations_with_days.map(
+                          (relationWithDays: RelationWithDays, i) => {
+                            let oporezivo;
+                            let neoporezivDeo = 3878.0;
+                            let ukupno =
+                              relationWithDays.relation.price * relationWithDays.days;
 
-                  if (ukupno <= neoporezivDeo) oporezivo = 0;
-                  else oporezivo = ukupno - neoporezivDeo;
-                  return (
-                    <tr key={i}>
-                      <td style={{ textAlign: 'right' }}>{oporezivo}</td>
-                    </tr>
-                  );
-                }
-              )}
-          </tbody>
-        </Table>
-      </td>
+                            if (ukupno <= neoporezivDeo) oporezivo = 0;
+                            else oporezivo = ukupno - neoporezivDeo;
+                            return (
+                                <td key={i} style={{ textAlign: 'right',width:columnWidths.taxablePrice }}>{oporezivo}</td>
+                            );
+                          }
+                        )}
       <td
         style={{
           textAlign: 'center',

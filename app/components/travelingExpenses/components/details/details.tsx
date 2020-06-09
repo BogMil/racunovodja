@@ -17,6 +17,7 @@ import { open } from './components/addEmployeeModal/addEmployeeModal.actions';
 import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 import { initialState } from './details.reducer';
+import { columnWidths } from './details.columnWidths';
 
 export default function Details() {
   const { id } = useParams();
@@ -88,18 +89,18 @@ export default function Details() {
         }}
       >
         <Col style={{ padding: 0 }}>
-          <Table striped bordered hover size="sm" style={{}}>
+          <Table striped bordered hover size="sm" style={{width:columnWidths.sum()}}>
             <thead>
               <tr>
-                <th>JMBG</th>
-                <th>Prezime i ime</th>
-                <th>Relacija</th>
-                <th>Cena</th>
-                <th>Dana</th>
-                <th>Ukupno</th>
-                <th>Neopor.</th>
-                <th>Opor.</th>
-                <th style={{ textAlign: 'center' }}>
+                <th style={{width:columnWidths.jmbg}}>JMBG</th>
+                <th style={{width:columnWidths.fullName}}>Prezime i ime</th>
+                <th style={{width:columnWidths.relationName}}>Relacija</th>
+                <th style={{width:columnWidths.relationPrice}}>Cena</th>
+                <th style={{width:columnWidths.days}}>Dana</th>
+                <th style={{width:columnWidths.sumPerEmployee}}>Ukupno</th>
+                <th style={{width:columnWidths.nonTaxablePrice}}>Neopor.</th>
+                <th style={{width:columnWidths.taxablePrice}}>Opor.</th>
+                <th style={{ textAlign: 'center',width:columnWidths.actions }}>
                   <Button
                     onClick={openAddEmployeeDialog}
                     title="Dodaj zaposlenog"

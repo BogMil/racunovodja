@@ -13,12 +13,14 @@ import { reloadTravelingExpenseDetails } from '../../details.actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
 import { open } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
+import {columnWidths, innerTableWidth} from '../../details.columnWidths'
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
 };
 
 export default function MultipleRelationsTemplate(props: Props) {
+
   const dispatch = useDispatch();
   const onRemoveEmployeeFromTravelingExpense = async () => {
     areYouSure({
@@ -85,7 +87,7 @@ export default function MultipleRelationsTemplate(props: Props) {
         </td>
         <td
           rowSpan={2}
-          style={{ borderBottom: '2px solid #3f0e40', verticalAlign: 'middle' }}
+          style={{ borderBottom: '2px solid #3f0e40', verticalAlign: 'middle',width:columnWidths.fullName }}
         >
           <div style={{ display: 'inline-block' }}>
             {props.employeeWithRelation.employee.last_name}{' '}
@@ -102,14 +104,14 @@ export default function MultipleRelationsTemplate(props: Props) {
             </Button>
           </div>
         </td>
-        <td style={{ padding: 0 }}>
-          <Table style={{ marginBottom: 0 }}>
+        <td style={{ padding: 0 }} colSpan={4}>
+          <Table style={{ marginBottom: 0,width:innerTableWidth }} >
             <tbody>
               {props.employeeWithRelation.relations_with_days &&
                 props.employeeWithRelation.relations_with_days.map(
                   (relationWithDays: RelationWithDays, i) => (
                     <tr key={i}>
-                      <td>
+                      <td style={{width:columnWidths.relationName}}>
                         <div style={{ display: 'inline-block' }}>
                           {relationWithDays.relation.name}
                         </div>
@@ -127,52 +129,13 @@ export default function MultipleRelationsTemplate(props: Props) {
                           </a>
                         </div>
                       </td>
-                    </tr>
-                  )
-                )}
-            </tbody>
-          </Table>
-        </td>
-        <td style={{ padding: 0 }}>
-          <Table style={{ marginBottom: 0 }}>
-            <tbody>
-              {props.employeeWithRelation.relations_with_days &&
-                props.employeeWithRelation.relations_with_days.map(
-                  (relationWithDays: RelationWithDays, i) => (
-                    <tr key={i}>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: 'right' ,width:columnWidths.relationPrice}}>
                         {relationWithDays.relation.price}
                       </td>
-                    </tr>
-                  )
-                )}
-            </tbody>
-          </Table>
-        </td>
-        <td style={{ padding: 0 }}>
-          <Table style={{ marginBottom: 0 }}>
-            <tbody>
-              {props.employeeWithRelation.relations_with_days &&
-                props.employeeWithRelation.relations_with_days.map(
-                  (relationWithDays: RelationWithDays, i) => (
-                    <tr key={i}>
-                      <td style={{ textAlign: 'center' }}>
+                      <td style={{ textAlign: 'center',width:columnWidths.days }}>
                         {relationWithDays.days}
                       </td>
-                    </tr>
-                  )
-                )}
-            </tbody>
-          </Table>
-        </td>
-        <td style={{ padding: 0 }}>
-          <Table style={{ marginBottom: 0 }}>
-            <tbody style={{ backgroundColor: '#f6d674' }}>
-              {props.employeeWithRelation.relations_with_days &&
-                props.employeeWithRelation.relations_with_days.map(
-                  (relationWithDays: RelationWithDays, i) => (
-                    <tr key={i}>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: 'right',  backgroundColor: '#f6d674' ,width:columnWidths.sumPerEmployee}}>
                         {relationWithDays.relation.price *
                           relationWithDays.days}
                       </td>
@@ -182,6 +145,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             </tbody>
           </Table>
         </td>
+
         <td colSpan={2}></td>
         <td
           rowSpan={2}
@@ -201,11 +165,11 @@ export default function MultipleRelationsTemplate(props: Props) {
       </tr>
       <tr style={{ borderBottom: '2px solid #3f0e40' }}>
         <td colSpan={3}></td>
-        <td style={{ textAlign: 'right', backgroundColor: '#ec8989' }}>
+        <td style={{ textAlign: 'right', backgroundColor: '#ec8989',width:columnWidths.sumPerEmployee }}>
           {sum}
         </td>
-        <td style={{ textAlign: 'right' }}>{neoporezivo}</td>
-        <td style={{ textAlign: 'right' }}>{oporezivo}</td>
+        <td style={{ textAlign: 'right',width:columnWidths.nonTaxablePrice }}>{neoporezivo}</td>
+        <td style={{ textAlign: 'right',width:columnWidths.taxablePrice }}>{oporezivo}</td>
       </tr>
     </>
   );
