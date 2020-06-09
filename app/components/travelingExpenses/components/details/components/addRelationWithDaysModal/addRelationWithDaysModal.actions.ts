@@ -11,12 +11,12 @@ export const NAMESPACE = 'ADD_RELATION_WITH_DAYS_MODAL';
 
 export function open(travelingExpenseId: number) {
   return async (dispatch: Dispatch) => {
-    // handleResponse(
-    //   await service.getAvailableEmployees(travelingExpenseId),
-    //   (response: any) => {
-    dispatch(_open([], travelingExpenseId));
-    //   }
-    // );
+    handleResponse(
+      await service.getAvailableRelations(travelingExpenseId),
+      (response: any) => {
+     dispatch(_open(response.data, travelingExpenseId));
+      }
+    );
   };
 
   function _open(relations: Relation[], travelingExpenseId: number): Action {

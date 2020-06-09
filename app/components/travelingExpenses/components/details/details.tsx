@@ -177,7 +177,7 @@ export default function Details() {
       </Row>
       <EditDaysModal year={store.year} month={store.month} />
       <AddEmployeeModal />
-      <AddRelationWithDaysModal />
+      <AddRelationWithDaysModal year={store.year} month={store.month}/>
     </Container>
   );
 }

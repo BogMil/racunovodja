@@ -61,7 +61,7 @@ export default function MultipleRelationsTemplate(props: Props) {
   };
 
   const onAddRelationWithDays = () => {
-    dispatch(open(props.employeeWithRelation.traveling_expense_id));
+    dispatch(open(props.employeeWithRelation.id));
   };
 
   let sum = 0;

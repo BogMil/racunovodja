@@ -12,7 +12,7 @@ const initialState: AddRelationWithDaysModalStore = {
   show: false,
   relations: [],
   travelingExpenseId: -1,
-  selectedRelationId: -1
+  selectedRelationId: -1,
 };
 
 export type AddRelationWithDaysModalStore = {

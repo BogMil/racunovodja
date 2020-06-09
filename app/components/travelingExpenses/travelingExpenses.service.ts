@@ -76,3 +76,11 @@ export async function removeRelation(relationWithDaysId: number) {
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function getAvailableRelations(travelingExpenseEmployeeId: number) {
+  let res = await axios
+    .get(`${API_URL}/travelingExpenseEmployee/${travelingExpenseEmployeeId}/availableRelations`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

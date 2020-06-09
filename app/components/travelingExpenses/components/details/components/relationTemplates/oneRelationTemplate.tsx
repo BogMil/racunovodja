@@ -6,7 +6,7 @@ import {
 } from '../../../../travelingExpenses.types';
 import DeleteRowButton from '../../../../../common/rowButtons/deleteRowButton';
 import { useDispatch } from 'react-redux';
-import { open } from '../editDaysModal/editDaysModal.actions';
+import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
 import { handleResponse } from '../../../../../../utils/responseHandler';
 import * as service from '../../../../travelingExpenses.service';
 import { reloadTravelingExpenseDetails } from '../../details.actions';
@@ -14,6 +14,7 @@ import { areYouSure } from '../../../../../../utils/yesNoModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
 import { columnWidths, innerTableWidth } from '../../details.columnWidths';
+import {open as openAddRelationWithDaysMoad} from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
@@ -22,7 +23,7 @@ type Props = {
 export default function OneRelationTemplate(props: Props) {
   const dispatch = useDispatch();
   function onDoubleClick(relationWithDays: RelationWithDays) {
-    dispatch(open(relationWithDays, props.employeeWithRelation.employee));
+    dispatch(openEditDaysModal(relationWithDays, props.employeeWithRelation.employee));
   }
 
   const onRemoveEmployeeFromTravelingExpense = async () => {
@@ -63,6 +64,10 @@ export default function OneRelationTemplate(props: Props) {
     }
   };
 
+  const onAddRelationWithDays = () => {
+    dispatch(openAddRelationWithDaysMoad(props.employeeWithRelation.id));
+  };
+
   return (
     <tr style={{ borderBottom: '2px solid #3f0e40' }}>
       <td style={{ verticalAlign: 'middle' }}>
@@ -75,7 +80,8 @@ export default function OneRelationTemplate(props: Props) {
         </div>
         <div style={{ display: 'inline-block', float: 'right' }}>
           <Button
-            style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
+              onClick={() => onAddRelationWithDays()}
+              style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
             variant="success"
             title="Dodaj novu relaciju"
           >

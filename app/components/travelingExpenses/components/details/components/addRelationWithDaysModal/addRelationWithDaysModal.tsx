@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import {
@@ -11,13 +11,21 @@ import * as service from '../../../../travelingExpenses.service';
 import { reloadTravelingExpenseDetails } from '../../details.actions';
 import { handleResponse } from '../../../../../../utils/responseHandler';
 
-export default function AddRelationWithDaysModal() {
+type Props = {
+  month: number;
+  year: number;
+};
+
+export default function AddRelationWithDaysModal(props:Props) {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
     return state.travelingExpensesCombined.addRelationWithDays;
   });
 
+  const [days, setDays] = useState(0);
+
   const handleClose = () => {
+    setDays(0);
     dispatch(close());
   };
 
@@ -28,19 +36,38 @@ export default function AddRelationWithDaysModal() {
 
     dispatch(setSelectedRelationId(value));
   };
-  const handleSave = async () => {
-    // if (store.selectedEmployeeId > 0)
-    //   handleResponse(
-    //     await service.addEmployee(
-    //       store.selectedEmployeeId,
-    //       store.travelingExpenseId
-    //     ),
-    //     () => {
-    //       dispatch(reloadTravelingExpenseDetails(store.travelingExpenseId));
-    //       handleClose();
-    //     }
-    //   );
+
+  const handleChangeDays = (e: any) => {
+    let newDays = e.target.value;
+    if (newDays < 0 || newDays > daysInMonth()) {
+      const { dialog, getCurrentWindow } = require('electron').remote;
+      dialog.showMessageBox(getCurrentWindow(), {
+        message: `Broj dana (${newDays}) nije odgovarajuć!`,
+        title: 'Greška',
+        type: 'warning'
+      });
+      return;
+    }
+    setDays(newDays);
   };
+  const handleSave = async () => {
+    if (store.selectedRelationId > 0)
+    console.log(days)
+      // handleResponse(
+        // await service.addEmployee(
+        //   store.selectedEmployeeId,
+        //   store.travelingExpenseId
+        // ),
+        // () => {
+        //   dispatch(reloadTravelingExpenseDetails(store.travelingExpenseId));
+        //   handleClose();
+        // }
+      // );
+  };
+
+  function daysInMonth() {
+    return new Date(props.year, props.month, 0).getDate();
+  }
 
   return (
     <Modal
@@ -53,11 +80,12 @@ export default function AddRelationWithDaysModal() {
     >
       <Modal.Header closeButton onHide={handleClose}>
         <Modal.Title as="h5">
-          Dodavanje zaposlenog u obračun putnih troškova
+          Dodavanje relacije zaposlenom
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form.Group>
+          <Form.Label>Relacija</Form.Label>
           <Form.Control
             as="select"
             custom
@@ -75,6 +103,16 @@ export default function AddRelationWithDaysModal() {
             })}
           </Form.Control>
         </Form.Group>
+
+        <div style={{ textAlign: 'center', width: '100%' }}>
+        <Form.Label>Broj dana</Form.Label>
+          <Form.Control
+            style={{ width: 70, margin: '0 auto' }}
+            type="number"
+            value={days}
+            onChange={handleChangeDays}
+          ></Form.Control>
+        </div>
       </Modal.Body>
 
       <Modal.Footer>
