@@ -21,13 +21,14 @@ export function loadTravelingExpenseDetails(id: number) {
     });
   };
 
-  function _loadTravelingExpenseDetails(travelingExpense: any): Action {
-    return {
-      namespace: NAMESPACE,
-      type: LOAD_TRAVELING_EXPENSE_DETAILS,
-      payload: { travelingExpense }
-    };
-  }
+
+}
+export function _loadTravelingExpenseDetails(travelingExpense: any): Action {
+  return {
+    namespace: NAMESPACE,
+    type: LOAD_TRAVELING_EXPENSE_DETAILS,
+    payload: { travelingExpense }
+  };
 }
 
 function compareLastName(a: EmployeeWithRelations, b: EmployeeWithRelations) {

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { useParams, NavLink } from 'react-router-dom';
+import { useParams, NavLink, useLocation } from 'react-router-dom';
 import { Row, Col, Button, Container, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import routes from '../../../../constants/routes.json';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
-import { loadTravelingExpenseDetails } from './details.actions';
+import { loadTravelingExpenseDetails, _loadTravelingExpenseDetails } from './details.actions';
 import getMonthName from '../../../../utils/getMonthName';
 import { EmployeeWithRelations } from '../../travelingExpenses.types';
 import OneRelationTemplate from './components/relationTemplates/oneRelationTemplate';
@@ -16,6 +16,7 @@ import EditDaysModal from './components/editDaysModal/editDaysModal';
 import { open } from './components/addEmployeeModal/addEmployeeModal.actions';
 import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
+import { initialState } from './details.reducer';
 
 export default function Details() {
   const { id } = useParams();
@@ -23,8 +24,13 @@ export default function Details() {
   const store = useSelector((state: AppStore) => {
     return state.travelingExpensesCombined.travelingExpenseDetails;
   });
+
   useEffect(() => {
     dispatch(loadTravelingExpenseDetails(id));
+
+    return function(){
+     dispatch(_loadTravelingExpenseDetails(initialState));
+    }
   }, []);
 
   const openAddEmployeeDialog = async () => {

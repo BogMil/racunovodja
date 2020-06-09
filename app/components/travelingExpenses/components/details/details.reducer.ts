@@ -2,7 +2,7 @@ import { Action } from '../../../../reducers/types';
 import { NAMESPACE, LOAD_TRAVELING_EXPENSE_DETAILS } from './details.actions';
 import { TravelingExpenseWithDetails } from '../../travelingExpenses.types';
 
-const initialState: TravelingExpenseDetailsStore = {
+export const initialState: TravelingExpenseDetailsStore = {
   creation_date: '',
   employees_with_relation: [],
   id: 0,
