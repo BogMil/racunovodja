@@ -84,3 +84,11 @@ export async function getAvailableRelations(travelingExpenseEmployeeId: number) 
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function addDaysToRelation(id:number,days:number){
+  let res = await axios
+  .post(`${API_URL}/employeeRelation/${id}/addDays/${days}`)
+  .then(res => res.data)
+  .catch(axiosErrorHandler);
+return res;
+}

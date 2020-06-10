@@ -4,6 +4,9 @@ import { Button, Modal, Form } from 'react-bootstrap';
 import { close } from './editDaysModal.actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../../../../../reducers';
+import * as service from '../../../../travelingExpenses.service';
+import { reloadCurrentTravelingExpenseDetails } from '../../details.actions';
+import { handleResponse } from '../../../../../../utils/responseHandler';
 
 type Props = {
   month: number;
@@ -15,19 +18,24 @@ export default function EditDaysModal(props: Props) {
     return state.travelingExpensesCombined.editDaysModal;
   });
 
-  const [days, setDays] = useState(store.relationWithDays.days);
+  const currentDays=store.relationWithDays.days != null ? store.relationWithDays.days:0;
+  const [days, setDays] = useState(currentDays);
 
   useEffect(() => {
-    setDays(store.relationWithDays.days);
+    const currentDays=store.relationWithDays.days != null ? store.relationWithDays.days:0;
+    setDays(currentDays);
   }, [store.relationWithDays.days]);
 
   const handleClose = () => {
-    setDays(0);
     dispatch(close());
   };
 
-  const handleSave = () => {
-    console.log(days);
+  const handleSave =async () => {
+    handleResponse(await service.addDaysToRelation(store.relationWithDays.id,days),()=>{
+      dispatch(reloadCurrentTravelingExpenseDetails());
+      dispatch(close());
+    })
+    service.addDaysToRelation(store.relationWithDays.id,days);
   };
 
   const handleChange = (e: any) => {
@@ -46,7 +54,7 @@ export default function EditDaysModal(props: Props) {
   function daysInMonth() {
     return new Date(props.year, props.month, 0).getDate();
   }
-
+console.log(store);
   return (
     <Modal
       backdrop="static"
@@ -64,12 +72,12 @@ export default function EditDaysModal(props: Props) {
         <div>
           {store.employee.last_name} {store.employee.first_name}
         </div>
-        <div>relacija :</div>
+  <div>relacija : {store.relationWithDays && store.relationWithDays.relation && store.relationWithDays.relation.name}</div>
         <div style={{ textAlign: 'center', width: '100%' }}>
           <Form.Control
             style={{ width: 70, margin: '0 auto' }}
             type="number"
-            defaultValue={store.relationWithDays.days}
+            value={days}
             onChange={handleChange}
           ></Form.Control>
         </div>
