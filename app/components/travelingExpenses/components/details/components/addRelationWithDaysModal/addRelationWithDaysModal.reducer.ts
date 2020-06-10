@@ -11,7 +11,7 @@ import { Relation } from '../../../../../relations/relations.types';
 const initialState: AddRelationWithDaysModalStore = {
   show: false,
   relations: [],
-  travelingExpenseId: -1,
+  travelingExpenseEmployeeId: -1,
   selectedRelationId: -1,
 };
 
@@ -19,7 +19,7 @@ export type AddRelationWithDaysModalStore = {
   show: boolean;
   relations: Relation[];
   selectedRelationId: number;
-  travelingExpenseId: number;
+  travelingExpenseEmployeeId: number;
 };
 
 export default function employeeModal(
@@ -29,12 +29,12 @@ export default function employeeModal(
   if (action.namespace != NAMESPACE) return state;
   switch (action.type) {
     case OPEN:
-      let { relations, travelingExpenseId } = action.payload;
+      let { relations, travelingExpenseEmployeeId } = action.payload;
       return {
         ...state,
         show: true,
         relations,
-        travelingExpenseId
+        travelingExpenseEmployeeId
       };
 
     case CLOSE:
@@ -43,7 +43,7 @@ export default function employeeModal(
         show: false,
         relations: [],
         selectedRelationId: -1,
-        travelingExpenseId: -1
+        travelingExpenseEmployeeId: -1
       };
 
     case SET_SELECTED_RELATION_ID:

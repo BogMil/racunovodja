@@ -149,7 +149,7 @@ export default function Details() {
                       return (
                         <MultipleRelationsTemplate
                           key={index}
-                          employeeWithRelation={employeeWithRelation}
+                          employeeWithRelations={employeeWithRelation}
                         />
                       );
 

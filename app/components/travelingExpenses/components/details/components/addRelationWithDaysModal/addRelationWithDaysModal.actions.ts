@@ -9,21 +9,21 @@ export const SET_SELECTED_RELATION_ID = 'SET_SELECTED_RELATION_ID';
 
 export const NAMESPACE = 'ADD_RELATION_WITH_DAYS_MODAL';
 
-export function open(travelingExpenseId: number) {
+export function open(travelingExpenseEmployeeId:number) {
   return async (dispatch: Dispatch) => {
     handleResponse(
-      await service.getAvailableRelations(travelingExpenseId),
+      await service.getAvailableRelations(travelingExpenseEmployeeId),
       (response: any) => {
-     dispatch(_open(response.data, travelingExpenseId));
+     dispatch(_open(response.data, travelingExpenseEmployeeId));
       }
     );
   };
 
-  function _open(relations: Relation[], travelingExpenseId: number): Action {
+  function _open(relations: Relation[], travelingExpenseEmployeeId: number): Action {
     return {
       namespace: NAMESPACE,
       type: OPEN,
-      payload: { relations, travelingExpenseId }
+      payload: { relations, travelingExpenseEmployeeId }
     };
   }
 }

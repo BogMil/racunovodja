@@ -17,7 +17,7 @@ import {columnWidths, innerTableWidth} from '../../details.columnWidths'
 import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
 
 type Props = {
-  employeeWithRelation: EmployeeWithRelations;
+  employeeWithRelations: EmployeeWithRelations;
 };
 
 export default function MultipleRelationsTemplate(props: Props) {
@@ -32,12 +32,12 @@ export default function MultipleRelationsTemplate(props: Props) {
     async function onYes() {
       handleResponse(
         await service.removeEmployeeWithRelations(
-          props.employeeWithRelation.id
+          props.employeeWithRelations.id
         ),
         () => {
           dispatch(
             reloadTravelingExpenseDetails(
-              props.employeeWithRelation.traveling_expense_id
+              props.employeeWithRelations.traveling_expense_id
             )
           );
         }
@@ -54,7 +54,7 @@ export default function MultipleRelationsTemplate(props: Props) {
       handleResponse(await service.removeRelation(relationWithDaysId), () => {
         dispatch(
           reloadTravelingExpenseDetails(
-            props.employeeWithRelation.traveling_expense_id
+            props.employeeWithRelations.traveling_expense_id
           )
         );
       });
@@ -62,16 +62,15 @@ export default function MultipleRelationsTemplate(props: Props) {
   };
 
   const onAddRelationWithDays = () => {
-    dispatch(open(props.employeeWithRelation.id));
+    dispatch(open(props.employeeWithRelations.id));
   };
 
   function onDoubleClick(relationWithDays: RelationWithDays) {
-    dispatch(openEditDaysModal(relationWithDays, props.employeeWithRelation.employee));
+    dispatch(openEditDaysModal(relationWithDays, props.employeeWithRelations.employee));
   }
 
   let sum = 0;
-  for (let relationsWithDays of props.employeeWithRelation
-    .relations_with_days) {
+  for (let relationsWithDays of props.employeeWithRelations.relations_with_days) {
     sum += relationsWithDays.days * relationsWithDays.relation.price;
   }
   let oporezivo;
@@ -88,15 +87,15 @@ export default function MultipleRelationsTemplate(props: Props) {
           rowSpan={2}
           style={{ borderBottom: '2px solid #3f0e40', verticalAlign: 'middle' }}
         >
-          {props.employeeWithRelation.employee.jmbg}
+          {props.employeeWithRelations.employee.jmbg}
         </td>
         <td
           rowSpan={2}
           style={{ borderBottom: '2px solid #3f0e40', verticalAlign: 'middle',width:columnWidths.fullName }}
         >
           <div style={{ display: 'inline-block' }}>
-            {props.employeeWithRelation.employee.last_name}{' '}
-            {props.employeeWithRelation.employee.first_name}
+            {props.employeeWithRelations.employee.last_name}{' '}
+            {props.employeeWithRelations.employee.first_name}
           </div>
           <div style={{ display: 'inline-block', float: 'right' }}>
             <Button
@@ -112,8 +111,8 @@ export default function MultipleRelationsTemplate(props: Props) {
         <td style={{ padding: 0 }} colSpan={4}>
           <Table style={{ marginBottom: 0,width:innerTableWidth }} >
             <tbody>
-              {props.employeeWithRelation.relations_with_days &&
-                props.employeeWithRelation.relations_with_days.map(
+              {props.employeeWithRelations.relations_with_days &&
+                props.employeeWithRelations.relations_with_days.map(
                   (relationWithDays: RelationWithDays, i) => (
                     <tr key={i}>
                       <td style={{width:columnWidths.relationName}}>

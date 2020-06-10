@@ -8,7 +8,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../../../../../reducers';
 import * as service from '../../../../travelingExpenses.service';
-import { reloadTravelingExpenseDetails } from '../../details.actions';
+import { reloadTravelingExpenseDetails, reloadCurrentTravelingExpenseDetails } from '../../details.actions';
 import { handleResponse } from '../../../../../../utils/responseHandler';
 
 type Props = {
@@ -52,17 +52,17 @@ export default function AddRelationWithDaysModal(props:Props) {
   };
   const handleSave = async () => {
     if (store.selectedRelationId > 0)
-    console.log(days)
-      // handleResponse(
-        // await service.addEmployee(
-        //   store.selectedEmployeeId,
-        //   store.travelingExpenseId
-        // ),
-        // () => {
-        //   dispatch(reloadTravelingExpenseDetails(store.travelingExpenseId));
-        //   handleClose();
-        // }
-      // );
+      handleResponse(
+        await service.addRelationWithDays(
+          store.travelingExpenseEmployeeId,
+          store.selectedRelationId,
+          days
+        ),
+        () => {
+          dispatch(reloadCurrentTravelingExpenseDetails());
+          handleClose();
+        }
+      );
   };
 
   function daysInMonth() {

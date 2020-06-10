@@ -92,3 +92,11 @@ export async function addDaysToRelation(id:number,days:number){
   .catch(axiosErrorHandler);
 return res;
 }
+
+export async function addRelationWithDays(travelingExpenseEmployeeId:number,relationId:number,days:number){
+  let res = await axios
+  .post(`${API_URL}/employee/${travelingExpenseEmployeeId}/addRelationWithDays/${relationId}/${days}`)
+  .then(res => res.data)
+  .catch(axiosErrorHandler);
+return res;
+}
