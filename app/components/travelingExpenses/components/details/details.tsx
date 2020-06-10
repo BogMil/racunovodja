@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
 import { loadTravelingExpenseDetails, _loadTravelingExpenseDetails } from './details.actions';
 import getMonthName from '../../../../utils/getMonthName';
-import { EmployeeWithRelations } from '../../travelingExpenses.types';
+import { EmployeeWithRelations, RelationWithDays } from '../../travelingExpenses.types';
 import OneRelationTemplate from './components/relationTemplates/oneRelationTemplate';
 import NoRelationTemplate from './components/relationTemplates/noRelationTemplate';
 import MultipleRelationsTemplate from './components/relationTemplates/mulitpleRelationsTemplate';
@@ -38,6 +38,29 @@ export default function Details() {
     dispatch(open(store.id));
   };
 
+  let totalSum=0;
+  let nonTaxedSum=0;
+  let taxedSum=0;
+  store.employees_with_relation.forEach((employeeWithRelation:EmployeeWithRelations)=>{
+    if(employeeWithRelation.relations_with_days.length<=0)
+      return;
+
+    if(employeeWithRelation.relations_with_days.length==1){
+      let relationWithDays =employeeWithRelation.relations_with_days[0];
+        totalSum+=relationWithDays.days*relationWithDays.relation.price;
+
+        return;
+    }
+
+    if(employeeWithRelation.relations_with_days.length>1){
+      employeeWithRelation.relations_with_days.forEach((relationWithDays:RelationWithDays)=>{
+        totalSum+=relationWithDays.days*relationWithDays.relation.price;
+        return;
+      })
+
+    }
+
+  })
   return (
     <Container
       fluid
@@ -172,7 +195,9 @@ export default function Details() {
         }}
       >
         <Col>
-          <div>asdasd</div>
+          <Row>
+            <Col>Ukupno : {totalSum}</Col>
+            </Row>
         </Col>
       </Row>
       <EditDaysModal year={store.year} month={store.month} />
