@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
 import { open } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 import {columnWidths, innerTableWidth} from '../../details.columnWidths'
+import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
@@ -63,6 +64,10 @@ export default function MultipleRelationsTemplate(props: Props) {
   const onAddRelationWithDays = () => {
     dispatch(open(props.employeeWithRelation.id));
   };
+
+  function onDoubleClick(relationWithDays: RelationWithDays) {
+    dispatch(openEditDaysModal(relationWithDays, props.employeeWithRelation.employee));
+  }
 
   let sum = 0;
   for (let relationsWithDays of props.employeeWithRelation
@@ -132,7 +137,9 @@ export default function MultipleRelationsTemplate(props: Props) {
                       <td style={{ textAlign: 'right' ,width:columnWidths.relationPrice}}>
                         {relationWithDays.relation.price}
                       </td>
-                      <td style={{ textAlign: 'center',width:columnWidths.days }}>
+                      <td style={{ textAlign: 'center',width:columnWidths.days }}
+                      onDoubleClick={() => onDoubleClick(relationWithDays)}
+                      >
                         {relationWithDays.days}
                       </td>
                       <td style={{ textAlign: 'right',  backgroundColor: '#f6d674' ,width:columnWidths.sumPerEmployee}}>
