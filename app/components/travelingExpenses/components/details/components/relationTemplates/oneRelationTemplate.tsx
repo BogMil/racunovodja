@@ -132,7 +132,8 @@ export default function OneRelationTemplate(props: Props) {
                     <td
                       style={{
                         textAlign: 'right',
-                        backgroundColor: '#ec8989',
+                        backgroundColor: '#BAC6E5',
+
                         width: columnWidths.sumPerEmployee
                       }}
                     >
@@ -163,6 +164,7 @@ export default function OneRelationTemplate(props: Props) {
                 key={i}
                 style={{
                   textAlign: 'right',
+                  backgroundColor: '#DEEBE1',
                   width: columnWidths.nonTaxablePrice
                 }}
               >
@@ -184,7 +186,11 @@ export default function OneRelationTemplate(props: Props) {
             return (
               <td
                 key={i}
-                style={{ textAlign: 'right', width: columnWidths.taxablePrice }}
+                style={{
+                  textAlign: 'right',
+                  backgroundColor: '#EFA598',
+                  width: columnWidths.taxablePrice
+                }}
               >
                 {oporezivo}
               </td>

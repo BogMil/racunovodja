@@ -164,7 +164,7 @@ export default function MultipleRelationsTemplate(props: Props) {
                       <td
                         style={{
                           textAlign: 'right',
-                          backgroundColor: '#f6d674',
+                          backgroundColor: '#FFF6C9',
                           width: columnWidths.sumPerEmployee
                         }}
                       >
@@ -200,16 +200,28 @@ export default function MultipleRelationsTemplate(props: Props) {
         <td
           style={{
             textAlign: 'right',
-            backgroundColor: '#ec8989',
+            backgroundColor: '#BAC6E5',
             width: columnWidths.sumPerEmployee
           }}
         >
           {sum}
         </td>
-        <td style={{ textAlign: 'right', width: columnWidths.nonTaxablePrice }}>
+        <td
+          style={{
+            textAlign: 'right',
+            backgroundColor: '#DEEBE1',
+            width: columnWidths.nonTaxablePrice
+          }}
+        >
           {neoporezivo}
         </td>
-        <td style={{ textAlign: 'right', width: columnWidths.taxablePrice }}>
+        <td
+          style={{
+            textAlign: 'right',
+            backgroundColor: '#EFA598',
+            width: columnWidths.taxablePrice
+          }}
+        >
           {oporezivo}
         </td>
       </tr>
