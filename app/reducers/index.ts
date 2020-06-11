@@ -12,13 +12,18 @@ import travelingExpensesCombineReducer, {
   TravelingExpenseCombinedReducer
 } from '../components/travelingExpenses/travelingExpenses.combinedReducer';
 
+import otherSettings, {
+  OtherSettingsStore
+} from '../../app/components/otherSettings/otherSettings.reducer';
+
 export default function createRootReducer(history: History) {
   return combineReducers({
     router: connectRouter(history),
     auth,
     employeesCombined: employeesCombinedReducer(),
     relationsCombined: relationsCombineReducer(),
-    travelingExpensesCombined: travelingExpensesCombineReducer()
+    travelingExpensesCombined: travelingExpensesCombineReducer(),
+    otherSettings
   });
 }
 
@@ -28,4 +33,5 @@ export type AppStore = {
   employeesCombined: EmployeeCombinedReducer;
   relationsCombined: RelationCombinedReducer;
   travelingExpensesCombined: TravelingExpenseCombinedReducer;
+  otherSettings: OtherSettingsStore;
 };

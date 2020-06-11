@@ -8,7 +8,8 @@ import {
   faPaperPlane,
   faUsers,
   faSignOutAlt,
-  faRoute
+  faRoute,
+  faCogs
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './sidebar.css';
 import Divider from './components/divider/divider';
@@ -59,6 +60,12 @@ export default function SideBar() {
             navigateTo={routes.RELATIONS}
             text="Relacije"
           />
+
+          <MenuItem
+            iconDefinition={faCogs}
+            navigateTo={routes.OTHER_SETTINGS}
+            text="Ostalo"
+          />
         </SubMenu>
         <Divider />
         <StaticMenuItem
@@ -66,14 +73,6 @@ export default function SideBar() {
           text="Odjavi se"
           onClick={() => {
             onLogout();
-          }}
-        />
-
-        <StaticMenuItem
-          iconDefinition={faSignOutAlt}
-          text="ME"
-          onClick={() => {
-            me();
           }}
         />
       </ul>

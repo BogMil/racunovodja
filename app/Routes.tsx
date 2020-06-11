@@ -11,6 +11,7 @@ import Employees from './components/employees/employees';
 import Relations from './components/relations/relations';
 import TravelExpenses from './components/travelingExpenses/travelingExpenses';
 import TravelExpensesDetails from './components/travelingExpenses/components/details/details';
+import OtherSettings from './components/otherSettings/otherSettings';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);
@@ -39,6 +40,10 @@ export default function Routes() {
 
         <PrivateRoute path={routes.TRAVEL_EXPENSES_DETAILS + '/:id'}>
           <TravelExpensesDetails />
+        </PrivateRoute>
+
+        <PrivateRoute path={routes.OTHER_SETTINGS}>
+          <OtherSettings />
         </PrivateRoute>
       </Switch>
     </App>
