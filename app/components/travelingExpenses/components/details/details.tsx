@@ -6,9 +6,15 @@ import { faChevronLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import routes from '../../../../constants/routes.json';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
-import { loadTravelingExpenseDetails, _loadTravelingExpenseDetails } from './details.actions';
+import {
+  loadTravelingExpenseDetails,
+  _loadTravelingExpenseDetails
+} from './details.actions';
 import getMonthName from '../../../../utils/getMonthName';
-import { EmployeeWithRelations, RelationWithDays } from '../../travelingExpenses.types';
+import {
+  EmployeeWithRelations,
+  RelationWithDays
+} from '../../travelingExpenses.types';
 import OneRelationTemplate from './components/relationTemplates/oneRelationTemplate';
 import NoRelationTemplate from './components/relationTemplates/noRelationTemplate';
 import MultipleRelationsTemplate from './components/relationTemplates/mulitpleRelationsTemplate';
@@ -29,38 +35,71 @@ export default function Details() {
   useEffect(() => {
     dispatch(loadTravelingExpenseDetails(id));
 
-    return function(){
-     dispatch(_loadTravelingExpenseDetails(initialState));
-    }
+    return function() {
+      dispatch(_loadTravelingExpenseDetails(initialState));
+    };
   }, []);
 
   const openAddEmployeeDialog = async () => {
     dispatch(open(store.id));
   };
 
-  let totalSum=0;
-  let nonTaxedSum=0;
-  let taxedSum=0;
-  store.employees_with_relation.forEach((employeeWithRelation:EmployeeWithRelations)=>{
-    if(employeeWithRelation.relations_with_days.length<=0)
-      return;
+  const getTaxedPart = (sum: number) => {
+    let _taxedSum = 0;
 
-    if(employeeWithRelation.relations_with_days.length==1){
-      let relationWithDays =employeeWithRelation.relations_with_days[0];
-        totalSum+=relationWithDays.days*relationWithDays.relation.price;
-
-        return;
+    if (sum <= store.maxNonTaxedValue) {
+      _taxedSum = 0;
+    } else if (sum > store.maxNonTaxedValue) {
+      _taxedSum = sum - store.maxNonTaxedValue;
     }
 
-    if(employeeWithRelation.relations_with_days.length>1){
-      employeeWithRelation.relations_with_days.forEach((relationWithDays:RelationWithDays)=>{
-        totalSum+=relationWithDays.days*relationWithDays.relation.price;
-        return;
-      })
+    return _taxedSum;
+  };
 
+  const getNonTaxedPart = (sum: number) => {
+    let _nonTaxedSum = 0;
+
+    if (sum <= store.maxNonTaxedValue) {
+      _nonTaxedSum = sum;
+    } else if (sum > store.maxNonTaxedValue) {
+      _nonTaxedSum = store.maxNonTaxedValue;
     }
 
-  })
+    return _nonTaxedSum;
+  };
+
+  let totalSum = 0;
+  let nonTaxedSum = 0;
+  let taxedSum = 0;
+  store.employees_with_relation.forEach(
+    (employeeWithRelation: EmployeeWithRelations) => {
+      if (employeeWithRelation.relations_with_days.length <= 0) return;
+
+      if (employeeWithRelation.relations_with_days.length == 1) {
+        let relationWithDays = employeeWithRelation.relations_with_days[0];
+        let sum = relationWithDays.days * relationWithDays.relation.price;
+        totalSum += sum;
+
+        nonTaxedSum += getNonTaxedPart(sum);
+        taxedSum += getTaxedPart(sum);
+
+        return;
+      }
+
+      if (employeeWithRelation.relations_with_days.length > 1) {
+        let sum = 0;
+        employeeWithRelation.relations_with_days.forEach(
+          (relationWithDays: RelationWithDays) => {
+            sum += relationWithDays.days * relationWithDays.relation.price;
+            return;
+          }
+        );
+        totalSum += sum;
+        nonTaxedSum += getNonTaxedPart(sum);
+        taxedSum += getTaxedPart(sum);
+      }
+    }
+  );
   return (
     <Container
       fluid
@@ -112,18 +151,26 @@ export default function Details() {
         }}
       >
         <Col style={{ padding: 0 }}>
-          <Table striped bordered hover size="sm" style={{width:columnWidths.sum()}}>
+          <Table
+            striped
+            bordered
+            hover
+            size="sm"
+            style={{ width: columnWidths.sum() }}
+          >
             <thead>
               <tr>
-                <th style={{width:columnWidths.jmbg}}>JMBG</th>
-                <th style={{width:columnWidths.fullName}}>Prezime i ime</th>
-                <th style={{width:columnWidths.relationName}}>Relacija</th>
-                <th style={{width:columnWidths.relationPrice}}>Cena</th>
-                <th style={{width:columnWidths.days}}>Dana</th>
-                <th style={{width:columnWidths.sumPerEmployee}}>Ukupno</th>
-                <th style={{width:columnWidths.nonTaxablePrice}}>Neopor.</th>
-                <th style={{width:columnWidths.taxablePrice}}>Opor.</th>
-                <th style={{ textAlign: 'center',width:columnWidths.actions }}>
+                <th style={{ width: columnWidths.jmbg }}>JMBG</th>
+                <th style={{ width: columnWidths.fullName }}>Prezime i ime</th>
+                <th style={{ width: columnWidths.relationName }}>Relacija</th>
+                <th style={{ width: columnWidths.relationPrice }}>Cena</th>
+                <th style={{ width: columnWidths.days }}>Dana</th>
+                <th style={{ width: columnWidths.sumPerEmployee }}>Ukupno</th>
+                <th style={{ width: columnWidths.nonTaxablePrice }}>Neopor.</th>
+                <th style={{ width: columnWidths.taxablePrice }}>Opor.</th>
+                <th
+                  style={{ textAlign: 'center', width: columnWidths.actions }}
+                >
                   <Button
                     onClick={openAddEmployeeDialog}
                     title="Dodaj zaposlenog"
@@ -197,12 +244,14 @@ export default function Details() {
         <Col>
           <Row>
             <Col>Ukupno : {totalSum}</Col>
-            </Row>
+            <Col>Ukupno oporezivo : {taxedSum}</Col>
+            <Col>Ukupno neoporezivo: {nonTaxedSum}</Col>
+          </Row>
         </Col>
       </Row>
       <EditDaysModal year={store.year} month={store.month} />
       <AddEmployeeModal />
-      <AddRelationWithDaysModal year={store.year} month={store.month}/>
+      <AddRelationWithDaysModal year={store.year} month={store.month} />
     </Container>
   );
 }
