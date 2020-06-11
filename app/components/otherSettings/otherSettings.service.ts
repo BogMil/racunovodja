@@ -11,3 +11,11 @@ export async function get() {
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function getMaxNonTaxedValue() {
+  let res = await axios
+    .get(`${API_URL}/getMaxNonTaxedValue`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

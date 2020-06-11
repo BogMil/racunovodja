@@ -7,21 +7,21 @@ import {
 import DeleteRowButton from '../../../../../common/rowButtons/deleteRowButton';
 import { areYouSure } from '../../../../../../utils/yesNoModal';
 import { handleResponse } from '../../../../../../utils/responseHandler';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as service from '../../../../travelingExpenses.service';
 import { reloadTravelingExpenseDetails } from '../../details.actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
 import { open } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
-import {columnWidths, innerTableWidth} from '../../details.columnWidths'
+import { columnWidths, innerTableWidth } from '../../details.columnWidths';
 import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
+import { AppStore } from '../../../../../../reducers';
 
 type Props = {
   employeeWithRelations: EmployeeWithRelations;
 };
 
 export default function MultipleRelationsTemplate(props: Props) {
-
   const dispatch = useDispatch();
   const onRemoveEmployeeFromTravelingExpense = async () => {
     areYouSure({
@@ -66,15 +66,22 @@ export default function MultipleRelationsTemplate(props: Props) {
   };
 
   function onDoubleClick(relationWithDays: RelationWithDays) {
-    dispatch(openEditDaysModal(relationWithDays, props.employeeWithRelations.employee));
+    dispatch(
+      openEditDaysModal(relationWithDays, props.employeeWithRelations.employee)
+    );
   }
 
   let sum = 0;
-  for (let relationsWithDays of props.employeeWithRelations.relations_with_days) {
+  for (let relationsWithDays of props.employeeWithRelations
+    .relations_with_days) {
     sum += relationsWithDays.days * relationsWithDays.relation.price;
   }
   let oporezivo;
-  let neoporezivDeo = 3878.0;
+
+  let neoporezivDeo = useSelector((state: AppStore) => {
+    return state.travelingExpensesCombined.travelingExpenseDetails
+      .maxNonTaxedValue;
+  });
 
   if (sum <= neoporezivDeo) oporezivo = 0;
   else oporezivo = sum - neoporezivDeo;
@@ -91,7 +98,11 @@ export default function MultipleRelationsTemplate(props: Props) {
         </td>
         <td
           rowSpan={2}
-          style={{ borderBottom: '2px solid #3f0e40', verticalAlign: 'middle',width:columnWidths.fullName }}
+          style={{
+            borderBottom: '2px solid #3f0e40',
+            verticalAlign: 'middle',
+            width: columnWidths.fullName
+          }}
         >
           <div style={{ display: 'inline-block' }}>
             {props.employeeWithRelations.employee.last_name}{' '}
@@ -109,13 +120,13 @@ export default function MultipleRelationsTemplate(props: Props) {
           </div>
         </td>
         <td style={{ padding: 0 }} colSpan={4}>
-          <Table style={{ marginBottom: 0,width:innerTableWidth }} >
+          <Table style={{ marginBottom: 0, width: innerTableWidth }}>
             <tbody>
               {props.employeeWithRelations.relations_with_days &&
                 props.employeeWithRelations.relations_with_days.map(
                   (relationWithDays: RelationWithDays, i) => (
                     <tr key={i}>
-                      <td style={{width:columnWidths.relationName}}>
+                      <td style={{ width: columnWidths.relationName }}>
                         <div style={{ display: 'inline-block' }}>
                           {relationWithDays.relation.name}
                         </div>
@@ -133,15 +144,30 @@ export default function MultipleRelationsTemplate(props: Props) {
                           </a>
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right' ,width:columnWidths.relationPrice}}>
+                      <td
+                        style={{
+                          textAlign: 'right',
+                          width: columnWidths.relationPrice
+                        }}
+                      >
                         {relationWithDays.relation.price}
                       </td>
-                      <td style={{ textAlign: 'center',width:columnWidths.days }}
-                      onDoubleClick={() => onDoubleClick(relationWithDays)}
+                      <td
+                        style={{
+                          textAlign: 'center',
+                          width: columnWidths.days
+                        }}
+                        onDoubleClick={() => onDoubleClick(relationWithDays)}
                       >
                         {relationWithDays.days}
                       </td>
-                      <td style={{ textAlign: 'right',  backgroundColor: '#f6d674' ,width:columnWidths.sumPerEmployee}}>
+                      <td
+                        style={{
+                          textAlign: 'right',
+                          backgroundColor: '#f6d674',
+                          width: columnWidths.sumPerEmployee
+                        }}
+                      >
                         {relationWithDays.relation.price *
                           relationWithDays.days}
                       </td>
@@ -171,11 +197,21 @@ export default function MultipleRelationsTemplate(props: Props) {
       </tr>
       <tr style={{ borderBottom: '2px solid #3f0e40' }}>
         <td colSpan={3}></td>
-        <td style={{ textAlign: 'right', backgroundColor: '#ec8989',width:columnWidths.sumPerEmployee }}>
+        <td
+          style={{
+            textAlign: 'right',
+            backgroundColor: '#ec8989',
+            width: columnWidths.sumPerEmployee
+          }}
+        >
           {sum}
         </td>
-        <td style={{ textAlign: 'right',width:columnWidths.nonTaxablePrice }}>{neoporezivo}</td>
-        <td style={{ textAlign: 'right',width:columnWidths.taxablePrice }}>{oporezivo}</td>
+        <td style={{ textAlign: 'right', width: columnWidths.nonTaxablePrice }}>
+          {neoporezivo}
+        </td>
+        <td style={{ textAlign: 'right', width: columnWidths.taxablePrice }}>
+          {oporezivo}
+        </td>
       </tr>
     </>
   );

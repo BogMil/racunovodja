@@ -8,7 +8,8 @@ export const initialState: TravelingExpenseDetailsStore = {
   id: 0,
   month: 0,
   user_id: 0,
-  year: 0
+  year: 0,
+  maxNonTaxedValue: 0
 };
 
 export interface TravelingExpenseDetailsStore

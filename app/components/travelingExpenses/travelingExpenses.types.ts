@@ -37,6 +37,7 @@ export type TravelingExpenseWithDetails = {
   creation_date: string;
   user_id: number;
   employees_with_relation: EmployeeWithRelations[];
+  maxNonTaxedValue: number;
 };
 
 export type EmployeeWithRelations = {

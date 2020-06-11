@@ -106,6 +106,7 @@ export default function TravelingExpenseModal() {
                   onChange={handleChange}
                   value={store.travelingExpense.year}
                 >
+                  <option value={2019}>2019</option>
                   <option value={2020}>2020</option>
                   <option value={2021}>2021</option>
                 </Form.Control>
