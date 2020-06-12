@@ -3,7 +3,7 @@ import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../reducers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTimes, faFileCode } from '@fortawesome/free-solid-svg-icons';
 import {
   loadTravelingExpenses,
   reloadTravelingExpenses
@@ -50,7 +50,7 @@ export default function TravelExpenses() {
             <th>Mesec</th>
             <th>Godina</th>
             <th>Datum kreiranja</th>
-            <th style={{ textAlign: 'center', width: 70 }}>
+            <th style={{ textAlign: 'center', width: 100 }}>
               <Button
                 onClick={openCreateDialog}
                 title="Kreiraj novi obračun putnih troškova"
@@ -83,6 +83,20 @@ export default function TravelExpenses() {
                   >
                     <DetailsRowButton title="Detalji" onClick={() => {}} />
                   </NavLink>
+                  <Button
+                    variant="success"
+                    title="kreiraj pd prijavu"
+                    style={{
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                      height: 25,
+                      marginLeft: 5
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faFileCode} />{' '}
+                  </Button>
                   <DeleteRowButton
                     style={{ marginLeft: 5 }}
                     title="Ukloni obračun putnih troškova!"

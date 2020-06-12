@@ -1,5 +1,5 @@
 import { Action } from '../../reducers/types';
-import { NAMESPACE, LOAD_OTHER_SETTINGS } from './otherSettings.actions';
+import { NAMESPACE, LOAD_OTHER_SETTINGS } from './settings.actions';
 
 const initialState: OtherSettingsStore = {
   otherSettings: []

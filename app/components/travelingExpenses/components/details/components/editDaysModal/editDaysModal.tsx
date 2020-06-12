@@ -18,11 +18,13 @@ export default function EditDaysModal(props: Props) {
     return state.travelingExpensesCombined.editDaysModal;
   });
 
-  const currentDays=store.relationWithDays.days != null ? store.relationWithDays.days:0;
+  const currentDays =
+    store.relationWithDays.days != null ? store.relationWithDays.days : 0;
   const [days, setDays] = useState(currentDays);
 
   useEffect(() => {
-    const currentDays=store.relationWithDays.days != null ? store.relationWithDays.days:0;
+    const currentDays =
+      store.relationWithDays.days != null ? store.relationWithDays.days : 0;
     setDays(currentDays);
   }, [store.relationWithDays.days]);
 
@@ -30,12 +32,15 @@ export default function EditDaysModal(props: Props) {
     dispatch(close());
   };
 
-  const handleSave =async () => {
-    handleResponse(await service.addDaysToRelation(store.relationWithDays.id,days),()=>{
-      dispatch(reloadCurrentTravelingExpenseDetails());
-      dispatch(close());
-    })
-    service.addDaysToRelation(store.relationWithDays.id,days);
+  const handleSave = async () => {
+    handleResponse(
+      await service.addDaysToRelation(store.relationWithDays.id, days),
+      () => {
+        dispatch(reloadCurrentTravelingExpenseDetails());
+        dispatch(close());
+      }
+    );
+    service.addDaysToRelation(store.relationWithDays.id, days);
   };
 
   const handleChange = (e: any) => {
@@ -54,9 +59,14 @@ export default function EditDaysModal(props: Props) {
   function daysInMonth() {
     return new Date(props.year, props.month, 0).getDate();
   }
-console.log(store);
+  function onShow() {
+    let daysInput = document.getElementById('asd');
+    daysInput?.focus();
+  }
+
   return (
     <Modal
+      onShow={onShow}
       backdrop="static"
       centered
       show={store.show}
@@ -72,9 +82,15 @@ console.log(store);
         <div>
           {store.employee.last_name} {store.employee.first_name}
         </div>
-  <div>relacija : {store.relationWithDays && store.relationWithDays.relation && store.relationWithDays.relation.name}</div>
+        <div>
+          relacija :{' '}
+          {store.relationWithDays &&
+            store.relationWithDays.relation &&
+            store.relationWithDays.relation.name}
+        </div>
         <div style={{ textAlign: 'center', width: '100%' }}>
           <Form.Control
+            id="asd"
             style={{ width: 70, margin: '0 auto' }}
             type="number"
             value={days}

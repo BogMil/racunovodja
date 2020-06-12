@@ -11,7 +11,7 @@ import Employees from './components/employees/employees';
 import Relations from './components/relations/relations';
 import TravelExpenses from './components/travelingExpenses/travelingExpenses';
 import TravelExpensesDetails from './components/travelingExpenses/components/details/details';
-import OtherSettings from './components/otherSettings/otherSettings';
+import OtherSettings from './components/settings/settings';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);

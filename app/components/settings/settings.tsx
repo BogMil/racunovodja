@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../reducers';
-import { loadOtherSettings } from './otherSettings.actions';
+import { loadOtherSettings } from './settings.actions';
 
 export default function OtherSettings() {
   const dispatch = useDispatch();

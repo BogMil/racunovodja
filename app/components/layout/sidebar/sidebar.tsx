@@ -60,13 +60,12 @@ export default function SideBar() {
             navigateTo={routes.RELATIONS}
             text="Relacije"
           />
-
-          <MenuItem
-            iconDefinition={faCogs}
-            navigateTo={routes.OTHER_SETTINGS}
-            text="Ostalo"
-          />
         </SubMenu>
+        <MenuItem
+          iconDefinition={faCogs}
+          navigateTo={routes.OTHER_SETTINGS}
+          text="Ostalo"
+        />
         <Divider />
         <StaticMenuItem
           iconDefinition={faSignOutAlt}

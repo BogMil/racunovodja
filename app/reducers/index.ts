@@ -14,7 +14,7 @@ import travelingExpensesCombineReducer, {
 
 import otherSettings, {
   OtherSettingsStore
-} from '../../app/components/otherSettings/otherSettings.reducer';
+} from '../components/settings/settings.reducer';
 
 export default function createRootReducer(history: History) {
   return combineReducers({

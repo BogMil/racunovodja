@@ -5,7 +5,7 @@ import { handleResponse } from '../../../../utils/responseHandler';
 import { Employee } from '../../../employees/types';
 import { EmployeeWithRelations } from '../../travelingExpenses.types';
 import { AppStore } from '../../../../reducers';
-import { getMaxNonTaxedValue } from '../../../otherSettings/otherSettings.service';
+import { getMaxNonTaxedValue } from '../../../settings/settings.service';
 
 export const LOAD_TRAVELING_EXPENSE_DETAILS = 'LOAD_TRAVELING_EXPENSE_DETAILS';
 export const RELOAD_TRAVELING_EXPENSE_DETAILS =

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../utils/responseHandler';
-import * as service from './otherSettings.service';
+import * as service from './settings.service';
 import { Action } from '../../reducers/types';
 
 export const LOAD_OTHER_SETTINGS = 'LOAD_OTHER_SETTINGS';
