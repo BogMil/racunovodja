@@ -17,6 +17,7 @@
   "dependencies": {
     "pdf2json": "^1.2.0",
     "pdfjs-dist": "^2.3.200",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "xmlbuilder": "^15.1.1"
   }
 }

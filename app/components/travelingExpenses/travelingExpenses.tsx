@@ -17,6 +17,12 @@ import DeleteRowButton from '../common/rowButtons/deleteRowButton';
 import { areYouSure } from '../../utils/yesNoModal';
 import { handleResponse } from '../../utils/responseHandler';
 import * as service from './travelingExpenses.service';
+import {
+  GET_PUTNI_TROSKOVI_PPP_PD_DIR,
+  GET_PUTNI_TROSKOVI_PPP_PD_FILE
+} from '../../constants/files';
+const { shell } = require('electron');
+var fs = require('fs');
 
 export default function TravelExpenses() {
   const dispatch = useDispatch();
@@ -42,6 +48,15 @@ export default function TravelExpenses() {
       title: 'Brisanje obračuna putnih troškova'
     });
   };
+
+  const createXml = (year: number, month: number) => {
+    shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(year, month));
+  };
+
+  const PPP_PD_EXIST = (year: number, month: number) => {
+    return fs.existsSync(GET_PUTNI_TROSKOVI_PPP_PD_FILE(year, month));
+  };
+
   return (
     <>
       <Table striped bordered hover size="sm">
@@ -83,20 +98,23 @@ export default function TravelExpenses() {
                   >
                     <DetailsRowButton title="Detalji" onClick={() => {}} />
                   </NavLink>
-                  <Button
-                    variant="success"
-                    title="kreiraj pd prijavu"
-                    style={{
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                      paddingLeft: 5,
-                      paddingRight: 5,
-                      height: 25,
-                      marginLeft: 5
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faFileCode} />{' '}
-                  </Button>
+                  {PPP_PD_EXIST(te.year, te.month) && (
+                    <Button
+                      variant="info"
+                      title="Otvori folder"
+                      onClick={() => createXml(te.year, te.month)}
+                      style={{
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        height: 25,
+                        marginLeft: 5
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faFileCode} />{' '}
+                    </Button>
+                  )}
                   <DeleteRowButton
                     style={{ marginLeft: 5 }}
                     title="Ukloni obračun putnih troškova!"

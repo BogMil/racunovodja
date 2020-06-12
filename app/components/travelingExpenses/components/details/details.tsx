@@ -2,7 +2,11 @@ import React, { useEffect } from 'react';
 import { useParams, NavLink, useLocation } from 'react-router-dom';
 import { Row, Col, Button, Container, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronLeft,
+  faPlus,
+  faFileCode
+} from '@fortawesome/free-solid-svg-icons';
 import routes from '../../../../constants/routes.json';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
@@ -24,6 +28,17 @@ import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 import { initialState } from './details.reducer';
 import { columnWidths } from './details.columnWidths';
+import {
+  create_PPP_PD_File,
+  get_PPP_PD_FilePath
+} from '../../travelingExpenses.fileCreators';
+import {
+  ROOT_DIR,
+  DODATNI_PRIHODI_DIR,
+  PUTNI_TROSKOVI_DIR,
+  PUTNI_TROSKOVI_PPP_PD_FILE,
+  GET_PUTNI_TROSKOVI_PPP_PD_DIR
+} from '../../../../constants/files';
 
 export default function Details() {
   const { id } = useParams();
@@ -100,6 +115,81 @@ export default function Details() {
       }
     }
   );
+
+  const createXml = () => {
+    const { shell } = require('electron');
+
+    var builder = require('xmlbuilder');
+
+    var xml = builder.create('tns:PodaciPoreskeDeklaracije');
+    xml.att('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+    xml.att('xmlns:tns', 'http://pid.purs.gov.rs');
+    xml.att('xsi:schemaLocation', 'http://pid.purs.gov.rs');
+
+    let PodaciOPrijavi = xml.ele('tns:PodaciOPrijavi');
+    PodaciOPrijavi.ele('tns:KlijentskaOznakaDeklaracije', 1);
+    PodaciOPrijavi.ele('tns:VrstaPrijave', 1);
+    PodaciOPrijavi.ele('tns:ObracunskiPeriod', '2020-05');
+    PodaciOPrijavi.ele('tns:DatumPlacanja', '2020-06-10');
+    PodaciOPrijavi.ele('tns:NajnizaOsnovica', 0);
+
+    let PodaciOIsplatiocu = xml.ele('tns:PodaciOIsplatiocu');
+    PodaciOIsplatiocu.ele('tns:TipIsplatioca', 2);
+    PodaciOIsplatiocu.ele('tns:PoreskiIdentifikacioniBroj', 101408574);
+    PodaciOIsplatiocu.ele('tns:BrojZaposlenih', 2);
+    PodaciOIsplatiocu.ele('tns:MaticniBrojisplatioca', '0825740');
+    PodaciOIsplatiocu.ele('tns:NazivPrezimeIme', 'SSŠ Vasa Pelagić');
+    PodaciOIsplatiocu.ele('tns:SedistePrebivaliste', 217);
+    PodaciOIsplatiocu.ele('tns:Telefon', '013 742 200');
+    PodaciOIsplatiocu.ele('tns:UlicaIBroj', 'Cara Lazara 261');
+    PodaciOIsplatiocu.ele('tns:eMail', 'vpkovin@gmail.com');
+
+    let DeklarisaniPrihodi = xml.ele('tns:DeklarisaniPrihodi');
+    let PodaciOPrihodima1 = DeklarisaniPrihodi.ele('tns:PodaciOPrihodima');
+
+    PodaciOPrihodima1.ele('tns:RedniBroj', 1);
+    PodaciOPrihodima1.ele('tns:VrstaIdentifikatoraPrimaoca', 1);
+    PodaciOPrihodima1.ele('tns:IdentifikatorPrimaoca', '0204986865068');
+    PodaciOPrihodima1.ele('tns:Prezime', 'Kosovac');
+    PodaciOPrihodima1.ele('tns:Ime', 'Katarina');
+    PodaciOPrihodima1.ele('tns:OznakaPrebivalista', 217);
+    PodaciOPrihodima1.ele('tns:SVP', 105602000);
+    PodaciOPrihodima1.ele('tns:MesecniFondSati', 168);
+    PodaciOPrihodima1.ele('tns:Bruto', 3378.0);
+    PodaciOPrihodima1.ele('tns:OsnovicaPorez', 3378.0);
+    PodaciOPrihodima1.ele('tns:Porez', 338.0);
+    PodaciOPrihodima1.ele('tns:OsnovicaDoprinosi', '0.0');
+    PodaciOPrihodima1.ele('tns:PIO', '0.0');
+    PodaciOPrihodima1.ele('tns:ZDR', '0.0');
+    PodaciOPrihodima1.ele('tns:NEZ', '0.0');
+    PodaciOPrihodima1.ele('tns:PIOBen', '0.0');
+    PodaciOPrihodima1.ele('tns:DeklarisaniMFP');
+
+    let PodaciOPrihodima2 = DeklarisaniPrihodi.ele('tns:PodaciOPrihodima');
+
+    PodaciOPrihodima2.ele('tns:RedniBroj', 2);
+    PodaciOPrihodima2.ele('tns:VrstaIdentifikatoraPrimaoca', 1);
+    PodaciOPrihodima2.ele('tns:IdentifikatorPrimaoca', 1705991862517);
+    PodaciOPrihodima2.ele('tns:Prezime', 'Čolaković');
+    PodaciOPrihodima2.ele('tns:Ime', 'Dušan');
+    PodaciOPrihodima2.ele('tns:OznakaPrebivalista', '022');
+    PodaciOPrihodima2.ele('tns:SVP', 101110000);
+    PodaciOPrihodima2.ele('tns:MesecniFondSati', 168);
+    PodaciOPrihodima2.ele('tns:Bruto', 2489);
+    PodaciOPrihodima2.ele('tns:OsnovicaPorez', 2489);
+    PodaciOPrihodima2.ele('tns:Porez', 249);
+    PodaciOPrihodima2.ele('tns:OsnovicaDoprinosi', 0);
+    PodaciOPrihodima2.ele('tns:PIO', 0);
+    PodaciOPrihodima2.ele('tns:ZDR', 0);
+    PodaciOPrihodima2.ele('tns:NEZ', 0);
+    PodaciOPrihodima2.ele('tns:PIOBen', 0);
+    PodaciOPrihodima2.ele('tns:DeklarisaniMFP');
+
+    let doc = xml.end({ pretty: true });
+
+    create_PPP_PD_File(store.year, store.month, doc);
+    shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+  };
   return (
     <Container
       fluid
@@ -140,6 +230,23 @@ export default function Details() {
             Obračun putnih troškova za {getMonthName(store.month)} /{' '}
             {store.year}.
           </b>
+          <div style={{ float: 'right' }}>
+            <Button
+              variant="success"
+              title="kreiraj pd prijavu"
+              onClick={createXml}
+              style={{
+                paddingTop: 0,
+                paddingBottom: 0,
+                paddingLeft: 5,
+                paddingRight: 5,
+                height: 25,
+                marginLeft: 5
+              }}
+            >
+              <FontAwesomeIcon icon={faFileCode} />{' '}
+            </Button>
+          </div>
         </Col>
       </Row>
       <Row
