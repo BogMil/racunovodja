@@ -185,15 +185,16 @@ export default function OneRelationTemplate(props: Props) {
       {props.employeeWithRelation.relations_with_days &&
         props.employeeWithRelation.relations_with_days.map(
           (relationWithDays: RelationWithDays, i) => {
+            let ukupno =
+              relationWithDays.relation.price * relationWithDays.days;
+
             let neoporezivo = calculateNonTaxedValue(
               relationWithDays.days,
               maxNonTaxedValue,
               year,
               month,
-              relationWithDays.relation.price * relationWithDays.days
+              ukupno
             );
-            let ukupno =
-              relationWithDays.relation.price * relationWithDays.days;
 
             let oporezivo = ukupno - neoporezivo;
 
@@ -204,6 +205,37 @@ export default function OneRelationTemplate(props: Props) {
                   textAlign: 'right',
                   backgroundColor: '#EFA598',
                   width: columnWidths.taxablePrice
+                }}
+              >
+                {numberWithThousandSeparator(oporezivo)}
+              </td>
+            );
+          }
+        )}
+
+      {props.employeeWithRelation.relations_with_days &&
+        props.employeeWithRelation.relations_with_days.map(
+          (relationWithDays: RelationWithDays, i) => {
+            let ukupno =
+              relationWithDays.relation.price * relationWithDays.days;
+
+            let neoporezivo = calculateNonTaxedValue(
+              relationWithDays.days,
+              maxNonTaxedValue,
+              year,
+              month,
+              ukupno
+            );
+
+            let oporezivo = ukupno - neoporezivo;
+
+            return (
+              <td
+                key={i}
+                style={{
+                  textAlign: 'right',
+                  backgroundColor: '#EFA598',
+                  width: columnWidths.tax
                 }}
               >
                 {numberWithThousandSeparator(oporezivo)}

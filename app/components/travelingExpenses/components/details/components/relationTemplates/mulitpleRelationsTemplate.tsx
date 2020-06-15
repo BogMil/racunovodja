@@ -190,7 +190,7 @@ export default function MultipleRelationsTemplate(props: Props) {
           </Table>
         </td>
 
-        <td colSpan={2}></td>
+        <td colSpan={3}></td>
         <td
           rowSpan={2}
           style={{
@@ -232,6 +232,15 @@ export default function MultipleRelationsTemplate(props: Props) {
             textAlign: 'right',
             backgroundColor: '#EFA598',
             width: columnWidths.taxablePrice
+          }}
+        >
+          {numberWithThousandSeparator(oporezivo)}
+        </td>
+        <td
+          style={{
+            textAlign: 'right',
+            backgroundColor: '#EFA598',
+            width: columnWidths.tax
           }}
         >
           {numberWithThousandSeparator(oporezivo)}

@@ -279,9 +279,10 @@ export default function Details() {
                 <th style={{ width: columnWidths.relationName }}>Relacija</th>
                 <th style={{ width: columnWidths.relationPrice }}>Cena</th>
                 <th style={{ width: columnWidths.days }}>Dana</th>
-                <th style={{ width: columnWidths.sumPerEmployee }}>Ukupno</th>
+                <th style={{ width: columnWidths.sumPerEmployee }}>Neto</th>
                 <th style={{ width: columnWidths.nonTaxablePrice }}>Neopor.</th>
                 <th style={{ width: columnWidths.taxablePrice }}>Opor.</th>
+                <th style={{ width: columnWidths.tax }}>Porez.</th>
                 <th
                   style={{ textAlign: 'center', width: columnWidths.actions }}
                 >
