@@ -7,6 +7,7 @@ export type TravelingExpense = {
   month: number;
   creation_date: string;
   user_id: number;
+  status: number;
 };
 
 export type TravelingExpenseCDTO = {
@@ -38,6 +39,7 @@ export type TravelingExpenseWithDetails = {
   user_id: number;
   employees_with_relation: EmployeeWithRelations[];
   maxNonTaxedValue: number;
+  status: number;
 };
 
 export type EmployeeWithRelations = {

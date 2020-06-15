@@ -16,6 +16,9 @@ import { open } from '../addRelationWithDaysModal/addRelationWithDaysModal.actio
 import { columnWidths, innerTableWidth } from '../../details.columnWidths';
 import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
 import { AppStore } from '../../../../../../reducers';
+import { getBusinesDaysInMonth } from '../../../../../../utils/getBusinessDaysInMonth';
+import { calculateNonTaxedValue } from './calculateNonTaxedValue';
+import { numberWithThousandSeparator } from '../../../../../../utils/numberWithThousandSeparator';
 
 type Props = {
   employeeWithRelations: EmployeeWithRelations;
@@ -72,21 +75,26 @@ export default function MultipleRelationsTemplate(props: Props) {
   }
 
   let sum = 0;
+  let days = 0;
   for (let relationsWithDays of props.employeeWithRelations
     .relations_with_days) {
     sum += relationsWithDays.days * relationsWithDays.relation.price;
+    days += relationsWithDays.days;
   }
-  let oporezivo;
 
-  let neoporezivDeo = useSelector((state: AppStore) => {
-    return state.travelingExpensesCombined.travelingExpenseDetails
-      .maxNonTaxedValue;
+  let { month, year, maxNonTaxedValue } = useSelector((state: AppStore) => {
+    return state.travelingExpensesCombined.travelingExpenseDetails;
   });
 
-  if (sum <= neoporezivDeo) oporezivo = 0;
-  else oporezivo = sum - neoporezivDeo;
+  let neoporezivo = calculateNonTaxedValue(
+    days,
+    maxNonTaxedValue,
+    year,
+    month,
+    sum
+  );
+  let oporezivo = sum - neoporezivo;
 
-  let neoporezivo = sum - oporezivo;
   return (
     <>
       <tr>
@@ -150,7 +158,9 @@ export default function MultipleRelationsTemplate(props: Props) {
                           width: columnWidths.relationPrice
                         }}
                       >
-                        {relationWithDays.relation.price}
+                        {numberWithThousandSeparator(
+                          relationWithDays.relation.price
+                        )}
                       </td>
                       <td
                         style={{
@@ -168,8 +178,10 @@ export default function MultipleRelationsTemplate(props: Props) {
                           width: columnWidths.sumPerEmployee
                         }}
                       >
-                        {relationWithDays.relation.price *
-                          relationWithDays.days}
+                        {numberWithThousandSeparator(
+                          relationWithDays.relation.price *
+                            relationWithDays.days
+                        )}
                       </td>
                     </tr>
                   )
@@ -204,7 +216,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.sumPerEmployee
           }}
         >
-          {sum}
+          {numberWithThousandSeparator(sum)}
         </td>
         <td
           style={{
@@ -213,7 +225,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.nonTaxablePrice
           }}
         >
-          {neoporezivo}
+          {numberWithThousandSeparator(neoporezivo)}
         </td>
         <td
           style={{
@@ -222,7 +234,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.taxablePrice
           }}
         >
-          {oporezivo}
+          {numberWithThousandSeparator(oporezivo)}
         </td>
       </tr>
     </>
