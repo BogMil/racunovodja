@@ -30,7 +30,6 @@ import { initialState } from './details.reducer';
 import { columnWidths } from './details.columnWidths';
 import {
   create_PPP_PD_File,
-  get_PPP_PD_FilePath
 } from '../../travelingExpenses.fileCreators';
 import {
   ROOT_DIR,
