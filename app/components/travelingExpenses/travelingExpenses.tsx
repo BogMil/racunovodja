@@ -21,6 +21,7 @@ import {
   GET_PUTNI_TROSKOVI_PPP_PD_DIR,
   GET_PUTNI_TROSKOVI_PPP_PD_FILE
 } from '../../constants/files';
+import { U_RADU, ZAVRSEN } from '../../constants/statuses';
 const { shell } = require('electron');
 var fs = require('fs');
 
@@ -65,6 +66,7 @@ export default function TravelExpenses() {
             <th>Mesec</th>
             <th>Godina</th>
             <th>Datum kreiranja</th>
+            <th>Status</th>
             <th style={{ textAlign: 'center', width: 100 }}>
               <Button
                 onClick={openCreateDialog}
@@ -90,6 +92,9 @@ export default function TravelExpenses() {
                 <td>{te.month}</td>
                 <td>{te.year}</td>
                 <td>{te.creation_date}</td>
+                <td>
+                  {te.status == U_RADU.value ? U_RADU.label : ZAVRSEN.label}
+                </td>
                 <td style={{ textAlign: 'center' }}>
                   <NavLink
                     to={{

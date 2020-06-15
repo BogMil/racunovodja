@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { useParams, NavLink, useLocation } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 import { Row, Col, Button, Container, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronLeft,
   faPlus,
-  faFileCode
+  faFileCode,
+  faCheckDouble
 } from '@fortawesome/free-solid-svg-icons';
 import routes from '../../../../constants/routes.json';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,16 +29,12 @@ import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 import { initialState } from './details.reducer';
 import { columnWidths } from './details.columnWidths';
-import {
-  create_PPP_PD_File,
-} from '../../travelingExpenses.fileCreators';
-import {
-  ROOT_DIR,
-  DODATNI_PRIHODI_DIR,
-  PUTNI_TROSKOVI_DIR,
-  PUTNI_TROSKOVI_PPP_PD_FILE,
-  GET_PUTNI_TROSKOVI_PPP_PD_DIR
-} from '../../../../constants/files';
+
+import { create_PPP_PD_File } from '../../travelingExpenses.fileCreators';
+import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
+import { U_RADU } from '../../../../constants/statuses';
+import { calculateNonTaxedValue } from './components/relationTemplates/calculateNonTaxedValue';
+import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
 
 export default function Details() {
   const { id } = useParams();
@@ -58,30 +55,6 @@ export default function Details() {
     dispatch(open(store.id));
   };
 
-  const getTaxedPart = (sum: number) => {
-    let _taxedSum = 0;
-
-    if (sum <= store.maxNonTaxedValue) {
-      _taxedSum = 0;
-    } else if (sum > store.maxNonTaxedValue) {
-      _taxedSum = sum - store.maxNonTaxedValue;
-    }
-
-    return _taxedSum;
-  };
-
-  const getNonTaxedPart = (sum: number) => {
-    let _nonTaxedSum = 0;
-
-    if (sum <= store.maxNonTaxedValue) {
-      _nonTaxedSum = sum;
-    } else if (sum > store.maxNonTaxedValue) {
-      _nonTaxedSum = store.maxNonTaxedValue;
-    }
-
-    return _nonTaxedSum;
-  };
-
   let totalSum = 0;
   let nonTaxedSum = 0;
   let taxedSum = 0;
@@ -94,23 +67,44 @@ export default function Details() {
         let sum = relationWithDays.days * relationWithDays.relation.price;
         totalSum += sum;
 
-        nonTaxedSum += getNonTaxedPart(sum);
-        taxedSum += getTaxedPart(sum);
+        let neoporezivo = calculateNonTaxedValue(
+          relationWithDays.days,
+          store.maxNonTaxedValue,
+          store.year,
+          store.month,
+          sum
+        );
+        let oporezivo = sum - neoporezivo;
+
+        nonTaxedSum += neoporezivo;
+        taxedSum += oporezivo;
 
         return;
       }
 
       if (employeeWithRelation.relations_with_days.length > 1) {
         let sum = 0;
+        let days = 0;
         employeeWithRelation.relations_with_days.forEach(
           (relationWithDays: RelationWithDays) => {
             sum += relationWithDays.days * relationWithDays.relation.price;
+            days += relationWithDays.days;
             return;
           }
         );
         totalSum += sum;
-        nonTaxedSum += getNonTaxedPart(sum);
-        taxedSum += getTaxedPart(sum);
+
+        let neoporezivo = calculateNonTaxedValue(
+          days,
+          store.maxNonTaxedValue,
+          store.year,
+          store.month,
+          sum
+        );
+        let oporezivo = sum - neoporezivo;
+
+        nonTaxedSum += neoporezivo;
+        taxedSum += oporezivo;
       }
     }
   );
@@ -189,6 +183,8 @@ export default function Details() {
     create_PPP_PD_File(store.year, store.month, doc);
     shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
   };
+
+  const finish = () => {};
   return (
     <Container
       fluid
@@ -204,12 +200,7 @@ export default function Details() {
       <Row
         style={{
           flexShrink: 0,
-          // position: 'fixed',
-          // top: 25,
           backgroundColor: '#d8eacd'
-          // width: '100%',
-          // height: 30,
-          // zIndex: 999
         }}
       >
         <Col md={1} style={{ float: 'right', paddingLeft: 0 }}>
@@ -230,21 +221,39 @@ export default function Details() {
             {store.year}.
           </b>
           <div style={{ float: 'right' }}>
-            <Button
-              variant="success"
-              title="kreiraj pd prijavu"
-              onClick={createXml}
-              style={{
-                paddingTop: 0,
-                paddingBottom: 0,
-                paddingLeft: 5,
-                paddingRight: 5,
-                height: 25,
-                marginLeft: 5
-              }}
-            >
-              <FontAwesomeIcon icon={faFileCode} />{' '}
-            </Button>
+            {store.status == U_RADU.value ? (
+              <Button
+                variant="success"
+                title="Završi"
+                onClick={finish}
+                style={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  height: 25,
+                  marginLeft: 5
+                }}
+              >
+                <FontAwesomeIcon icon={faCheckDouble} />{' '}
+              </Button>
+            ) : (
+              <Button
+                variant="success"
+                title="kreiraj pd prijavu"
+                onClick={createXml}
+                style={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  height: 25,
+                  marginLeft: 5
+                }}
+              >
+                <FontAwesomeIcon icon={faFileCode} />{' '}
+              </Button>
+            )}
           </div>
         </Col>
       </Row>
@@ -271,9 +280,10 @@ export default function Details() {
                 <th style={{ width: columnWidths.relationName }}>Relacija</th>
                 <th style={{ width: columnWidths.relationPrice }}>Cena</th>
                 <th style={{ width: columnWidths.days }}>Dana</th>
-                <th style={{ width: columnWidths.sumPerEmployee }}>Ukupno</th>
+                <th style={{ width: columnWidths.sumPerEmployee }}>Neto</th>
                 <th style={{ width: columnWidths.nonTaxablePrice }}>Neopor.</th>
                 <th style={{ width: columnWidths.taxablePrice }}>Opor.</th>
+                <th style={{ width: columnWidths.tax }}>Porez.</th>
                 <th
                   style={{ textAlign: 'center', width: columnWidths.actions }}
                 >
@@ -349,9 +359,13 @@ export default function Details() {
       >
         <Col>
           <Row>
-            <Col>Ukupno : {totalSum}</Col>
-            <Col>Ukupno oporezivo : {taxedSum}</Col>
-            <Col>Ukupno neoporezivo: {nonTaxedSum}</Col>
+            <Col>Ukupno : {numberWithThousandSeparator(totalSum)}</Col>
+            <Col>
+              Ukupno oporezivo : {numberWithThousandSeparator(taxedSum)}
+            </Col>
+            <Col>
+              Ukupno neoporezivo: {numberWithThousandSeparator(nonTaxedSum)}
+            </Col>
           </Row>
         </Col>
       </Row>

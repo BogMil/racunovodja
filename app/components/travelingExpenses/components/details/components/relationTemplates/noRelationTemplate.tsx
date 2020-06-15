@@ -9,7 +9,7 @@ import { handleResponse } from '../../../../../../utils/responseHandler';
 import * as service from '../../../../travelingExpenses.service';
 import { useDispatch } from 'react-redux';
 import { reloadTravelingExpenseDetails } from '../../details.actions';
-import {open as openAddRelationWithDaysMoad} from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
+import { open as openAddRelationWithDaysMoad } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
@@ -55,8 +55,8 @@ export default function NoRelationTemplate(props: Props) {
         </div>
         <div style={{ display: 'inline-block', float: 'right' }}>
           <Button
-              onClick={() => onAddRelationWithDays()}
-              style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
+            onClick={() => onAddRelationWithDays()}
+            style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
             variant="success"
             title="Dodaj novu relaciju"
           >
@@ -64,7 +64,7 @@ export default function NoRelationTemplate(props: Props) {
           </Button>
         </div>
       </td>
-      <td colSpan={6} style={{ padding: 0, verticalAlign: 'middle' }}></td>
+      <td colSpan={7} style={{ padding: 0, verticalAlign: 'middle' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
         <DeleteRowButton
           onClick={() => {
