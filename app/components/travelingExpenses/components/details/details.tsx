@@ -12,7 +12,7 @@ import {
 import getMonthName from '../../../../utils/getMonthName';
 import {
   EmployeeWithRelations,
-  RelationWithDays
+  EmployeeTravelingExpenseCalculator
 } from '../../travelingExpenses.types';
 import OneRelationTemplate from './components/relationTemplates/oneRelationTemplate';
 import NoRelationTemplate from './components/relationTemplates/noRelationTemplate';
@@ -26,7 +26,6 @@ import { columnWidths, columColors } from './details.columnStyles';
 import { create_PPP_PD_File } from '../../travelingExpenses.fileCreators';
 import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
 import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
-import { calculateNonTaxedValue } from './components/relationTemplates/calculateNonTaxedValue';
 import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
 import { areYouSure } from '../../../../utils/yesNoModal';
 import { handleResponse } from '../../../../utils/responseHandler';
@@ -52,7 +51,9 @@ export default function Details() {
     console.log(employeeWithRelation.employee.municipality);
     return employeeWithRelation.employee.municipality==null;
   }).length>0;
-console.log(isCreate_PPP_PD_Disabled);
+
+  let x = 0;
+
   let netoTotal = 0;
   let neoporeziviDeoTotal = 0;
   let oporeziviDeoTotal = 0;
@@ -61,58 +62,16 @@ console.log(isCreate_PPP_PD_Disabled);
 
   store.employees_with_relation.forEach(
     (employeeWithRelation: EmployeeWithRelations) => {
-      if (employeeWithRelation.relations_with_days.length <= 0) return;
-
-      if (employeeWithRelation.relations_with_days.length == 1) {
-        let relationWithDays = employeeWithRelation.relations_with_days[0];
-        let neto = relationWithDays.days * relationWithDays.relation.price;
-        netoTotal += neto;
-
-        let neoporezivo = calculateNonTaxedValue(
-          relationWithDays.days,
-          store.maxNonTaxedValue,
-          store.year,
-          store.month,
-          neto
-        );
-        let oporezivo = neto - neoporezivo;
-
-        neoporeziviDeoTotal += neoporezivo;
-        oporeziviDeoTotal += oporezivo;
-        brutoOporeziviDeoTotal += oporezivo * store.preracun_na_bruto;
-        porezTotal += (brutoOporeziviDeoTotal * store.stopa) / 100;
-        return;
-      }
-
-      if (employeeWithRelation.relations_with_days.length > 1) {
-        let neto = 0;
-        let brojDana = 0;
-        employeeWithRelation.relations_with_days.forEach(
-          (relationWithDays: RelationWithDays) => {
-            neto += relationWithDays.days * relationWithDays.relation.price;
-            brojDana += relationWithDays.days;
-            return;
-          }
-        );
-        netoTotal += neto;
-
-        let neoporezivo = calculateNonTaxedValue(
-          brojDana,
-          store.maxNonTaxedValue,
-          store.year,
-          store.month,
-          neto
-        );
-        let oporezivo = neto - neoporezivo;
-
-        neoporeziviDeoTotal += neoporezivo;
-        oporeziviDeoTotal += oporezivo;
-        brutoOporeziviDeoTotal += oporezivo * store.preracun_na_bruto;
-        porezTotal += (brutoOporeziviDeoTotal * store.stopa) / 100;
-      }
+      let employeeTravelingExpenseCalculator=new EmployeeTravelingExpenseCalculator(store.year,store.month,store.maxNonTaxedValue,store.preracun_na_bruto,store.stopa);
+      let calculation =employeeTravelingExpenseCalculator.getCalculation(employeeWithRelation);
+      netoTotal+=calculation.neto;
+      neoporeziviDeoTotal+=calculation.neoporezivo;
+      oporeziviDeoTotal+=calculation.oporezivo;
+      brutoOporeziviDeoTotal+=calculation.brutoOporezivo;
+      porezTotal+=calculation.porez;
     }
   );
-
+  console.log(x);
   const createXml = () => {
     const { shell } = require('electron');
 

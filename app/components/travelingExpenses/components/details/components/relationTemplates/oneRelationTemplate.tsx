@@ -2,7 +2,8 @@ import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import {
   EmployeeWithRelations,
-  RelationWithDays
+  RelationWithDays,
+  EmployeeTravelingExpenseCalculator
 } from '../../../../travelingExpenses.types';
 import DeleteRowButton from '../../../../../common/rowButtons/deleteRowButton';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +19,6 @@ import {
 } from '../../details.columnStyles';
 import { open as openAddRelationWithDaysMoad } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 import { AppStore } from '../../../../../../reducers';
-import { calculateNonTaxedValue } from './calculateNonTaxedValue';
 import { numberWithThousandSeparator } from '../../../../../../utils/numberWithThousandSeparator';
 import { U_RADU } from '../../../../../../constants/statuses';
 
@@ -28,6 +28,20 @@ type Props = {
 
 export default function OneRelationTemplate(props: Props) {
   const dispatch = useDispatch();
+  let {
+    month,
+    year,
+    maxNonTaxedValue,
+    preracun_na_bruto,
+    stopa,
+    status
+  } = useSelector((state: AppStore) => {
+    return state.travelingExpensesCombined.travelingExpenseDetails;
+  });
+
+  let employeeTravelingExpenseCalculator=new EmployeeTravelingExpenseCalculator(year,month,maxNonTaxedValue,preracun_na_bruto,stopa);
+  let calclulation =employeeTravelingExpenseCalculator.getCalculation(props.employeeWithRelation);
+
   function onDoubleClick(relationWithDays: RelationWithDays) {
     if (status == U_RADU.value)
       dispatch(
@@ -77,16 +91,6 @@ export default function OneRelationTemplate(props: Props) {
     dispatch(openAddRelationWithDaysMoad(props.employeeWithRelation.id));
   };
 
-  let {
-    month,
-    year,
-    maxNonTaxedValue,
-    preracun_na_bruto,
-    stopa,
-    status
-  } = useSelector((state: AppStore) => {
-    return state.travelingExpensesCombined.travelingExpenseDetails;
-  });
 
   return (
     <tr style={{ borderBottom: '2px solid #3f0e40' }}>
@@ -163,7 +167,7 @@ export default function OneRelationTemplate(props: Props) {
                       }}
                     >
                       {numberWithThousandSeparator(
-                        relationWithDays.relation.price * relationWithDays.days
+                        calclulation.neto
                       )}
                     </td>
                   </tr>
@@ -172,125 +176,45 @@ export default function OneRelationTemplate(props: Props) {
           </tbody>
         </Table>
       </td>
+      <td
+        style={{
+          textAlign: 'right',
+          backgroundColor: columColors.nonTaxablePrice,
+          width: columnWidths.nonTaxablePrice
+        }}
+      >
+        {numberWithThousandSeparator(calclulation.neoporezivo)}
+      </td>
+      <td
+        style={{
+          textAlign: 'right',
+          backgroundColor: columColors.taxablePrice,
+          width: columnWidths.taxablePrice
+        }}
+      >
+        {numberWithThousandSeparator(calclulation.oporezivo)}
+      </td>
 
-      {props.employeeWithRelation.relations_with_days &&
-        props.employeeWithRelation.relations_with_days.map(
-          (relationWithDays: RelationWithDays, i) => {
-            let neoporezivo = calculateNonTaxedValue(
-              relationWithDays.days,
-              maxNonTaxedValue,
-              year,
-              month,
-              relationWithDays.relation.price * relationWithDays.days
-            );
-
-            return (
-              <td
-                key={i}
-                style={{
-                  textAlign: 'right',
-                  backgroundColor: columColors.nonTaxablePrice,
-                  width: columnWidths.nonTaxablePrice
-                }}
-              >
-                {numberWithThousandSeparator(neoporezivo)}
-              </td>
-            );
-          }
+      <td
+        style={{
+          textAlign: 'right',
+          backgroundColor: columColors.brutoTaxable,
+          width: columnWidths.brutoTaxable
+        }}
+      >
+        {numberWithThousandSeparator(calclulation.brutoOporezivo)}
+      </td>
+      <td
+        style={{
+          textAlign: 'right',
+          backgroundColor: columColors.tax,
+          width: columnWidths.tax
+        }}
+      >
+        {numberWithThousandSeparator(
+          calclulation.porez
         )}
-      {props.employeeWithRelation.relations_with_days &&
-        props.employeeWithRelation.relations_with_days.map(
-          (relationWithDays: RelationWithDays, i) => {
-            let ukupno =
-              relationWithDays.relation.price * relationWithDays.days;
-
-            let neoporezivo = calculateNonTaxedValue(
-              relationWithDays.days,
-              maxNonTaxedValue,
-              year,
-              month,
-              ukupno
-            );
-
-            let oporezivo = ukupno - neoporezivo;
-
-            return (
-              <td
-                key={i}
-                style={{
-                  textAlign: 'right',
-                  backgroundColor: columColors.taxablePrice,
-                  width: columnWidths.taxablePrice
-                }}
-              >
-                {numberWithThousandSeparator(oporezivo)}
-              </td>
-            );
-          }
-        )}
-
-      {props.employeeWithRelation.relations_with_days &&
-        props.employeeWithRelation.relations_with_days.map(
-          (relationWithDays: RelationWithDays, i) => {
-            let ukupno =
-              relationWithDays.relation.price * relationWithDays.days;
-
-            let neoporezivo = calculateNonTaxedValue(
-              relationWithDays.days,
-              maxNonTaxedValue,
-              year,
-              month,
-              ukupno
-            );
-
-            let oporezivo = ukupno - neoporezivo;
-
-            return (
-              <td
-                key={i}
-                style={{
-                  textAlign: 'right',
-                  backgroundColor: columColors.brutoTaxable,
-                  width: columnWidths.brutoTaxable
-                }}
-              >
-                {numberWithThousandSeparator(oporezivo * preracun_na_bruto)}
-              </td>
-            );
-          }
-        )}
-      {props.employeeWithRelation.relations_with_days &&
-        props.employeeWithRelation.relations_with_days.map(
-          (relationWithDays: RelationWithDays, i) => {
-            let ukupno =
-              relationWithDays.relation.price * relationWithDays.days;
-
-            let neoporezivo = calculateNonTaxedValue(
-              relationWithDays.days,
-              maxNonTaxedValue,
-              year,
-              month,
-              ukupno
-            );
-
-            let oporezivo = ukupno - neoporezivo;
-
-            return (
-              <td
-                key={i}
-                style={{
-                  textAlign: 'right',
-                  backgroundColor: columColors.tax,
-                  width: columnWidths.tax
-                }}
-              >
-                {numberWithThousandSeparator(
-                  (oporezivo * preracun_na_bruto * stopa) / 100
-                )}
-              </td>
-            );
-          }
-        )}
+      </td>
       {status == U_RADU.value ? (
         <td
           style={{

@@ -2,7 +2,8 @@ import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import {
   EmployeeWithRelations,
-  RelationWithDays
+  RelationWithDays,
+  EmployeeTravelingExpenseCalculator
 } from '../../../../travelingExpenses.types';
 import DeleteRowButton from '../../../../../common/rowButtons/deleteRowButton';
 import { areYouSure } from '../../../../../../utils/yesNoModal';
@@ -18,7 +19,6 @@ import {
 } from '../../details.columnStyles';
 import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
 import { AppStore } from '../../../../../../reducers';
-import { calculateNonTaxedValue } from './calculateNonTaxedValue';
 import { numberWithThousandSeparator } from '../../../../../../utils/numberWithThousandSeparator';
 import { U_RADU } from '../../../../../../constants/statuses';
 
@@ -37,6 +37,9 @@ export default function MultipleRelationsTemplate(props: Props) {
   } = useSelector((state: AppStore) => {
     return state.travelingExpensesCombined.travelingExpenseDetails;
   });
+
+  let employeeTravelingExpenseCalculator=new EmployeeTravelingExpenseCalculator(year,month,maxNonTaxedValue,preracun_na_bruto,stopa);
+  let calculation =employeeTravelingExpenseCalculator.getCalculation(props.employeeWithRelations);
 
   const dispatch = useDispatch();
   const onRemoveEmployeeFromTravelingExpense = async () => {
@@ -91,25 +94,6 @@ export default function MultipleRelationsTemplate(props: Props) {
         )
       );
   }
-
-  let sum = 0;
-  let days = 0;
-  for (let relationsWithDays of props.employeeWithRelations
-    .relations_with_days) {
-    sum += relationsWithDays.days * relationsWithDays.relation.price;
-    days += relationsWithDays.days;
-  }
-
-  let neoporezivo = calculateNonTaxedValue(
-    days,
-    maxNonTaxedValue,
-    year,
-    month,
-    sum
-  );
-  let oporezivo = sum - neoporezivo;
-  let brutoOporezivo = oporezivo * preracun_na_bruto;
-  let porez = (brutoOporezivo * stopa) / 100;
 
   return (
     <>
@@ -238,7 +222,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.sumPerEmployee
           }}
         >
-          {numberWithThousandSeparator(sum)}
+          {numberWithThousandSeparator(calculation.neto)}
         </td>
         <td
           style={{
@@ -247,7 +231,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.nonTaxablePrice
           }}
         >
-          {numberWithThousandSeparator(neoporezivo)}
+          {numberWithThousandSeparator(calculation.neoporezivo)}
         </td>
         <td
           style={{
@@ -256,7 +240,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.taxablePrice
           }}
         >
-          {numberWithThousandSeparator(oporezivo)}
+          {numberWithThousandSeparator(calculation.oporezivo)}
         </td>
         <td
           style={{
@@ -265,7 +249,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.brutoTaxable
           }}
         >
-          {numberWithThousandSeparator(brutoOporezivo)}
+          {numberWithThousandSeparator(calculation.brutoOporezivo)}
         </td>
         <td
           style={{
@@ -274,7 +258,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.tax
           }}
         >
-          {numberWithThousandSeparator(porez)}
+          {numberWithThousandSeparator(calculation.porez)}
         </td>
       </tr>
     </>

@@ -1,5 +1,6 @@
 import { Employee } from '../employees/types';
 import { Relation } from '../relations/relations.types';
+import { getBusinesDaysInMonth } from '../../utils/getBusinessDaysInMonth';
 
 export type TravelingExpense = {
   id: number;
@@ -59,3 +60,59 @@ export type RelationWithDays = {
   traveling_expense_employee_id: 15;
   relation: Relation;
 };
+
+type TravelingExpenseCalculation={
+  neto:number,
+  oporezivo:number,
+  neoporezivo:number,
+  brutoOporezivo:number,
+  porez:number
+
+}
+export class EmployeeTravelingExpenseCalculator{
+  private _maxNeoporeziviIznos:number;
+  private _month:number;
+  private _year:number;
+  private _preracunNaBruto:number;
+  private _stopa:number;
+
+
+  constructor(year:number,month:number,maxNeoporeziviIznos:number,preracunNaBruto:number,stopa:number){
+    this._year=year;
+    this._month=month;
+    this._maxNeoporeziviIznos=maxNeoporeziviIznos;
+    this._preracunNaBruto=preracunNaBruto;
+    this._stopa=stopa;
+  }
+  public getCalculation=(employeeWithRelations:EmployeeWithRelations) :TravelingExpenseCalculation=>{
+    let calculation : TravelingExpenseCalculation = {
+      neto:0,
+      oporezivo:0,
+      neoporezivo:0,
+      brutoOporezivo:0,
+      porez:0
+    }
+    let days=0;
+    employeeWithRelations.relations_with_days.map(relationWithDays=>{
+      calculation.neto+=relationWithDays.days*relationWithDays.relation.price;
+      days+=relationWithDays.days;
+    })
+
+    calculation.neoporezivo=this.calculateNonTaxedValue(days,calculation.neto);
+    calculation.oporezivo = calculation.neto - calculation.neoporezivo;
+    calculation.brutoOporezivo = calculation.oporezivo * this._preracunNaBruto;
+    calculation.porez = (calculation.brutoOporezivo * this._stopa) / 100;
+
+    return calculation;
+  }
+
+  private calculateNonTaxedValue = (days:number,sum: number  ) :number => {
+    let brojRadnihDana = getBusinesDaysInMonth(this._month, this._year);
+    let potencijalnaNeoporezivaSuma = days * (this._maxNeoporeziviIznos / brojRadnihDana);
+    let neoporezivo =
+      potencijalnaNeoporezivaSuma > this._maxNeoporeziviIznos ? this._maxNeoporeziviIznos : potencijalnaNeoporezivaSuma;
+    neoporezivo = neoporezivo > sum ? sum : neoporezivo;
+
+    return neoporezivo
+  };
+}
