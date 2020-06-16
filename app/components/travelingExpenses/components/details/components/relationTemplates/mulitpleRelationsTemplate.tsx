@@ -10,8 +10,6 @@ import { handleResponse } from '../../../../../../utils/responseHandler';
 import { useDispatch, useSelector } from 'react-redux';
 import * as service from '../../../../travelingExpenses.service';
 import { reloadTravelingExpenseDetails } from '../../details.actions';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRoute } from '@fortawesome/free-solid-svg-icons';
 import { open } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 import {
   columnWidths,
@@ -20,15 +18,26 @@ import {
 } from '../../details.columnStyles';
 import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
 import { AppStore } from '../../../../../../reducers';
-import { getBusinesDaysInMonth } from '../../../../../../utils/getBusinessDaysInMonth';
 import { calculateNonTaxedValue } from './calculateNonTaxedValue';
 import { numberWithThousandSeparator } from '../../../../../../utils/numberWithThousandSeparator';
+import { U_RADU } from '../../../../../../constants/statuses';
 
 type Props = {
   employeeWithRelations: EmployeeWithRelations;
 };
 
 export default function MultipleRelationsTemplate(props: Props) {
+  const {
+    month,
+    year,
+    maxNonTaxedValue,
+    preracun_na_bruto,
+    stopa,
+    status
+  } = useSelector((state: AppStore) => {
+    return state.travelingExpensesCombined.travelingExpenseDetails;
+  });
+
   const dispatch = useDispatch();
   const onRemoveEmployeeFromTravelingExpense = async () => {
     areYouSure({
@@ -73,9 +82,14 @@ export default function MultipleRelationsTemplate(props: Props) {
   };
 
   function onDoubleClick(relationWithDays: RelationWithDays) {
-    dispatch(
-      openEditDaysModal(relationWithDays, props.employeeWithRelations.employee)
-    );
+    console.log(status);
+    if (status == U_RADU.value)
+      dispatch(
+        openEditDaysModal(
+          relationWithDays,
+          props.employeeWithRelations.employee
+        )
+      );
   }
 
   let sum = 0;
@@ -85,12 +99,6 @@ export default function MultipleRelationsTemplate(props: Props) {
     sum += relationsWithDays.days * relationsWithDays.relation.price;
     days += relationsWithDays.days;
   }
-
-  let { month, year, maxNonTaxedValue, preracun_na_bruto, stopa } = useSelector(
-    (state: AppStore) => {
-      return state.travelingExpensesCombined.travelingExpenseDetails;
-    }
-  );
 
   let neoporezivo = calculateNonTaxedValue(
     days,
@@ -124,16 +132,18 @@ export default function MultipleRelationsTemplate(props: Props) {
             {props.employeeWithRelations.employee.last_name}{' '}
             {props.employeeWithRelations.employee.first_name}
           </div>
-          <div style={{ display: 'inline-block', float: 'right' }}>
-            <Button
-              onClick={() => onAddRelationWithDays()}
-              style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
-              variant="success"
-              title="Dodaj novu relaciju"
-            >
-              <FontAwesomeIcon icon={faRoute} />{' '}
-            </Button>
-          </div>
+          {status == U_RADU.value ? (
+            <div style={{ display: 'inline-block', float: 'right' }}>
+              <Button
+                onClick={() => onAddRelationWithDays()}
+                style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
+                variant="success"
+                title="Dodaj novu relaciju"
+              >
+                <i className="fa fa-route" />
+              </Button>
+            </div>
+          ) : null}
         </td>
         <td style={{ padding: 0 }} colSpan={4}>
           <Table style={{ marginBottom: 0, width: innerTableWidth }}>
@@ -146,19 +156,21 @@ export default function MultipleRelationsTemplate(props: Props) {
                         <div style={{ display: 'inline-block' }}>
                           {relationWithDays.relation.name}
                         </div>
-                        <div
-                          style={{ display: 'inline-block', float: 'right' }}
-                        >
-                          <a
-                            style={{ color: 'red' }}
-                            title="Ukloni relaciju"
-                            onClick={() => {
-                              onRemoveRelation(relationWithDays.id);
-                            }}
+                        {status == U_RADU.value ? (
+                          <div
+                            style={{ display: 'inline-block', float: 'right' }}
                           >
-                            <b>x</b>
-                          </a>
-                        </div>
+                            <a
+                              style={{ color: 'red' }}
+                              title="Ukloni relaciju"
+                              onClick={() => {
+                                onRemoveRelation(relationWithDays.id);
+                              }}
+                            >
+                              <b>x</b>
+                            </a>
+                          </div>
+                        ) : null}
                       </td>
                       <td
                         style={{
@@ -199,21 +211,23 @@ export default function MultipleRelationsTemplate(props: Props) {
         </td>
 
         <td colSpan={4}></td>
-        <td
-          rowSpan={2}
-          style={{
-            textAlign: 'center',
-            verticalAlign: 'middle',
-            borderBottom: '2px solid #3f0e40'
-          }}
-        >
-          <DeleteRowButton
-            onClick={() => {
-              onRemoveEmployeeFromTravelingExpense();
+        {status == U_RADU.value ? (
+          <td
+            rowSpan={2}
+            style={{
+              textAlign: 'center',
+              verticalAlign: 'middle',
+              borderBottom: '2px solid #3f0e40'
             }}
-            title="Ukloni zaposlenog iz obračuna"
-          />
-        </td>
+          >
+            <DeleteRowButton
+              onClick={() => {
+                onRemoveEmployeeFromTravelingExpense();
+              }}
+              title="Ukloni zaposlenog iz obračuna"
+            />
+          </td>
+        ) : null}
       </tr>
       <tr style={{ borderBottom: '2px solid #3f0e40' }}>
         <td colSpan={3}></td>
@@ -260,7 +274,7 @@ export default function MultipleRelationsTemplate(props: Props) {
             width: columnWidths.tax
           }}
         >
-          {numberWithThousandSeparator(brutoOporezivo)}
+          {numberWithThousandSeparator(porez)}
         </td>
       </tr>
     </>

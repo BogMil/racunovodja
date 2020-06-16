@@ -1,7 +1,5 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   onClick:
@@ -25,7 +23,7 @@ export default function EditRowButton(props: Props) {
         ...props.style
       }}
     >
-      <FontAwesomeIcon icon={faEdit} />{' '}
+      <i className="fa fa-edit" />
     </Button>
   );
 }

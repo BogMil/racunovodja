@@ -11,8 +11,6 @@ import { handleResponse } from '../../../../../../utils/responseHandler';
 import * as service from '../../../../travelingExpenses.service';
 import { reloadTravelingExpenseDetails } from '../../details.actions';
 import { areYouSure } from '../../../../../../utils/yesNoModal';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRoute } from '@fortawesome/free-solid-svg-icons';
 import {
   columnWidths,
   innerTableWidth,
@@ -20,9 +18,9 @@ import {
 } from '../../details.columnStyles';
 import { open as openAddRelationWithDaysMoad } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 import { AppStore } from '../../../../../../reducers';
-import { getBusinesDaysInMonth } from '../../../../../../utils/getBusinessDaysInMonth';
 import { calculateNonTaxedValue } from './calculateNonTaxedValue';
 import { numberWithThousandSeparator } from '../../../../../../utils/numberWithThousandSeparator';
+import { U_RADU } from '../../../../../../constants/statuses';
 
 type Props = {
   employeeWithRelation: EmployeeWithRelations;
@@ -31,9 +29,10 @@ type Props = {
 export default function OneRelationTemplate(props: Props) {
   const dispatch = useDispatch();
   function onDoubleClick(relationWithDays: RelationWithDays) {
-    dispatch(
-      openEditDaysModal(relationWithDays, props.employeeWithRelation.employee)
-    );
+    if (status == U_RADU.value)
+      dispatch(
+        openEditDaysModal(relationWithDays, props.employeeWithRelation.employee)
+      );
   }
 
   const onRemoveEmployeeFromTravelingExpense = async () => {
@@ -78,11 +77,16 @@ export default function OneRelationTemplate(props: Props) {
     dispatch(openAddRelationWithDaysMoad(props.employeeWithRelation.id));
   };
 
-  let { month, year, maxNonTaxedValue, preracun_na_bruto, stopa } = useSelector(
-    (state: AppStore) => {
-      return state.travelingExpensesCombined.travelingExpenseDetails;
-    }
-  );
+  let {
+    month,
+    year,
+    maxNonTaxedValue,
+    preracun_na_bruto,
+    stopa,
+    status
+  } = useSelector((state: AppStore) => {
+    return state.travelingExpensesCombined.travelingExpenseDetails;
+  });
 
   return (
     <tr style={{ borderBottom: '2px solid #3f0e40' }}>
@@ -94,16 +98,18 @@ export default function OneRelationTemplate(props: Props) {
           {props.employeeWithRelation.employee.last_name}{' '}
           {props.employeeWithRelation.employee.first_name}
         </div>
-        <div style={{ display: 'inline-block', float: 'right' }}>
-          <Button
-            onClick={() => onAddRelationWithDays()}
-            style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
-            variant="success"
-            title="Dodaj novu relaciju"
-          >
-            <FontAwesomeIcon icon={faRoute} />{' '}
-          </Button>
-        </div>
+        {status == U_RADU.value ? (
+          <div style={{ display: 'inline-block', float: 'right' }}>
+            <Button
+              onClick={() => onAddRelationWithDays()}
+              style={{ padding: 0, paddingLeft: 3, paddingRight: 3 }}
+              variant="success"
+              title="Dodaj novu relaciju"
+            >
+              <i className="fa fa-route" />
+            </Button>
+          </div>
+        ) : null}
       </td>
       <td style={{ padding: 0 }} colSpan={4}>
         <Table style={{ marginBottom: 0, width: innerTableWidth }}>
@@ -116,17 +122,21 @@ export default function OneRelationTemplate(props: Props) {
                       <div style={{ display: 'inline-block' }}>
                         {relationWithDays.relation.name}
                       </div>
-                      <div style={{ display: 'inline-block', float: 'right' }}>
-                        <a
-                          style={{ color: 'red' }}
-                          title="Ukloni relaciju"
-                          onClick={() => {
-                            onRemoveRelation(relationWithDays.id);
-                          }}
+                      {status == U_RADU.value ? (
+                        <div
+                          style={{ display: 'inline-block', float: 'right' }}
                         >
-                          <b>x</b>
-                        </a>
-                      </div>
+                          <a
+                            style={{ color: 'red' }}
+                            title="Ukloni relaciju"
+                            onClick={() => {
+                              onRemoveRelation(relationWithDays.id);
+                            }}
+                          >
+                            <b>x</b>
+                          </a>
+                        </div>
+                      ) : null}
                     </td>
                     <td
                       style={{
@@ -281,20 +291,22 @@ export default function OneRelationTemplate(props: Props) {
             );
           }
         )}
-      <td
-        style={{
-          textAlign: 'center',
-          verticalAlign: 'middle',
-          borderBottom: '2px solid #3f0e40'
-        }}
-      >
-        <DeleteRowButton
-          onClick={() => {
-            onRemoveEmployeeFromTravelingExpense();
+      {status == U_RADU.value ? (
+        <td
+          style={{
+            textAlign: 'center',
+            verticalAlign: 'middle',
+            borderBottom: '2px solid #3f0e40'
           }}
-          title="Ukloni zaposlenog iz obračuna"
-        />
-      </td>
+        >
+          <DeleteRowButton
+            onClick={() => {
+              onRemoveEmployeeFromTravelingExpense();
+            }}
+            title="Ukloni zaposlenog iz obračuna"
+          />
+        </td>
+      ) : null}
     </tr>
   );
 }

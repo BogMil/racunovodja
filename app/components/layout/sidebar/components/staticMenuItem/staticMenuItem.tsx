@@ -1,11 +1,10 @@
 import React from 'react';
 import styles from './staticMenuItem.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type Props = {
   text: string;
   exact?: boolean;
-  iconDefinition?: any;
+  iconClassName?: string;
   onClick: Function;
 };
 
@@ -14,9 +13,9 @@ export default function StaticMenuItem(props: Props) {
     <li className={styles.staticMenuItemHolder} onClick={props.onClick}>
       <div style={{ width: '100%' }}>
         <div className={styles.staticMenuItem + ' noselect'}>
-          {props.iconDefinition && (
+          {props.iconClassName && (
             <>
-              <FontAwesomeIcon icon={props.iconDefinition} />{' '}
+              <i className={props.iconClassName} />{' '}
             </>
           )}
           {props.text}

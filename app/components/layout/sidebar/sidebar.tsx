@@ -2,15 +2,6 @@ import React from 'react';
 import SubMenu from './components/subMenu/subMenu';
 import MenuItem from './components/menuItem/menuItem';
 import routes from '../../../constants/routes.json';
-import {
-  faCoffee,
-  faHome,
-  faPaperPlane,
-  faUsers,
-  faSignOutAlt,
-  faRoute,
-  faCogs
-} from '@fortawesome/free-solid-svg-icons';
 import styles from './sidebar.css';
 import Divider from './components/divider/divider';
 import StaticMenuItem from './components/staticMenuItem/staticMenuItem';
@@ -34,15 +25,11 @@ export default function SideBar() {
     });
   };
 
-  const me = () => {
-    Service.me();
-  };
-
   return (
     <div className={styles.sidebar}>
       <ul style={{ padding: 0 }}>
         <MenuItem
-          iconDefinition={faHome}
+          iconClassName="fa fa-home"
           navigateTo={routes.HOME}
           text="Početna"
         />
@@ -50,25 +37,25 @@ export default function SideBar() {
           <MenuItem navigateTo={routes.TRAVEL_EXPENSES} text="Putni troškovi" />
         </SubMenu>
         <MenuItem
-          iconDefinition={faUsers}
+          iconClassName="fa fa-users"
           navigateTo={routes.EMPLOYEES}
           text="Zaposleni"
         />
         <SubMenu text="Šifarnici">
           <MenuItem
-            iconDefinition={faRoute}
+            iconClassName="fa fa-route"
             navigateTo={routes.RELATIONS}
             text="Relacije"
           />
         </SubMenu>
         <MenuItem
-          iconDefinition={faCogs}
+          iconClassName="fa fa-cogs"
           navigateTo={routes.OTHER_SETTINGS}
           text="Ostalo"
         />
         <Divider />
         <StaticMenuItem
-          iconDefinition={faSignOutAlt}
+          iconClassName="fa fa-sign-out-alt"
           text="Odjavi se"
           onClick={() => {
             onLogout();

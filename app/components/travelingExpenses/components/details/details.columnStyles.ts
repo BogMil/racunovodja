@@ -2,14 +2,14 @@ export const columnWidths = {
   relationName: 300,
   relationPrice: 70,
   days: 60,
-  sumPerEmployee: 80,
-  taxablePrice: 80,
-  nonTaxablePrice: 80,
-  brutoTaxable: 80,
+  sumPerEmployee: 100,
+  taxablePrice: 100,
+  nonTaxablePrice: 100,
+  brutoTaxable: 100,
   fullName: 300,
   jmbg: 150,
   actions: 50,
-  tax: 80,
+  tax: 100,
 
   sum(): number {
     let props = Object.getOwnPropertyNames(this).filter(prop => prop != 'sum');
