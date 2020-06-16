@@ -64,7 +64,7 @@ export default function NoRelationTemplate(props: Props) {
           </Button>
         </div>
       </td>
-      <td colSpan={7} style={{ padding: 0, verticalAlign: 'middle' }}></td>
+      <td colSpan={8} style={{ padding: 0, verticalAlign: 'middle' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
         <DeleteRowButton
           onClick={() => {

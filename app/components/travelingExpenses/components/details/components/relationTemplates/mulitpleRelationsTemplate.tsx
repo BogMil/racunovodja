@@ -13,7 +13,11 @@ import { reloadTravelingExpenseDetails } from '../../details.actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
 import { open } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
-import { columnWidths, innerTableWidth } from '../../details.columnWidths';
+import {
+  columnWidths,
+  innerTableWidth,
+  columColors
+} from '../../details.columnStyles';
 import { open as openEditDaysModal } from '../editDaysModal/editDaysModal.actions';
 import { AppStore } from '../../../../../../reducers';
 import { getBusinesDaysInMonth } from '../../../../../../utils/getBusinessDaysInMonth';
@@ -82,9 +86,11 @@ export default function MultipleRelationsTemplate(props: Props) {
     days += relationsWithDays.days;
   }
 
-  let { month, year, maxNonTaxedValue } = useSelector((state: AppStore) => {
-    return state.travelingExpensesCombined.travelingExpenseDetails;
-  });
+  let { month, year, maxNonTaxedValue, preracun_na_bruto, stopa } = useSelector(
+    (state: AppStore) => {
+      return state.travelingExpensesCombined.travelingExpenseDetails;
+    }
+  );
 
   let neoporezivo = calculateNonTaxedValue(
     days,
@@ -94,6 +100,8 @@ export default function MultipleRelationsTemplate(props: Props) {
     sum
   );
   let oporezivo = sum - neoporezivo;
+  let brutoOporezivo = oporezivo * preracun_na_bruto;
+  let porez = (brutoOporezivo * stopa) / 100;
 
   return (
     <>
@@ -190,7 +198,7 @@ export default function MultipleRelationsTemplate(props: Props) {
           </Table>
         </td>
 
-        <td colSpan={3}></td>
+        <td colSpan={4}></td>
         <td
           rowSpan={2}
           style={{
@@ -212,7 +220,7 @@ export default function MultipleRelationsTemplate(props: Props) {
         <td
           style={{
             textAlign: 'right',
-            backgroundColor: '#BAC6E5',
+            backgroundColor: columColors.sumPerEmployee,
             width: columnWidths.sumPerEmployee
           }}
         >
@@ -221,7 +229,7 @@ export default function MultipleRelationsTemplate(props: Props) {
         <td
           style={{
             textAlign: 'right',
-            backgroundColor: '#DEEBE1',
+            backgroundColor: columColors.nonTaxablePrice,
             width: columnWidths.nonTaxablePrice
           }}
         >
@@ -230,7 +238,7 @@ export default function MultipleRelationsTemplate(props: Props) {
         <td
           style={{
             textAlign: 'right',
-            backgroundColor: '#EFA598',
+            backgroundColor: columColors.taxablePrice,
             width: columnWidths.taxablePrice
           }}
         >
@@ -239,11 +247,20 @@ export default function MultipleRelationsTemplate(props: Props) {
         <td
           style={{
             textAlign: 'right',
-            backgroundColor: '#EFA598',
+            backgroundColor: columColors.brutoTaxable,
+            width: columnWidths.brutoTaxable
+          }}
+        >
+          {numberWithThousandSeparator(brutoOporezivo)}
+        </td>
+        <td
+          style={{
+            textAlign: 'right',
+            backgroundColor: columColors.tax,
             width: columnWidths.tax
           }}
         >
-          {numberWithThousandSeparator(oporezivo)}
+          {numberWithThousandSeparator(brutoOporezivo)}
         </td>
       </tr>
     </>

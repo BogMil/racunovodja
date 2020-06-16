@@ -13,7 +13,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
 import {
   loadTravelingExpenseDetails,
-  _loadTravelingExpenseDetails
+  _loadTravelingExpenseDetails,
+  reloadCurrentTravelingExpenseDetails
 } from './details.actions';
 import getMonthName from '../../../../utils/getMonthName';
 import {
@@ -28,12 +29,15 @@ import { open } from './components/addEmployeeModal/addEmployeeModal.actions';
 import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 import { initialState } from './details.reducer';
-import { columnWidths } from './details.columnWidths';
+import { columnWidths } from './details.columnStyles';
 import { create_PPP_PD_File } from '../../travelingExpenses.fileCreators';
 import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
 import { U_RADU } from '../../../../constants/statuses';
 import { calculateNonTaxedValue } from './components/relationTemplates/calculateNonTaxedValue';
 import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
+import { areYouSure } from '../../../../utils/yesNoModal';
+import { handleResponse } from '../../../../utils/responseHandler';
+import * as service from '../../travelingExpenses.service';
 
 export default function Details() {
   const { id } = useParams();
@@ -183,7 +187,18 @@ export default function Details() {
     shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
   };
 
-  const finish = () => {};
+  const finish = () => {
+    areYouSure({
+      title: 'Zaključavanje obračuna',
+      message:
+        'Da li ste sigurni da želite da zaključate obračun?\nUkoliko postoje zaposleni u obačunu za koje nije uneta ni jedna relacija, oni će automatski biti uklonjeni iz obračuna.',
+      onYes: async () => {
+        handleResponse(await service.lockService(store.id), () => {
+          dispatch(reloadCurrentTravelingExpenseDetails());
+        });
+      }
+    });
+  };
   return (
     <Container
       fluid
@@ -282,7 +297,8 @@ export default function Details() {
                 <th style={{ width: columnWidths.sumPerEmployee }}>Neto</th>
                 <th style={{ width: columnWidths.nonTaxablePrice }}>Neopor.</th>
                 <th style={{ width: columnWidths.taxablePrice }}>Opor.</th>
-                <th style={{ width: columnWidths.tax }}>Porez.</th>
+                <th style={{ width: columnWidths.brutoTaxable }}>Bruto O.</th>
+                <th style={{ width: columnWidths.tax }}>Porez</th>
                 <th
                   style={{ textAlign: 'center', width: columnWidths.actions }}
                 >

@@ -46,7 +46,7 @@ export function create_PPP_PD_File(
   )
     fs.mkdir(
       `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\${month}`,
-      e => {
+      (e: any) => {
         console.log(e);
       }
     );
@@ -57,7 +57,7 @@ export function create_PPP_PD_File(
       month
     )}`,
     xmlContent,
-    e => {
+    (e: any) => {
       console.log(e);
     }
   );

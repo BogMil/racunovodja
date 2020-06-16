@@ -13,7 +13,11 @@ import { reloadTravelingExpenseDetails } from '../../details.actions';
 import { areYouSure } from '../../../../../../utils/yesNoModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
-import { columnWidths, innerTableWidth } from '../../details.columnWidths';
+import {
+  columnWidths,
+  innerTableWidth,
+  columColors
+} from '../../details.columnStyles';
 import { open as openAddRelationWithDaysMoad } from '../addRelationWithDaysModal/addRelationWithDaysModal.actions';
 import { AppStore } from '../../../../../../reducers';
 import { getBusinesDaysInMonth } from '../../../../../../utils/getBusinessDaysInMonth';
@@ -74,9 +78,11 @@ export default function OneRelationTemplate(props: Props) {
     dispatch(openAddRelationWithDaysMoad(props.employeeWithRelation.id));
   };
 
-  let { month, year, maxNonTaxedValue } = useSelector((state: AppStore) => {
-    return state.travelingExpensesCombined.travelingExpenseDetails;
-  });
+  let { month, year, maxNonTaxedValue, preracun_na_bruto, stopa } = useSelector(
+    (state: AppStore) => {
+      return state.travelingExpensesCombined.travelingExpenseDetails;
+    }
+  );
 
   return (
     <tr style={{ borderBottom: '2px solid #3f0e40' }}>
@@ -141,7 +147,7 @@ export default function OneRelationTemplate(props: Props) {
                     <td
                       style={{
                         textAlign: 'right',
-                        backgroundColor: '#BAC6E5',
+                        backgroundColor: columColors.sumPerEmployee,
 
                         width: columnWidths.sumPerEmployee
                       }}
@@ -173,7 +179,7 @@ export default function OneRelationTemplate(props: Props) {
                 key={i}
                 style={{
                   textAlign: 'right',
-                  backgroundColor: '#DEEBE1',
+                  backgroundColor: columColors.nonTaxablePrice,
                   width: columnWidths.nonTaxablePrice
                 }}
               >
@@ -203,7 +209,7 @@ export default function OneRelationTemplate(props: Props) {
                 key={i}
                 style={{
                   textAlign: 'right',
-                  backgroundColor: '#EFA598',
+                  backgroundColor: columColors.taxablePrice,
                   width: columnWidths.taxablePrice
                 }}
               >
@@ -234,11 +240,43 @@ export default function OneRelationTemplate(props: Props) {
                 key={i}
                 style={{
                   textAlign: 'right',
-                  backgroundColor: '#EFA598',
+                  backgroundColor: columColors.brutoTaxable,
+                  width: columnWidths.brutoTaxable
+                }}
+              >
+                {numberWithThousandSeparator(oporezivo * preracun_na_bruto)}
+              </td>
+            );
+          }
+        )}
+      {props.employeeWithRelation.relations_with_days &&
+        props.employeeWithRelation.relations_with_days.map(
+          (relationWithDays: RelationWithDays, i) => {
+            let ukupno =
+              relationWithDays.relation.price * relationWithDays.days;
+
+            let neoporezivo = calculateNonTaxedValue(
+              relationWithDays.days,
+              maxNonTaxedValue,
+              year,
+              month,
+              ukupno
+            );
+
+            let oporezivo = ukupno - neoporezivo;
+
+            return (
+              <td
+                key={i}
+                style={{
+                  textAlign: 'right',
+                  backgroundColor: columColors.tax,
                   width: columnWidths.tax
                 }}
               >
-                {numberWithThousandSeparator(oporezivo)}
+                {numberWithThousandSeparator(
+                  (oporezivo * preracun_na_bruto * stopa) / 100
+                )}
               </td>
             );
           }

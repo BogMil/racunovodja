@@ -5,10 +5,11 @@ export const columnWidths = {
   sumPerEmployee: 80,
   taxablePrice: 80,
   nonTaxablePrice: 80,
-  tax: 80,
+  brutoTaxable: 80,
   fullName: 300,
   jmbg: 150,
   actions: 50,
+  tax: 80,
 
   sum(): number {
     let props = Object.getOwnPropertyNames(this).filter(prop => prop != 'sum');
@@ -27,3 +28,11 @@ export const innerTableWidth =
   columnWidths.relationPrice +
   columnWidths.days +
   columnWidths.sumPerEmployee;
+
+export const columColors = {
+  sumPerEmployee: '#BAC6E5',
+  taxablePrice: '#f9dfda',
+  nonTaxablePrice: '#DEEBE1',
+  brutoTaxable: '#f2b8ae',
+  tax: '#e77e6c'
+};
