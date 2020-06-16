@@ -64,3 +64,11 @@ a:hover {
 .modal-body {
   padding: 10px !important;
 }
+
+.table-header-btn {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-right: 5px;
+}

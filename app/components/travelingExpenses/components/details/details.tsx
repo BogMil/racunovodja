@@ -31,6 +31,7 @@ import { numberWithThousandSeparator } from '../../../../utils/numberWithThousan
 import { areYouSure } from '../../../../utils/yesNoModal';
 import { handleResponse } from '../../../../utils/responseHandler';
 import * as service from '../../travelingExpenses.service';
+import styles from './details.css';
 
 export default function Details() {
   const { id } = useParams();
@@ -47,15 +48,16 @@ export default function Details() {
     };
   }, []);
 
-  const openAddEmployeeDialog = async () => {
-    dispatch(open(store.id));
-  };
-
-  let totalSum = 0;
-  let nonTaxedSum = 0;
-  let taxedSum = 0;
-  let brutoTaxable = 0;
-  let taxSum = 0;
+  let isCreate_PPP_PD_Disabled = store.employees_with_relation.filter(employeeWithRelation=>{
+    console.log(employeeWithRelation.employee.municipality);
+    return employeeWithRelation.employee.municipality==null;
+  }).length>0;
+console.log(isCreate_PPP_PD_Disabled);
+  let netoTotal = 0;
+  let neoporeziviDeoTotal = 0;
+  let oporeziviDeoTotal = 0;
+  let brutoOporeziviDeoTotal = 0;
+  let porezTotal = 0;
 
   store.employees_with_relation.forEach(
     (employeeWithRelation: EmployeeWithRelations) => {
@@ -63,50 +65,50 @@ export default function Details() {
 
       if (employeeWithRelation.relations_with_days.length == 1) {
         let relationWithDays = employeeWithRelation.relations_with_days[0];
-        let sum = relationWithDays.days * relationWithDays.relation.price;
-        totalSum += sum;
+        let neto = relationWithDays.days * relationWithDays.relation.price;
+        netoTotal += neto;
 
         let neoporezivo = calculateNonTaxedValue(
           relationWithDays.days,
           store.maxNonTaxedValue,
           store.year,
           store.month,
-          sum
+          neto
         );
-        let oporezivo = sum - neoporezivo;
+        let oporezivo = neto - neoporezivo;
 
-        nonTaxedSum += neoporezivo;
-        taxedSum += oporezivo;
-        brutoTaxable += oporezivo * store.preracun_na_bruto;
-        taxSum += (brutoTaxable * store.stopa) / 100;
+        neoporeziviDeoTotal += neoporezivo;
+        oporeziviDeoTotal += oporezivo;
+        brutoOporeziviDeoTotal += oporezivo * store.preracun_na_bruto;
+        porezTotal += (brutoOporeziviDeoTotal * store.stopa) / 100;
         return;
       }
 
       if (employeeWithRelation.relations_with_days.length > 1) {
-        let sum = 0;
-        let days = 0;
+        let neto = 0;
+        let brojDana = 0;
         employeeWithRelation.relations_with_days.forEach(
           (relationWithDays: RelationWithDays) => {
-            sum += relationWithDays.days * relationWithDays.relation.price;
-            days += relationWithDays.days;
+            neto += relationWithDays.days * relationWithDays.relation.price;
+            brojDana += relationWithDays.days;
             return;
           }
         );
-        totalSum += sum;
+        netoTotal += neto;
 
         let neoporezivo = calculateNonTaxedValue(
-          days,
+          brojDana,
           store.maxNonTaxedValue,
           store.year,
           store.month,
-          sum
+          neto
         );
-        let oporezivo = sum - neoporezivo;
+        let oporezivo = neto - neoporezivo;
 
-        nonTaxedSum += neoporezivo;
-        taxedSum += oporezivo;
-        brutoTaxable += oporezivo * store.preracun_na_bruto;
-        taxSum += (brutoTaxable * store.stopa) / 100;
+        neoporeziviDeoTotal += neoporezivo;
+        oporeziviDeoTotal += oporezivo;
+        brutoOporeziviDeoTotal += oporezivo * store.preracun_na_bruto;
+        porezTotal += (brutoOporeziviDeoTotal * store.stopa) / 100;
       }
     }
   );
@@ -182,15 +184,18 @@ export default function Details() {
 
     let doc = xml.end({ pretty: true });
 
-    create_PPP_PD_File(store.year, store.month, doc);
+    let employees = store.employees_with_relation.map(employeeWithRelation=>{
+      return employeeWithRelation.employee;
+    })
+    create_PPP_PD_File(store.year, store.month, employees);
     shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
   };
 
-  const finish = () => {
+  const zakljucaj = () => {
     areYouSure({
       title: 'Zaključavanje obračuna',
       message:
-        'Da li ste sigurni da želite da zaključate obračun?\nUkoliko postoje zaposleni u obačunu za koje nije uneta ni jedna relacija, oni će automatski biti uklonjeni iz obračuna.',
+        'Da li ste sigurni da želite da zaključate obračun?\nUkoliko postoje zaposleni u obačunu za koje nije uneta nijedna relacija, oni će automatski biti uklonjeni iz obračuna.',
       onYes: async () => {
         handleResponse(await service.lockService(store.id), () => {
           dispatch(reloadCurrentTravelingExpenseDetails());
@@ -200,29 +205,10 @@ export default function Details() {
   };
 
   return (
-    <Container
-      fluid
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        flexWrap: 'nowrap'
-      }}
-      className="noselect"
-    >
-      <Row
-        style={{
-          flexShrink: 0,
-          backgroundColor: '#d8eacd'
-        }}
-      >
+    <Container fluid className={`${styles["details-container"]} noselect`}>
+      <Row style={{flexShrink: 0,backgroundColor: '#d8eacd'}}>
         <Col md={1} style={{ float: 'right', paddingLeft: 0 }}>
-          <NavLink
-            to={{
-              pathname: routes.TRAVEL_EXPENSES
-            }}
-          >
+          <NavLink to={{pathname: routes.TRAVEL_EXPENSES}}>
             <Button style={{ paddingTop: 2, paddingBottom: 2 }}>
               <i className="fa fa-chevron-left" />
             </Button>
@@ -230,40 +216,24 @@ export default function Details() {
         </Col>
 
         <Col md={11}>
-          <b>
-            Obračun putnih troškova za {getMonthName(store.month)} /{' '}
-            {store.year}.
-          </b>
+          <b>Obračun putnih troškova za {getMonthName(store.month)} /{' '}{store.year}.</b>
           <div style={{ float: 'right' }}>
             {store.status == U_RADU.value ? (
               <Button
                 variant="success"
                 title="Završi"
-                onClick={finish}
-                style={{
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                  paddingLeft: 5,
-                  paddingRight: 5,
-                  height: 25,
-                  marginLeft: 5
-                }}
+                onClick={zakljucaj}
+                className={styles["details-header-btn"]}
               >
-                <i className="fa fa-check-double" />
+                <i className="fa fa-lock" />
               </Button>
             ) : store.status == ZAVRSEN.value ? (
               <Button
                 variant="success"
-                title="kreiraj pd prijavu"
+                title={isCreate_PPP_PD_Disabled? "Nemaju svi zaposleni definisanu opštinu stanovanja!":"kreiraj pd prijavu"}
+                disabled={isCreate_PPP_PD_Disabled}
                 onClick={createXml}
-                style={{
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                  paddingLeft: 5,
-                  paddingRight: 5,
-                  height: 25,
-                  marginLeft: 5
-                }}
+                className={styles["details-header-btn"]}
               >
                 <i className="fa fa-file-code" />
               </Button>
@@ -271,14 +241,7 @@ export default function Details() {
           </div>
         </Col>
       </Row>
-      <Row
-        style={{
-          // marginBottom: 50, marginTop: 30
-          flexGrow: 1,
-          overflow: 'auto',
-          minHeight: '2em'
-        }}
-      >
+      <Row style={{flexGrow: 1,overflow: 'auto'}}>
         <Col style={{ padding: 0 }}>
           <Table
             striped
@@ -300,25 +263,19 @@ export default function Details() {
                 <th style={{ width: columnWidths.relationPrice }}>Cena</th>
                 <th style={{ width: columnWidths.days }}>Dana</th>
                 <th style={{ width: columnWidths.sumPerEmployee }}>Neto</th>
-                <th style={{ width: columnWidths.nonTaxablePrice }}>Neopor.</th>
-                <th style={{ width: columnWidths.taxablePrice }}>Opor.</th>
-                <th style={{ width: columnWidths.brutoTaxable }}>Bruto O.</th>
+                <th style={{ width: columnWidths.nonTaxablePrice }}>Neoporez.</th>
+                <th style={{ width: columnWidths.taxablePrice }}>Oporez.</th>
+                <th style={{ width: columnWidths.brutoTaxable }}>Bruto Opor.</th>
                 <th style={{ width: columnWidths.tax }}>Porez</th>
                 {store.status == U_RADU.value ? (
                   <th
                     style={{ textAlign: 'center', width: columnWidths.actions }}
                   >
                     <Button
-                      onClick={openAddEmployeeDialog}
+                      onClick={()=>dispatch(open(store.id))}
                       title="Dodaj zaposlenog"
                       variant="success"
-                      style={{
-                        paddingLeft: 5,
-                        paddingRight: 5,
-                        paddingTop: 0,
-                        paddingBottom: 0,
-                        marginRight: 5
-                      }}
+                      className="table-header-btn"
                     >
                       <i className="fa fa-plus" />
                     </Button>
@@ -377,49 +334,40 @@ export default function Details() {
       >
         <div
           style={{
-            paddingLeft: 5,
-            paddingRight: 5,
             backgroundColor: columColors.sumPerEmployee
           }}
+        className={styles["details-total"]}
         >
-          neto: {numberWithThousandSeparator(totalSum)}
+          neto: {numberWithThousandSeparator(netoTotal)}
         </div>
         <div
           style={{
-            paddingLeft: 5,
-            paddingRight: 5,
             backgroundColor: columColors.nonTaxablePrice
           }}
+        className={styles["details-total"]}
         >
-          neoporezivo: {numberWithThousandSeparator(nonTaxedSum)}
+          neoporezivo: {numberWithThousandSeparator(neoporeziviDeoTotal)}
         </div>
         <div
           style={{
-            paddingLeft: 5,
-            paddingRight: 5,
             backgroundColor: columColors.taxablePrice
           }}
+        className={styles["details-total"]}
         >
-          oporezivo: {numberWithThousandSeparator(taxedSum)}
+          oporezivo: {numberWithThousandSeparator(oporeziviDeoTotal)}
         </div>
 
         <div
-          style={{
-            paddingLeft: 5,
-            paddingRight: 5,
-            backgroundColor: columColors.brutoTaxable
-          }}
+          style={{backgroundColor: columColors.brutoTaxable}}
+        className={styles["details-total"]}
         >
-          Bruto oporezivo: {numberWithThousandSeparator(brutoTaxable)}
+          Bruto oporezivo: {numberWithThousandSeparator(brutoOporeziviDeoTotal)}
         </div>
         <div
-          style={{
-            paddingLeft: 5,
-            paddingRight: 5,
-            backgroundColor: columColors.tax
-          }}
+        style={{backgroundColor: columColors.tax}}
+        className={styles["details-total"]}
         >
-          Bruto oporezivo: {numberWithThousandSeparator(taxSum)}
+          Bruto oporezivo: {numberWithThousandSeparator(porezTotal)}
         </div>
       </Row>
       <EditDaysModal year={store.year} month={store.month} />
@@ -427,4 +375,5 @@ export default function Details() {
       <AddRelationWithDaysModal year={store.year} month={store.month} />
     </Container>
   );
+
 }
