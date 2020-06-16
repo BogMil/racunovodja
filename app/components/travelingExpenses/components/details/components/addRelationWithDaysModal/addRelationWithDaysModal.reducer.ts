@@ -5,14 +5,13 @@ import {
   OPEN,
   SET_SELECTED_RELATION_ID
 } from './addRelationWithDaysModal.actions';
-import { Employee } from '../../../../../employees/types';
 import { Relation } from '../../../../../relations/relations.types';
 
 const initialState: AddRelationWithDaysModalStore = {
   show: false,
   relations: [],
   travelingExpenseEmployeeId: -1,
-  selectedRelationId: -1,
+  selectedRelationId: -1
 };
 
 export type AddRelationWithDaysModalStore = {

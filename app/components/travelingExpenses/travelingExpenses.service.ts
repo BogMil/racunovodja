@@ -77,26 +77,44 @@ export async function removeRelation(relationWithDaysId: number) {
   return res;
 }
 
-export async function getAvailableRelations(travelingExpenseEmployeeId: number) {
+export async function getAvailableRelations(
+  travelingExpenseEmployeeId: number
+) {
   let res = await axios
-    .get(`${API_URL}/travelingExpenseEmployee/${travelingExpenseEmployeeId}/availableRelations`)
+    .get(
+      `${API_URL}/travelingExpenseEmployee/${travelingExpenseEmployeeId}/availableRelations`
+    )
     .then(res => res.data)
     .catch(axiosErrorHandler);
   return res;
 }
 
-export async function addDaysToRelation(id:number,days:number){
+export async function addDaysToRelation(id: number, days: number) {
   let res = await axios
-  .post(`${API_URL}/employeeRelation/${id}/addDays/${days}`)
-  .then(res => res.data)
-  .catch(axiosErrorHandler);
-return res;
+    .post(`${API_URL}/employeeRelation/${id}/addDays/${days}`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
 }
 
-export async function addRelationWithDays(travelingExpenseEmployeeId:number,relationId:number,days:number){
+export async function addRelationWithDays(
+  travelingExpenseEmployeeId: number,
+  relationId: number,
+  days: number
+) {
   let res = await axios
-  .post(`${API_URL}/employee/${travelingExpenseEmployeeId}/addRelationWithDays/${relationId}/${days}`)
-  .then(res => res.data)
-  .catch(axiosErrorHandler);
-return res;
+    .post(
+      `${API_URL}/employee/${travelingExpenseEmployeeId}/addRelationWithDays/${relationId}/${days}`
+    )
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}
+
+export async function lockService(id: number) {
+  let res = await axios
+    .post(`${API_URL}/${id}/lock`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
 }

@@ -40,6 +40,8 @@ export type TravelingExpenseWithDetails = {
   employees_with_relation: EmployeeWithRelations[];
   maxNonTaxedValue: number;
   status: number;
+  preracun_na_bruto: number;
+  stopa: number;
 };
 
 export type EmployeeWithRelations = {

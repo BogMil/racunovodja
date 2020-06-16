@@ -1,13 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './menuItem.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type Props = {
   navigateTo: string;
   text: string;
   exact?: boolean;
-  iconDefinition?: any;
+  iconClassName?: string;
 };
 
 export default function MenuItem(props: Props) {
@@ -20,9 +19,9 @@ export default function MenuItem(props: Props) {
         style={{ width: '100%' }}
       >
         <div className={styles.menuItem + ' noselect'}>
-          {props.iconDefinition && (
+          {props.iconClassName && (
             <>
-              <FontAwesomeIcon icon={props.iconDefinition} />{' '}
+              <i className={props.iconClassName}></i>{' '}
             </>
           )}
           {props.text}

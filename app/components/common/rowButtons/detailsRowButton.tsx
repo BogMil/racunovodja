@@ -1,7 +1,5 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faList } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   onClick:
@@ -25,7 +23,7 @@ export default function DetailsRowButton(props: Props) {
         ...props.style
       }}
     >
-      <FontAwesomeIcon icon={faList} />{' '}
+      <i className="fa fa-list" />
     </Button>
   );
 }

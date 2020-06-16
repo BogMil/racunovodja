@@ -9,7 +9,10 @@ export const initialState: TravelingExpenseDetailsStore = {
   month: 0,
   user_id: 0,
   year: 0,
-  maxNonTaxedValue: 0
+  maxNonTaxedValue: 0,
+  preracun_na_bruto: 0,
+  stopa: 0,
+  status: -1
 };
 
 export interface TravelingExpenseDetailsStore

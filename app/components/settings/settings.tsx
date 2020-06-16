@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../reducers';
 import { loadOtherSettings } from './settings.actions';

@@ -1,19 +1,13 @@
 import React, { useEffect } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { Row, Col, Button, Container, Table } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faChevronLeft,
-  faPlus,
-  faFileCode,
-  faCheckDouble
-} from '@fortawesome/free-solid-svg-icons';
 import routes from '../../../../constants/routes.json';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
 import {
   loadTravelingExpenseDetails,
-  _loadTravelingExpenseDetails
+  _loadTravelingExpenseDetails,
+  reloadCurrentTravelingExpenseDetails
 } from './details.actions';
 import getMonthName from '../../../../utils/getMonthName';
 import {
@@ -28,13 +22,15 @@ import { open } from './components/addEmployeeModal/addEmployeeModal.actions';
 import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 import { initialState } from './details.reducer';
-import { columnWidths } from './details.columnWidths';
-
+import { columnWidths, columColors } from './details.columnStyles';
 import { create_PPP_PD_File } from '../../travelingExpenses.fileCreators';
 import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
-import { U_RADU } from '../../../../constants/statuses';
+import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
 import { calculateNonTaxedValue } from './components/relationTemplates/calculateNonTaxedValue';
 import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
+import { areYouSure } from '../../../../utils/yesNoModal';
+import { handleResponse } from '../../../../utils/responseHandler';
+import * as service from '../../travelingExpenses.service';
 
 export default function Details() {
   const { id } = useParams();
@@ -58,6 +54,9 @@ export default function Details() {
   let totalSum = 0;
   let nonTaxedSum = 0;
   let taxedSum = 0;
+  let brutoTaxable = 0;
+  let taxSum = 0;
+
   store.employees_with_relation.forEach(
     (employeeWithRelation: EmployeeWithRelations) => {
       if (employeeWithRelation.relations_with_days.length <= 0) return;
@@ -78,7 +77,8 @@ export default function Details() {
 
         nonTaxedSum += neoporezivo;
         taxedSum += oporezivo;
-
+        brutoTaxable += oporezivo * store.preracun_na_bruto;
+        taxSum += (brutoTaxable * store.stopa) / 100;
         return;
       }
 
@@ -105,6 +105,8 @@ export default function Details() {
 
         nonTaxedSum += neoporezivo;
         taxedSum += oporezivo;
+        brutoTaxable += oporezivo * store.preracun_na_bruto;
+        taxSum += (brutoTaxable * store.stopa) / 100;
       }
     }
   );
@@ -184,7 +186,19 @@ export default function Details() {
     shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
   };
 
-  const finish = () => {};
+  const finish = () => {
+    areYouSure({
+      title: 'Zaključavanje obračuna',
+      message:
+        'Da li ste sigurni da želite da zaključate obračun?\nUkoliko postoje zaposleni u obačunu za koje nije uneta ni jedna relacija, oni će automatski biti uklonjeni iz obračuna.',
+      onYes: async () => {
+        handleResponse(await service.lockService(store.id), () => {
+          dispatch(reloadCurrentTravelingExpenseDetails());
+        });
+      }
+    });
+  };
+
   return (
     <Container
       fluid
@@ -210,7 +224,7 @@ export default function Details() {
             }}
           >
             <Button style={{ paddingTop: 2, paddingBottom: 2 }}>
-              <FontAwesomeIcon icon={faChevronLeft} />{' '}
+              <i className="fa fa-chevron-left" />
             </Button>
           </NavLink>
         </Col>
@@ -235,9 +249,9 @@ export default function Details() {
                   marginLeft: 5
                 }}
               >
-                <FontAwesomeIcon icon={faCheckDouble} />{' '}
+                <i className="fa fa-check-double" />
               </Button>
-            ) : (
+            ) : store.status == ZAVRSEN.value ? (
               <Button
                 variant="success"
                 title="kreiraj pd prijavu"
@@ -251,9 +265,9 @@ export default function Details() {
                   marginLeft: 5
                 }}
               >
-                <FontAwesomeIcon icon={faFileCode} />{' '}
+                <i className="fa fa-file-code" />
               </Button>
-            )}
+            ) : null}
           </div>
         </Col>
       </Row>
@@ -271,7 +285,12 @@ export default function Details() {
             bordered
             hover
             size="sm"
-            style={{ width: columnWidths.sum() }}
+            style={{
+              width:
+                store.status == U_RADU.value
+                  ? columnWidths.sum()
+                  : columnWidths.sum() - columnWidths.actions
+            }}
           >
             <thead>
               <tr>
@@ -283,25 +302,28 @@ export default function Details() {
                 <th style={{ width: columnWidths.sumPerEmployee }}>Neto</th>
                 <th style={{ width: columnWidths.nonTaxablePrice }}>Neopor.</th>
                 <th style={{ width: columnWidths.taxablePrice }}>Opor.</th>
-                <th style={{ width: columnWidths.tax }}>Porez.</th>
-                <th
-                  style={{ textAlign: 'center', width: columnWidths.actions }}
-                >
-                  <Button
-                    onClick={openAddEmployeeDialog}
-                    title="Dodaj zaposlenog"
-                    variant="success"
-                    style={{
-                      paddingLeft: 5,
-                      paddingRight: 5,
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                      marginRight: 5
-                    }}
+                <th style={{ width: columnWidths.brutoTaxable }}>Bruto O.</th>
+                <th style={{ width: columnWidths.tax }}>Porez</th>
+                {store.status == U_RADU.value ? (
+                  <th
+                    style={{ textAlign: 'center', width: columnWidths.actions }}
                   >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </Button>
-                </th>
+                    <Button
+                      onClick={openAddEmployeeDialog}
+                      title="Dodaj zaposlenog"
+                      variant="success"
+                      style={{
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                        marginRight: 5
+                      }}
+                    >
+                      <i className="fa fa-plus" />
+                    </Button>
+                  </th>
+                ) : null}
               </tr>
             </thead>
             <tbody
@@ -349,25 +371,56 @@ export default function Details() {
 
       <Row
         style={{
-          // position: 'fixed',
-          // bottom: 0,
           backgroundColor: '#d8eacd',
-          // width: '100%',
-          // height: 50
           flexShrink: 0
         }}
       >
-        <Col>
-          <Row>
-            <Col>Ukupno : {numberWithThousandSeparator(totalSum)}</Col>
-            <Col>
-              Ukupno oporezivo : {numberWithThousandSeparator(taxedSum)}
-            </Col>
-            <Col>
-              Ukupno neoporezivo: {numberWithThousandSeparator(nonTaxedSum)}
-            </Col>
-          </Row>
-        </Col>
+        <div
+          style={{
+            paddingLeft: 5,
+            paddingRight: 5,
+            backgroundColor: columColors.sumPerEmployee
+          }}
+        >
+          neto: {numberWithThousandSeparator(totalSum)}
+        </div>
+        <div
+          style={{
+            paddingLeft: 5,
+            paddingRight: 5,
+            backgroundColor: columColors.nonTaxablePrice
+          }}
+        >
+          neoporezivo: {numberWithThousandSeparator(nonTaxedSum)}
+        </div>
+        <div
+          style={{
+            paddingLeft: 5,
+            paddingRight: 5,
+            backgroundColor: columColors.taxablePrice
+          }}
+        >
+          oporezivo: {numberWithThousandSeparator(taxedSum)}
+        </div>
+
+        <div
+          style={{
+            paddingLeft: 5,
+            paddingRight: 5,
+            backgroundColor: columColors.brutoTaxable
+          }}
+        >
+          Bruto oporezivo: {numberWithThousandSeparator(brutoTaxable)}
+        </div>
+        <div
+          style={{
+            paddingLeft: 5,
+            paddingRight: 5,
+            backgroundColor: columColors.tax
+          }}
+        >
+          Bruto oporezivo: {numberWithThousandSeparator(taxSum)}
+        </div>
       </Row>
       <EditDaysModal year={store.year} month={store.month} />
       <AddEmployeeModal />

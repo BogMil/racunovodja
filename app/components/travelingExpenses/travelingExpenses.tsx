@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../reducers';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes, faFileCode } from '@fortawesome/free-solid-svg-icons';
 import {
   loadTravelingExpenses,
   reloadTravelingExpenses
@@ -80,7 +78,7 @@ export default function TravelExpenses() {
                   marginRight: 5
                 }}
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <i className="fas fa-plus"></i>
               </Button>
             </th>
           </tr>
@@ -117,7 +115,7 @@ export default function TravelExpenses() {
                         marginLeft: 5
                       }}
                     >
-                      <FontAwesomeIcon icon={faFileCode} />{' '}
+                      <i className="fa fa-file-code" />
                     </Button>
                   )}
                   <DeleteRowButton

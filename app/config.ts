@@ -3,4 +3,4 @@ export const BASE_URL: string =
     ? // dev
       'http://127.0.0.1:8000'
     : // production code
-      'prod';
+      'http://127.0.0.1:8000';

@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../reducers';
 import { loadRelations } from './relations.actions';
@@ -43,7 +41,7 @@ export default function Relations() {
                   marginRight: 5
                 }}
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <i className="fa fa-plus" />
               </Button>
             </th>
           </tr>

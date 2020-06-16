@@ -6,8 +6,6 @@ import EmployeeModal from './components/employeeModal/employeeModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadEmployees } from './employees.actions';
 import { AppStore } from '../../reducers';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import { openCreate } from './components/employeeModal/employeeModal.actions';
 import UploadFileModal from './components/uploadFileModal/uploadFileModal';
 import { open } from './components/uploadFileModal/uploadFileModal.actions';
@@ -56,7 +54,7 @@ export default function Employees() {
                   marginRight: 5
                 }}
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <i className="fa fa-plus" />
               </Button>
               <Button
                 title="Učitaj zaposlene iz platnih listića"
@@ -68,7 +66,7 @@ export default function Employees() {
                 }}
                 onClick={openUploadDialog}
               >
-                <FontAwesomeIcon icon={faFileUpload} />
+                <i className="fa fa-file-upload" />
               </Button>
             </th>
           </tr>
