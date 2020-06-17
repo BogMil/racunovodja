@@ -152,7 +152,7 @@ export default merge.smart(baseConfig, {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            mimetype: 'application/font-woff'
+            mimetype: 'application/font-woff',
           }
         }
       },
@@ -160,10 +160,11 @@ export default merge.smart(baseConfig, {
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         use: {
-          loader: 'url-loader',
+          loader: 'file-loader',
           options: {
-            limit: 10000,
-            mimetype: 'application/octet-stream'
+            // limit: 10000,
+            // mimetype: 'application/octet-stream',
+            name:'[name].[ext]'
           }
         }
       },

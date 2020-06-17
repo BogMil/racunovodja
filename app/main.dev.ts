@@ -28,12 +28,14 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.DEBUG_PROD === 'true'
-) {
-  require('electron-debug')();
-}
+// if (
+//   process.env.NODE_ENV === 'development' ||
+//   process.env.DEBUG_PROD === 'true'
+// ) {
+//   require('electron-debug')();
+// }
+require('electron-debug')();
+
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -46,12 +48,13 @@ const installExtensions = async () => {
 };
 const icon = path.join(__dirname, '../resources/icons8-accounting-100.png');
 const createWindow = async () => {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.DEBUG_PROD === 'true'
-  ) {
-    await installExtensions();
-  }
+  // if (
+  //   process.env.NODE_ENV === 'development' ||
+  //   process.env.DEBUG_PROD === 'true'
+  // ) {
+  //   await installExtensions();
+  // }
+  await installExtensions();
 
   let splash = new BrowserWindow({
     width: 810,

@@ -23,7 +23,7 @@ import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 import { initialState } from './details.reducer';
 import { columnWidths, columColors } from './details.columnStyles';
-import { create_PPP_PD_File } from '../../travelingExpenses.fileCreators';
+import { create_PPP_PD_XML_File, createPdfFile } from '../../travelingExpenses.fileCreators';
 import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
 import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
 import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
@@ -52,7 +52,7 @@ export default function Details() {
     return employeeWithRelation.employee.municipality==null;
   }).length>0;
 
-  let x = 0;
+
 
   let netoTotal = 0;
   let neoporeziviDeoTotal = 0;
@@ -71,14 +71,19 @@ export default function Details() {
       porezTotal+=calculation.porez;
     }
   );
-  console.log(x);
+
   const createXml = () => {
     const { shell } = require('electron');
-
-    create_PPP_PD_File(store.year, store.month, store);
+    create_PPP_PD_XML_File(store.year, store.month, store);
     shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
   };
 
+  const createPdf = () =>{
+    const { shell } = require('electron');
+    createPdfFile(store.year, store.month, store);
+    // shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+  }
+  createPdf();
   const zakljucaj = () => {
     areYouSure({
       title: 'Zaključavanje obračuna',
@@ -116,7 +121,16 @@ export default function Details() {
                 <i className="fa fa-lock" />
               </Button>
             ) : store.status == ZAVRSEN.value ? (
-              <Button
+              <>
+                <Button
+                  variant="success"
+                  title={ "Kreiraj pdf fajl."}
+                  onClick={createPdf}
+                  className={styles["details-header-btn"]}
+                >
+                  <i className="fa fa-file-pdf" />
+                </Button>
+                <Button
                 variant="success"
                 title={isCreate_PPP_PD_Disabled? "Nemaju svi zaposleni definisanu opštinu stanovanja!":"kreiraj pd prijavu"}
                 disabled={isCreate_PPP_PD_Disabled}
@@ -125,6 +139,7 @@ export default function Details() {
               >
                 <i className="fa fa-file-code" />
               </Button>
+            </>
             ) : null}
           </div>
         </Col>
