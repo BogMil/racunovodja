@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Container, Row, Col } from 'react-bootstrap';
 import EmployeeComponent from './components/employee/employee';
 import AddDefaultRealtionModal from './components/addDefaultRelationModal/addDefaultRelationModal';
 import EmployeeModal from './components/employeeModal/employeeModal';
@@ -9,6 +9,7 @@ import { AppStore } from '../../reducers';
 import { openCreate } from './components/employeeModal/employeeModal.actions';
 import UploadFileModal from './components/uploadFileModal/uploadFileModal';
 import { open } from './components/uploadFileModal/uploadFileModal.actions';
+import { columnWidths } from './employees.columnStyle';
 
 export default function Employees() {
   const dispatch = useDispatch();
@@ -29,58 +30,84 @@ export default function Employees() {
   };
 
   return (
-    <>
-      <Table striped bordered hover size="sm">
-        <thead>
-          <tr>
-            <th>Aktivan</th>
-            <th>JMBG</th>
-            <th>Broj zaposlenog</th>
-            <th>Prezime</th>
-            <th>Ime</th>
-            <th>Broj računa</th>
-            <th>Opština stanovanja</th>
-            <th>Podrazumevana relacija</th>
-            <th style={{ textAlign: 'center' }}>
-              <Button
-                onClick={openCreateDialog}
-                title="Kreiraj novog zaposlenog"
-                variant="success"
-                style={{
-                  paddingLeft: 5,
-                  paddingRight: 5,
-                  paddingTop: 0,
-                  paddingBottom: 0,
-                  marginRight: 5
-                }}
-              >
-                <i className="fa fa-plus" />
-              </Button>
-              <Button
-                title="Učitaj zaposlene iz platnih listića"
-                style={{
-                  paddingLeft: 5,
-                  paddingRight: 5,
-                  paddingTop: 0,
-                  paddingBottom: 0
-                }}
-                onClick={openUploadDialog}
-              >
-                <i className="fa fa-file-upload" />
-              </Button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {store.employees &&
-            store.employees.map((employee, index) => (
-              <EmployeeComponent key={index} employee={employee} />
-            ))}
-        </tbody>
-      </Table>
+    <Container
+      fluid
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap'
+      }}
+      className={`noselect`}
+    >
+      <Row style={{ flexGrow: 1, overflow: 'auto' }}>
+        <Col style={{ padding: 0 }}>
+          <Table
+            striped
+            bordered
+            hover
+            size="sm"
+            style={{ width: columnWidths.sum(), tableLayout: 'fixed' }}
+          >
+            <thead>
+              <tr>
+                {/* <th style={{ width: columnWidths.activan }}>Aktivan</th> */}
+                <th style={{ width: columnWidths.jmbg }}>JMBG</th>
+                <th style={{ width: columnWidths.broj }}>Broj</th>
+                <th style={{ width: columnWidths.prezime }}>Prezime</th>
+                <th style={{ width: columnWidths.ime }}>Ime</th>
+                <th style={{ width: columnWidths.brojRacuna }}>Broj računa</th>
+                <th style={{ width: columnWidths.opstina }}>Opština</th>
+                <th style={{ width: columnWidths.relacije }}>
+                  Podrazumevana relacija
+                </th>
+                <th style={{ width: columnWidths.email }}>Email</th>
+                <th
+                  style={{ textAlign: 'center', width: columnWidths.actions }}
+                >
+                  <Button
+                    onClick={openCreateDialog}
+                    title="Kreiraj novog zaposlenog"
+                    variant="success"
+                    style={{
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      marginRight: 5
+                    }}
+                  >
+                    <i className="fa fa-plus" />
+                  </Button>
+                  <Button
+                    title="Učitaj zaposlene iz platnih listića"
+                    style={{
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                      paddingTop: 0,
+                      paddingBottom: 0
+                    }}
+                    onClick={openUploadDialog}
+                  >
+                    <i className="fa fa-file-upload" />
+                  </Button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {store.employees &&
+                store.employees.map((employee, index) => (
+                  <EmployeeComponent key={index} employee={employee} />
+                ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+
       <AddDefaultRealtionModal />
       <EmployeeModal />
       <UploadFileModal />
-    </>
+    </Container>
   );
 }

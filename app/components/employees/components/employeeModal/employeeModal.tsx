@@ -134,17 +134,34 @@ export default function CreateEmployeeModal() {
               </Form.Group>
             </Col>
           </Row>
-
-          <Form.Group controlId="formBasicCheckbox">
-            <Form.Check
-              custom
-              name="active"
-              type="checkbox"
-              label="Aktivan?"
-              checked={store.employee.active}
-              onChange={handleChange}
-            />
-          </Form.Group>
+          <Row>
+            <Col md={9}>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  name="email"
+                  onChange={handleChange}
+                  placeholder="Unesite Email adresu"
+                  value={store.employee.email}
+                />
+              </Form.Group>
+            </Col>
+            <Col md={3}>
+              <Form.Group
+                controlId="formBasicCheckbox"
+                style={{ marginTop: 35 }}
+              >
+                <Form.Check
+                  custom
+                  name="active"
+                  type="checkbox"
+                  label="Aktivan?"
+                  checked={store.employee.active}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
         </Form>
       </Modal.Body>
 

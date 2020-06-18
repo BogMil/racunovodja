@@ -14,6 +14,7 @@ import { openEdit } from '../employeeModal/employeeModal.actions';
 import DeleteRowButton from '../../../common/rowButtons/deleteRowButton';
 import EditRowButton from '../../../common/rowButtons/editRowButton';
 import { areYouSure } from '../../../../utils/yesNoModal';
+import { columnWidths } from '../../employees.columnStyle';
 
 type Props = {
   employee: Employee;
@@ -64,10 +65,11 @@ export default function EmployeeComponent(props: Props) {
 
   return (
     <tr style={{ backgroundColor: !employee.active ? '#FFD7D7' : '' }}>
-      <td
+      {/* <td
         className={styles.employeeCell}
         style={{
-          textAlign: 'center'
+          textAlign: 'center',
+          width: columnWidths.activan
         }}
       >
         <Form.Check
@@ -76,16 +78,38 @@ export default function EmployeeComponent(props: Props) {
           disabled
           checked={employee.active}
         />
+      </td> */}
+      <td style={{ width: columnWidths.jmbg }} className={styles.employeeCell}>
+        {employee.jmbg}
       </td>
-      <td className={styles.employeeCell}>{employee.jmbg}</td>
-      <td className={styles.employeeCell}>{employee.number}</td>
-      <td className={styles.employeeCell}>{employee.last_name}</td>
-      <td className={styles.employeeCell}>{employee.first_name}</td>
-      <td className={styles.employeeCell}>{employee.banc_account}</td>
-      <td className={styles.employeeCell}>
+      <td style={{ width: columnWidths.broj }} className={styles.employeeCell}>
+        {employee.number}
+      </td>
+      <td
+        style={{ width: columnWidths.prezime }}
+        className={styles.employeeCell}
+      >
+        {employee.last_name}
+      </td>
+      <td style={{ width: columnWidths.ime }} className={styles.employeeCell}>
+        {employee.first_name}
+      </td>
+      <td
+        style={{ width: columnWidths.brojRacuna }}
+        className={styles.employeeCell}
+      >
+        {employee.banc_account}
+      </td>
+      <td
+        style={{ width: columnWidths.opstina }}
+        className={styles.employeeCell}
+      >
         {employee.municipality ? employee.municipality.name : '---'}
       </td>
-      <td className={styles.employeeCell}>
+      <td
+        className={styles.employeeCell}
+        style={{ width: columnWidths.relacije }}
+      >
         <Table bordered hover size="sm" style={{ marginBottom: 0 }}>
           <tbody>
             {employee.default_relations.map((defaultRelation, i) => (
@@ -106,7 +130,7 @@ export default function EmployeeComponent(props: Props) {
                 <Button
                   variant="success"
                   onClick={() => onAddDefaultRelationClick()}
-                  style={{ width: '100%', padding: 0, height: 25 }}
+                  style={{ width: '100%', padding: 0, height: 20 }}
                   title="Dodaj podrazumevanu relaciju"
                 >
                   +
@@ -116,7 +140,11 @@ export default function EmployeeComponent(props: Props) {
           </tbody>
         </Table>
       </td>
-      <td style={{ textAlign: 'center' }}>
+      <td style={{ width: columnWidths.email }} className={styles.employeeCell}>
+        {employee.email}
+      </td>
+
+      <td style={{ textAlign: 'center', width: columnWidths.email }}>
         <EditRowButton
           onClick={editEmployee}
           title="Ažuriranje zaposlenog"

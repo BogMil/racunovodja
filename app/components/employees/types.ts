@@ -8,6 +8,7 @@ export type Employee = {
   banc_account: string;
   municipality: Municipality;
   default_relations: DefaultRelation[];
+  email: string;
 };
 
 export type EmployeeCDTO = {
@@ -19,6 +20,7 @@ export type EmployeeCDTO = {
   first_name: string;
   banc_account: string;
   municipality_id: number;
+  email: string;
 };
 
 export const newEmployeeCDTO = () => {
@@ -29,6 +31,7 @@ export const newEmployeeCDTO = () => {
     first_name: '',
     banc_account: '',
     municipality_id: 1,
+    email: '',
     active: true
   } as EmployeeCDTO;
 };
