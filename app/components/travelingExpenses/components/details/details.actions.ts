@@ -13,12 +13,10 @@ export const NAMESPACE = 'TRAVELING_EXPENSE_DETAILS';
 export function loadTravelingExpenseDetails(id: number) {
   return async (dispatch: Dispatch) => {
     handleResponse(await service.details(id), async (response: any) => {
-      // handleResponse(await getMaxNonTaxedValue(), (res: any) => {
       let travelingExpense = response.data;
 
       travelingExpense.employees_with_relation.sort(compareLastName);
       dispatch(_loadTravelingExpenseDetails(response.data));
-      // });
     });
   };
 }

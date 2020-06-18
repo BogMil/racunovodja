@@ -237,15 +237,14 @@ export async function createPdfFile(
     return row;
   };
 
-  let tableBody = travelingExpense.employees_with_relation.map(
-    employeeWithRelations => {
+  let tableBody = () =>
+    travelingExpense.employees_with_relation.map(employeeWithRelations => {
       if (employeeWithRelations.relations_with_days.length == 1)
         return employeeWithOnlyOneRelation(employeeWithRelations);
       if (employeeWithRelations.relations_with_days.length > 1)
         return employeeWithMultipleRelations(employeeWithRelations);
       return;
-    }
-  );
+    });
 
   let netoTotal = 0;
   let neoporeziviDeoTotal = 0;
@@ -272,23 +271,6 @@ export async function createPdfFile(
       porezTotal += calculation.porez;
     }
   );
-
-  let writeRotatedText = function(text) {
-    var ctx,
-      canvas = document.createElement('canvas');
-    // I am using predefined dimensions so either make this part of the arguments or change at will
-    canvas.width = 36;
-    canvas.height = 270;
-    ctx = canvas.getContext('2d');
-    ctx.font = '36pt Arial';
-    ctx.save();
-    ctx.translate(36, 270);
-    ctx.rotate(-0.5 * Math.PI);
-    ctx.fillStyle = '#000';
-    ctx.fillText(text, 0, 0);
-    ctx.restore();
-    return canvas.toDataURL();
-  };
 
   var docDefinition = {
     pageSize: 'A4',
@@ -414,7 +396,12 @@ export async function createPdfFile(
               { text: 'Bruto', alignment: 'center', italics: true },
               { text: 'Porez', alignment: 'center', italics: true }
             ],
-            ...tableBody
+            ...tableBody(),
+            ...tableBody(),
+            ...tableBody(),
+            ...tableBody(),
+            ...tableBody(),
+            ...tableBody()
           ]
         },
         layout: { ...zeroPadding }
@@ -516,7 +503,7 @@ function createXmlContent(
         'tns:OznakaPrebivalista',
         employeeWithRelations.employee.municipality.code
       );
-      PodaciOPrihodima.ele('tns:SVP', 105602000);
+      PodaciOPrihodima.ele('tns:SVP', 101110000);
       // PodaciOPrihodima.ele('tns:MesecniFondSati', 168);
       PodaciOPrihodima.ele(
         'tns:Bruto',
