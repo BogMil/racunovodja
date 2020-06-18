@@ -15,6 +15,7 @@ import { numberWithThousandSeparator } from '../../utils/numberWithThousandSepar
 import getMonthName from '../../utils/getMonthName';
 import SourceSansProLight from '../../../resources/fonts/SourceSansProLight-KGKA.ttf';
 import Axios from 'axios';
+import { UserDetails } from '../userDetails/userDetails.types';
 
 var fs = require('fs');
 const { shell } = require('electron');
@@ -23,10 +24,11 @@ var builder = require('xmlbuilder');
 export function create_PPP_PD_XML_File(
   year: number,
   month: number,
-  travelingExpense: TravelingExpenseWithDetails
+  travelingExpense: TravelingExpenseWithDetails,
+  userDetails: UserDetails
 ) {
   let filePath = _create_PPP_PD_xmlFile(year, month);
-  let xmlContent = createXmlContent(year, month, travelingExpense);
+  let xmlContent = createXmlContent(year, month, travelingExpense, userDetails);
   fs.writeFile(filePath, xmlContent, (e: any) => {
     console.log(e);
   });
@@ -35,7 +37,8 @@ export function create_PPP_PD_XML_File(
 export async function createPdfFile(
   year: number,
   month: number,
-  travelingExpense: TravelingExpenseWithDetails
+  travelingExpense: TravelingExpenseWithDetails,
+  userDetails: UserDetails
 ) {
   let filePath = _createPdfFile(year, month);
   const fs = require('fs');
@@ -293,7 +296,7 @@ export async function createPdfFile(
     },
     pageOrientation: 'landscape',
     content: [
-      { text: 'Srednja Strucna skola', margin: [0, 0, 0, 30] },
+      { text: userDetails.naziv_skole, margin: [0, 0, 0, 30] },
       {
         // pageBreak: 'after',
         margin: [0, 0, 0, 30],
@@ -312,7 +315,7 @@ export async function createPdfFile(
                     margin: [0, 10, 0, 0]
                   },
                   { text: 'Neto', alignment: 'center' },
-                  { text: 'Neoporezivo', alignment: 'center' },
+                  { text: `Neoporezivo`, alignment: 'center' },
                   { text: 'Oporezivo', alignment: 'center' },
                   { text: 'Bruto', alignment: 'center' },
                   { text: 'Porez', alignment: 'center' }
@@ -441,7 +444,8 @@ export async function createPdfFile(
 function createXmlContent(
   year: number,
   month: number,
-  travelingExpense: TravelingExpenseWithDetails
+  travelingExpense: TravelingExpenseWithDetails,
+  userDetails: UserDetails
 ) {
   var xml = builder.create('tns:PodaciPoreskeDeklaracije');
   xml.att('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
@@ -457,17 +461,23 @@ function createXmlContent(
 
   let PodaciOIsplatiocu = xml.ele('tns:PodaciOIsplatiocu');
   PodaciOIsplatiocu.ele('tns:TipIsplatioca', 2);
-  PodaciOIsplatiocu.ele('tns:PoreskiIdentifikacioniBroj', 101408574);
+  PodaciOIsplatiocu.ele(
+    'tns:PoreskiIdentifikacioniBroj',
+    userDetails.poreski_identifikacioni_broj
+  );
   PodaciOIsplatiocu.ele(
     'tns:BrojZaposlenih',
     travelingExpense.employees_with_relation.length
   );
-  PodaciOIsplatiocu.ele('tns:MaticniBrojisplatioca', '0825740');
-  PodaciOIsplatiocu.ele('tns:NazivPrezimeIme', 'SSŠ Vasa Pelagić');
-  PodaciOIsplatiocu.ele('tns:SedistePrebivaliste', 217);
-  PodaciOIsplatiocu.ele('tns:Telefon', '013 742 200');
-  PodaciOIsplatiocu.ele('tns:UlicaIBroj', 'Cara Lazara 261');
-  PodaciOIsplatiocu.ele('tns:eMail', 'vpkovin@gmail.com');
+  PodaciOIsplatiocu.ele('tns:MaticniBrojisplatioca', userDetails.maticni_broj);
+  PodaciOIsplatiocu.ele('tns:NazivPrezimeIme', userDetails.naziv_skole);
+  PodaciOIsplatiocu.ele(
+    'tns:SedistePrebivaliste',
+    userDetails.municipality.code
+  );
+  PodaciOIsplatiocu.ele('tns:Telefon', userDetails.telefon);
+  PodaciOIsplatiocu.ele('tns:UlicaIBroj', userDetails.ulica_i_broj);
+  PodaciOIsplatiocu.ele('tns:eMail', userDetails.email);
 
   let DeklarisaniPrihodi = xml.ele('tns:DeklarisaniPrihodi');
 

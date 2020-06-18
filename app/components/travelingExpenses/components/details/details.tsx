@@ -23,7 +23,10 @@ import AddEmployeeModal from './components/addEmployeeModal/addEmployeeModal';
 import AddRelationWithDaysModal from './components/addRelationWithDaysModal/addRelationWithDaysModal';
 import { initialState } from './details.reducer';
 import { columnWidths, columColors } from './details.columnStyles';
-import { create_PPP_PD_XML_File, createPdfFile } from '../../travelingExpenses.fileCreators';
+import {
+  create_PPP_PD_XML_File,
+  createPdfFile
+} from '../../travelingExpenses.fileCreators';
 import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
 import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
 import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
@@ -31,6 +34,7 @@ import { areYouSure } from '../../../../utils/yesNoModal';
 import { handleResponse } from '../../../../utils/responseHandler';
 import * as service from '../../travelingExpenses.service';
 import styles from './details.css';
+import { get as getUserDetails } from '../../../userDetails/userDetails.service';
 
 export default function Details() {
   const { id } = useParams();
@@ -47,12 +51,11 @@ export default function Details() {
     };
   }, []);
 
-  let isCreate_PPP_PD_Disabled = store.employees_with_relation.filter(employeeWithRelation=>{
-    console.log(employeeWithRelation.employee.municipality);
-    return employeeWithRelation.employee.municipality==null;
-  }).length>0;
-
-
+  let isCreate_PPP_PD_Disabled =
+    store.employees_with_relation.filter(employeeWithRelation => {
+      console.log(employeeWithRelation.employee.municipality);
+      return employeeWithRelation.employee.municipality == null;
+    }).length > 0;
 
   let netoTotal = 0;
   let neoporeziviDeoTotal = 0;
@@ -62,27 +65,39 @@ export default function Details() {
 
   store.employees_with_relation.forEach(
     (employeeWithRelation: EmployeeWithRelations) => {
-      let employeeTravelingExpenseCalculator=new EmployeeTravelingExpenseCalculator(store.year,store.month,store.maxNonTaxedValue,store.preracun_na_bruto,store.stopa);
-      let calculation =employeeTravelingExpenseCalculator.getCalculation(employeeWithRelation);
-      netoTotal+=calculation.neto;
-      neoporeziviDeoTotal+=calculation.neoporezivo;
-      oporeziviDeoTotal+=calculation.oporezivo;
-      brutoOporeziviDeoTotal+=calculation.brutoOporezivo;
-      porezTotal+=calculation.porez;
+      let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
+        store.year,
+        store.month,
+        store.maxNonTaxedValue,
+        store.preracun_na_bruto,
+        store.stopa
+      );
+      let calculation = employeeTravelingExpenseCalculator.getCalculation(
+        employeeWithRelation
+      );
+      netoTotal += calculation.neto;
+      neoporeziviDeoTotal += calculation.neoporezivo;
+      oporeziviDeoTotal += calculation.oporezivo;
+      brutoOporeziviDeoTotal += calculation.brutoOporezivo;
+      porezTotal += calculation.porez;
     }
   );
 
-  const createXml = () => {
-    const { shell } = require('electron');
-    create_PPP_PD_XML_File(store.year, store.month, store);
-    shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+  const createXml = async () => {
+    handleResponse(await getUserDetails(), (res: any) => {
+      const { shell } = require('electron');
+      create_PPP_PD_XML_File(store.year, store.month, store, res.data);
+      shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+    });
   };
 
-  const createPdf = () =>{
-    const { shell } = require('electron');
-    createPdfFile(store.year, store.month, store);
-    // shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
-  }
+  const createPdf = async () => {
+    handleResponse(await getUserDetails(), (res: any) => {
+      const { shell } = require('electron');
+      createPdfFile(store.year, store.month, store, res.data);
+      // shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+    });
+  };
   createPdf();
   const zakljucaj = () => {
     areYouSure({
@@ -98,10 +113,10 @@ export default function Details() {
   };
 
   return (
-    <Container fluid className={`${styles["details-container"]} noselect`}>
-      <Row style={{flexShrink: 0,backgroundColor: '#d8eacd'}}>
+    <Container fluid className={`${styles['details-container']} noselect`}>
+      <Row style={{ flexShrink: 0, backgroundColor: '#d8eacd' }}>
         <Col md={1} style={{ float: 'right', paddingLeft: 0 }}>
-          <NavLink to={{pathname: routes.TRAVEL_EXPENSES}}>
+          <NavLink to={{ pathname: routes.TRAVEL_EXPENSES }}>
             <Button style={{ paddingTop: 2, paddingBottom: 2 }}>
               <i className="fa fa-chevron-left" />
             </Button>
@@ -109,14 +124,17 @@ export default function Details() {
         </Col>
 
         <Col md={11}>
-          <b>Obračun putnih troškova za {getMonthName(store.month)} /{' '}{store.year}.</b>
+          <b>
+            Obračun putnih troškova za {getMonthName(store.month)} /{' '}
+            {store.year}.
+          </b>
           <div style={{ float: 'right' }}>
             {store.status == U_RADU.value ? (
               <Button
                 variant="success"
                 title="Završi"
                 onClick={zakljucaj}
-                className={styles["details-header-btn"]}
+                className={styles['details-header-btn']}
               >
                 <i className="fa fa-lock" />
               </Button>
@@ -124,27 +142,31 @@ export default function Details() {
               <>
                 <Button
                   variant="success"
-                  title={ "Kreiraj pdf fajl."}
+                  title={'Kreiraj pdf fajl.'}
                   onClick={createPdf}
-                  className={styles["details-header-btn"]}
+                  className={styles['details-header-btn']}
                 >
                   <i className="fa fa-file-pdf" />
                 </Button>
                 <Button
-                variant="success"
-                title={isCreate_PPP_PD_Disabled? "Nemaju svi zaposleni definisanu opštinu stanovanja!":"kreiraj pd prijavu"}
-                disabled={isCreate_PPP_PD_Disabled}
-                onClick={createXml}
-                className={styles["details-header-btn"]}
-              >
-                <i className="fa fa-file-code" />
-              </Button>
-            </>
+                  variant="success"
+                  title={
+                    isCreate_PPP_PD_Disabled
+                      ? 'Nemaju svi zaposleni definisanu opštinu stanovanja!'
+                      : 'kreiraj pd prijavu'
+                  }
+                  disabled={isCreate_PPP_PD_Disabled}
+                  onClick={createXml}
+                  className={styles['details-header-btn']}
+                >
+                  <i className="fa fa-file-code" />
+                </Button>
+              </>
             ) : null}
           </div>
         </Col>
       </Row>
-      <Row style={{flexGrow: 1,overflow: 'auto'}}>
+      <Row style={{ flexGrow: 1, overflow: 'auto' }}>
         <Col style={{ padding: 0 }}>
           <Table
             striped
@@ -166,16 +188,20 @@ export default function Details() {
                 <th style={{ width: columnWidths.relationPrice }}>Cena</th>
                 <th style={{ width: columnWidths.days }}>Dana</th>
                 <th style={{ width: columnWidths.sumPerEmployee }}>Neto</th>
-                <th style={{ width: columnWidths.nonTaxablePrice }}>Neoporez.</th>
+                <th style={{ width: columnWidths.nonTaxablePrice }}>
+                  Neoporez.
+                </th>
                 <th style={{ width: columnWidths.taxablePrice }}>Oporez.</th>
-                <th style={{ width: columnWidths.brutoTaxable }}>Bruto Opor.</th>
+                <th style={{ width: columnWidths.brutoTaxable }}>
+                  Bruto Opor.
+                </th>
                 <th style={{ width: columnWidths.tax }}>Porez</th>
                 {store.status == U_RADU.value ? (
                   <th
                     style={{ textAlign: 'center', width: columnWidths.actions }}
                   >
                     <Button
-                      onClick={()=>dispatch(open(store.id))}
+                      onClick={() => dispatch(open(store.id))}
                       title="Dodaj zaposlenog"
                       variant="success"
                       className="table-header-btn"
@@ -239,7 +265,7 @@ export default function Details() {
           style={{
             backgroundColor: columColors.sumPerEmployee
           }}
-        className={styles["details-total"]}
+          className={styles['details-total']}
         >
           neto: {numberWithThousandSeparator(netoTotal)}
         </div>
@@ -247,7 +273,7 @@ export default function Details() {
           style={{
             backgroundColor: columColors.nonTaxablePrice
           }}
-        className={styles["details-total"]}
+          className={styles['details-total']}
         >
           neoporezivo: {numberWithThousandSeparator(neoporeziviDeoTotal)}
         </div>
@@ -255,20 +281,20 @@ export default function Details() {
           style={{
             backgroundColor: columColors.taxablePrice
           }}
-        className={styles["details-total"]}
+          className={styles['details-total']}
         >
           oporezivo: {numberWithThousandSeparator(oporeziviDeoTotal)}
         </div>
 
         <div
-          style={{backgroundColor: columColors.brutoTaxable}}
-        className={styles["details-total"]}
+          style={{ backgroundColor: columColors.brutoTaxable }}
+          className={styles['details-total']}
         >
           Bruto oporezivo: {numberWithThousandSeparator(brutoOporeziviDeoTotal)}
         </div>
         <div
-        style={{backgroundColor: columColors.tax}}
-        className={styles["details-total"]}
+          style={{ backgroundColor: columColors.tax }}
+          className={styles['details-total']}
         >
           Bruto oporezivo: {numberWithThousandSeparator(porezTotal)}
         </div>
@@ -278,5 +304,4 @@ export default function Details() {
       <AddRelationWithDaysModal year={store.year} month={store.month} />
     </Container>
   );
-
 }
