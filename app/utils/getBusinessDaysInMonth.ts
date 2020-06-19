@@ -1,8 +1,8 @@
-function daysInMonth(iMonth: number, iYear: number) {
+export function daysInMonth(iMonth: number, iYear: number) {
   return new Date(iYear, iMonth, 0).getDate();
 }
 
-function isWeekday(year: number, month: number, day: number) {
+export function isWeekday(year: number, month: number, day: number) {
   var dayOfWeek = new Date(year, month - 1, day).getDay();
   return dayOfWeek != 0 && dayOfWeek != 6;
 }

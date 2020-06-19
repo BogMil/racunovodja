@@ -16,6 +16,7 @@ import getMonthName from '../../utils/getMonthName';
 import SourceSansProLight from '../../../resources/fonts/SourceSansProLight-KGKA.ttf';
 import Axios from 'axios';
 import { UserDetails } from '../userDetails/userDetails.types';
+import { daysInMonth, isWeekday } from '../../utils/getBusinessDaysInMonth';
 
 var fs = require('fs');
 const { shell } = require('electron');
@@ -447,6 +448,11 @@ function createXmlContent(
   travelingExpense: TravelingExpenseWithDetails,
   userDetails: UserDetails
 ) {
+  let days = daysInMonth(month + 1, year);
+  while (!isWeekday(year, month + 1, days)) {
+    days--;
+  }
+  let datumPlacanja = `${year}-${month + 1}-${days}`;
   var xml = builder.create('tns:PodaciPoreskeDeklaracije');
   xml.att('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
   xml.att('xmlns:tns', 'http://pid.purs.gov.rs');
@@ -456,7 +462,7 @@ function createXmlContent(
   PodaciOPrijavi.ele('tns:KlijentskaOznakaDeklaracije', 1);
   PodaciOPrijavi.ele('tns:VrstaPrijave', 1);
   PodaciOPrijavi.ele('tns:ObracunskiPeriod', `${year}-${month}`);
-  PodaciOPrijavi.ele('tns:DatumPlacanja', '2020-06-10');
+  PodaciOPrijavi.ele('tns:DatumPlacanja', datumPlacanja);
   PodaciOPrijavi.ele('tns:NajnizaOsnovica', 0);
 
   let PodaciOIsplatiocu = xml.ele('tns:PodaciOIsplatiocu');
