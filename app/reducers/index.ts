@@ -7,7 +7,7 @@ import employeesCombinedReducer, {
 } from '../components/employees/combinedReducer';
 import relationsCombineReducer, {
   RelationCombinedReducer
-} from '../components/relations/combinedReducer';
+} from '../components/sifarnici/relations/combinedReducer';
 import travelingExpensesCombineReducer, {
   TravelingExpenseCombinedReducer
 } from '../components/travelingExpenses/travelingExpenses.combinedReducer';
@@ -15,6 +15,9 @@ import travelingExpensesCombineReducer, {
 import userDetailsCombined, {
   UserDetailsCombinedReducer
 } from '../components/userDetails/userDetails.combinedReducer';
+import lokacijeCombined, {
+  LokacijaCombinedReducer
+} from '../components/sifarnici/lokacije/lokacije.combinedReducer';
 
 export default function createRootReducer(history: History) {
   return combineReducers({
@@ -23,7 +26,8 @@ export default function createRootReducer(history: History) {
     employeesCombined: employeesCombinedReducer(),
     relationsCombined: relationsCombineReducer(),
     travelingExpensesCombined: travelingExpensesCombineReducer(),
-    userDetailsCombined: userDetailsCombined()
+    userDetailsCombined: userDetailsCombined(),
+    lokacijeCombined: lokacijeCombined()
   });
 }
 
@@ -34,4 +38,5 @@ export type AppStore = {
   relationsCombined: RelationCombinedReducer;
   travelingExpensesCombined: TravelingExpenseCombinedReducer;
   userDetailsCombined: UserDetailsCombinedReducer;
+  lokacijeCombined: LokacijaCombinedReducer;
 };

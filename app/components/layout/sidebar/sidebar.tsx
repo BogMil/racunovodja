@@ -43,6 +43,11 @@ export default function SideBar() {
         />
         <SubMenu text="Šifarnici">
           <MenuItem
+            iconClassName="fa fa-map-marker"
+            navigateTo={routes.LOCATIONS}
+            text="Lokacije"
+          />
+          <MenuItem
             iconClassName="fa fa-route"
             navigateTo={routes.RELATIONS}
             text="Relacije"

@@ -8,10 +8,11 @@ import RegisterComponent from './components/auth/register/register';
 import SuccessfulRegistrationComponent from './components/auth/register/success';
 import { useSelector } from 'react-redux';
 import Employees from './components/employees/employees';
-import Relations from './components/relations/relations';
+import Relations from './components/sifarnici/relations/relations';
 import TravelExpenses from './components/travelingExpenses/travelingExpenses';
 import TravelExpensesDetails from './components/travelingExpenses/components/details/details';
 import UserDetailsComponent from './components/userDetails/userDetails';
+import LokacijeComponent from './components/sifarnici/lokacije/lokacije';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);
@@ -44,6 +45,9 @@ export default function Routes() {
 
         <PrivateRoute path={routes.OTHER_SETTINGS}>
           <UserDetailsComponent />
+        </PrivateRoute>
+        <PrivateRoute path={routes.LOCATIONS}>
+          <LokacijeComponent />
         </PrivateRoute>
       </Switch>
     </App>

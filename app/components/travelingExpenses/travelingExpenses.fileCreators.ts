@@ -7,14 +7,11 @@ import {
 } from '../../constants/files';
 import {
   EmployeeWithRelations,
-  TravelingExpense,
   TravelingExpenseWithDetails,
   EmployeeTravelingExpenseCalculator
 } from './travelingExpenses.types';
 import { numberWithThousandSeparator } from '../../utils/numberWithThousandSeparator';
 import getMonthName from '../../utils/getMonthName';
-import SourceSansProLight from '../../../resources/fonts/SourceSansProLight-KGKA.ttf';
-import Axios from 'axios';
 import { UserDetails } from '../userDetails/userDetails.types';
 import { daysInMonth, isWeekday } from '../../utils/getBusinessDaysInMonth';
 
@@ -48,16 +45,16 @@ export async function createPdfFile(
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
   const zeroPadding = {
-    paddingLeft: function(i, node) {
+    paddingLeft: function() {
       return 0;
     },
-    paddingRight: function(i, node) {
+    paddingRight: function() {
       return 0;
     },
-    paddingTop: function(i, node) {
+    paddingTop: function() {
       return 0;
     },
-    paddingBottom: function(i, node) {
+    paddingBottom: function() {
       return 0;
     }
   };
@@ -279,7 +276,7 @@ export async function createPdfFile(
   var docDefinition = {
     pageSize: 'A4',
     pageMargins: [10, 20, 10, 20],
-    header: function(currentPage, pageCount) {
+    header: function() {
       // if (currentPage != 1)
       return {
         text: `Obračun putnih troškova za ${getMonthName(month)} / ${year}`,
@@ -288,7 +285,7 @@ export async function createPdfFile(
         fontSize: 10
       };
     },
-    footer: function(currentPage, pageCount) {
+    footer: function(currentPage: number, pageCount: number) {
       return {
         text: `${currentPage}/${pageCount}`,
         fontSize: 10,

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { BASE_URL } from '../../config';
-import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
+import { BASE_URL } from '../../../config';
+import { axiosErrorHandler } from '../../../utils/axiosErrorHandler';
 import { RelationCDTO } from './relations.types';
 
 const API_URL = `${BASE_URL}/api/relation`;

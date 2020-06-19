@@ -1,11 +1,13 @@
-import { Action } from '../../../../reducers/types';
+import { Action } from '../../../../../reducers/types';
 import { NAMESPACE, CLOSE, OPEN, HANDLE_CHANGE } from './relationModal.actions';
 import { RelationCDTO, newRelationCDTO } from '../../relations.types';
+import { Lokacija } from '../../../lokacije/lokacije.types';
 
 const initialState: RelationModalStore = {
   show: false,
   title: '',
   relation: {} as RelationCDTO,
+  lokacije: [],
   mode: ''
 };
 
@@ -13,6 +15,7 @@ export type RelationModalStore = {
   show: boolean;
   title: string;
   relation: RelationCDTO;
+  lokacije: Lokacija[];
   mode: string;
 };
 
@@ -23,13 +26,15 @@ export default function RelationModal(
   if (action.namespace != NAMESPACE) return state;
   switch (action.type) {
     case OPEN:
-      const { relation, title, mode } = action.payload;
+      const { relation, title, mode, lokacije } = action.payload;
+      console.log(lokacije);
       return {
         ...state,
         show: true,
         relation: relation,
         title: title,
-        mode: mode
+        mode: mode,
+        lokacije: lokacije
       };
 
     case CLOSE:
@@ -38,7 +43,8 @@ export default function RelationModal(
         show: false,
         relation: newRelationCDTO(),
         title: '',
-        mode: ''
+        mode: '',
+        lokacije: []
       };
 
     case HANDLE_CHANGE:

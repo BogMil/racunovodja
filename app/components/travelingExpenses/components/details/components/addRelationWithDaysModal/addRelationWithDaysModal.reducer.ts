@@ -5,7 +5,7 @@ import {
   OPEN,
   SET_SELECTED_RELATION_ID
 } from './addRelationWithDaysModal.actions';
-import { Relation } from '../../../../../relations/relations.types';
+import { Relation } from '../../../../../sifarnici/relations/relations.types';
 
 const initialState: AddRelationWithDaysModalStore = {
   show: false,

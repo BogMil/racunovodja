@@ -9,5 +9,6 @@
   "RELATIONS": "/relations",
   "TRAVEL_EXPENSES": "/travelExpenses",
   "TRAVEL_EXPENSES_DETAILS": "/travel_expenses_details",
-  "OTHER_SETTINGS": "/other_settings"
+  "OTHER_SETTINGS": "/other_settings",
+  "LOCATIONS": "/locations"
 }

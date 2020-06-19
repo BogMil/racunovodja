@@ -3,7 +3,7 @@ import { NAMESPACE, LOAD_USER_DETAILS } from './userDetails.actions';
 import { UserDetails } from './userDetails.types';
 
 const initialState: UserDetailsStore = {
-  userDetails: {}
+  userDetails: {} as UserDetails
 };
 
 export type UserDetailsStore = {

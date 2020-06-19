@@ -1,13 +1,13 @@
 import React from 'react';
-import DeleteRowButton from '../../../common/rowButtons/deleteRowButton';
+import DeleteRowButton from '../../../../common/rowButtons/deleteRowButton';
 import { Relation, RelationCDTO } from '../../relations.types';
-import EditRowButton from '../../../common/rowButtons/editRowButton';
-import { handleResponse } from '../../../../utils/responseHandler';
+import EditRowButton from '../../../../common/rowButtons/editRowButton';
+import { handleResponse } from '../../../../../utils/responseHandler';
 import { reloadRelations } from '../../relations.actions';
 import { useDispatch } from 'react-redux';
 import * as service from '../../relations.service';
 import { openEdit } from '../relationModal/relationModal.actions';
-import { areYouSure } from '../../../../utils/yesNoModal';
+import { areYouSure } from '../../../../../utils/yesNoModal';
 type Props = {
   relation: Relation;
 };
@@ -33,7 +33,7 @@ export default function RelationComponent(props: Props) {
 
   return (
     <tr>
-      <td>{relation.name}</td>
+      <td>{`${relation.lokacija?.naziv} - ${relation.name}`}</td>
       <td>{relation.price}</td>
       <td style={{ textAlign: 'center' }}>
         <EditRowButton

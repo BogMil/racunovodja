@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppStore } from '../../reducers';
+import { AppStore } from '../../../reducers';
 import { loadRelations } from './relations.actions';
 import { Relation } from './relations.types';
 import { openCreate } from './components/relationModal/relationModal.actions';

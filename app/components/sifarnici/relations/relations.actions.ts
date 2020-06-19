@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux';
-import { handleResponse } from '../../utils/responseHandler';
+import { handleResponse } from '../../../utils/responseHandler';
 import * as service from './relations.service';
 import { Relation } from './relations.types';
-import { Action } from '../../reducers/types';
+import { Action } from '../../../reducers/types';
 
 export const LOAD_RELATIONS = 'LOAD_RELATIONS';
 export const NAMESPACE = 'RELATIONS';

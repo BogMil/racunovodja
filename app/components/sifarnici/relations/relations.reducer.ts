@@ -1,4 +1,4 @@
-import { Action } from '../../reducers/types';
+import { Action } from '../../../reducers/types';
 import { NAMESPACE, LOAD_RELATIONS } from './relations.actions';
 import { Relation } from './relations.types';
 

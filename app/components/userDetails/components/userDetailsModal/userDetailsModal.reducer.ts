@@ -5,8 +5,8 @@ import {
   OPEN,
   HANDLE_CHANGE
 } from './userDetailsModal.actions';
-import { Municipality, EmployeeCDTO, newEmployeeCDTO } from '../../types';
 import { UserDetails, getInitialUserDetails } from '../../userDetails.types';
+import { Municipality } from '../../../employees/types';
 
 const initialState: UserDetailsModalStore = {
   show: false,
