@@ -3,4 +3,4 @@ export const BASE_URL: string =
     ? // dev
       'http://127.0.0.1:8000'
     : // production code
-      'http://127.0.0.1:8000';
+      'http://racunovodja.bogmilko.rs';
