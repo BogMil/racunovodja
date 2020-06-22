@@ -28,14 +28,13 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-// if (
-//   process.env.NODE_ENV === 'development' ||
-//   process.env.DEBUG_PROD === 'true'
-// ) {
-//   require('electron-debug')();
-// }
-require('electron-debug')();
-
+if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.DEBUG_PROD === 'true'
+) {
+  require('electron-debug')();
+}
+// require('electron-debug')();
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -46,23 +45,23 @@ const installExtensions = async () => {
     extensions.map(name => installer.default(installer[name], forceDownload))
   ).catch(console.log);
 };
-const icon = path.join(__dirname, '../resources/icons8-accounting-100.png');
+// const icon = path.join(__dirname, '../resources/icons8-accounting-100.png');
 const createWindow = async () => {
-  // if (
-  //   process.env.NODE_ENV === 'development' ||
-  //   process.env.DEBUG_PROD === 'true'
-  // ) {
-  //   await installExtensions();
-  // }
-  await installExtensions();
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.DEBUG_PROD === 'true'
+  ) {
+    await installExtensions();
+  }
+  // await installExtensions();
 
   let splash = new BrowserWindow({
     width: 810,
     height: 610,
     transparent: true,
     frame: false,
-    alwaysOnTop: true,
-    icon: icon
+    alwaysOnTop: true
+    // icon: icon
   });
   splash.loadURL(`file://${__dirname}/splash.html`);
   splash.show();
@@ -79,8 +78,8 @@ const createWindow = async () => {
           }
         : {
             preload: path.join(__dirname, 'dist/renderer.prod.js')
-          },
-    icon: icon
+          }
+    // icon: icon
   });
   // mainWindow.setIcon(path.join(__dirname,'resources/icons8-accounting-16.png'))
 
