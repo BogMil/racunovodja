@@ -38,8 +38,16 @@ export default function MultipleRelationsTemplate(props: Props) {
     return state.travelingExpensesCombined.travelingExpenseDetails;
   });
 
-  let employeeTravelingExpenseCalculator=new EmployeeTravelingExpenseCalculator(year,month,maxNonTaxedValue,preracun_na_bruto,stopa);
-  let calculation =employeeTravelingExpenseCalculator.getCalculation(props.employeeWithRelations);
+  let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
+    year,
+    month,
+    maxNonTaxedValue,
+    preracun_na_bruto,
+    stopa
+  );
+  let calculation = employeeTravelingExpenseCalculator.getCalculation(
+    props.employeeWithRelations
+  );
 
   const dispatch = useDispatch();
   const onRemoveEmployeeFromTravelingExpense = async () => {
@@ -138,7 +146,7 @@ export default function MultipleRelationsTemplate(props: Props) {
                     <tr key={i}>
                       <td style={{ width: columnWidths.relationName }}>
                         <div style={{ display: 'inline-block' }}>
-                          {relationWithDays.relation.name}
+                          {`${relationWithDays.relation.name} - ${relationWithDays.relation.lokacija.naziv}`}
                         </div>
                         {status == U_RADU.value ? (
                           <div

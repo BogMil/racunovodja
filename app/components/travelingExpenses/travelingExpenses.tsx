@@ -65,7 +65,7 @@ export default function TravelExpenses() {
             <th>Godina</th>
             <th>Datum kreiranja</th>
             <th>Status</th>
-            <th style={{ textAlign: 'center', width: 100 }}>
+            <th style={{ textAlign: 'center', width: 110 }}>
               <Button
                 onClick={openCreateDialog}
                 title="Kreiraj novi obračun putnih troškova"
@@ -103,7 +103,7 @@ export default function TravelExpenses() {
                   </NavLink>
                   {PPP_PD_EXIST(te.year, te.month) && (
                     <Button
-                      variant="info"
+                      variant="warning"
                       title="Otvori folder"
                       onClick={() => createXml(te.year, te.month)}
                       style={{
@@ -115,7 +115,7 @@ export default function TravelExpenses() {
                         marginLeft: 5
                       }}
                     >
-                      <i className="fa fa-file-code" />
+                      <i className="fa fa-folder-open" />
                     </Button>
                   )}
                   <DeleteRowButton

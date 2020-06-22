@@ -33,7 +33,7 @@ export default function RelationComponent(props: Props) {
 
   return (
     <tr>
-      <td>{`${relation.lokacija?.naziv} - ${relation.name}`}</td>
+      <td>{`${relation.name} - ${relation.lokacija?.naziv}`}</td>
       <td>{relation.price}</td>
       <td style={{ textAlign: 'center' }}>
         <EditRowButton

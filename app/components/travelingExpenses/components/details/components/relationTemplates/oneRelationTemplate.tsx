@@ -39,8 +39,16 @@ export default function OneRelationTemplate(props: Props) {
     return state.travelingExpensesCombined.travelingExpenseDetails;
   });
 
-  let employeeTravelingExpenseCalculator=new EmployeeTravelingExpenseCalculator(year,month,maxNonTaxedValue,preracun_na_bruto,stopa);
-  let calclulation =employeeTravelingExpenseCalculator.getCalculation(props.employeeWithRelation);
+  let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
+    year,
+    month,
+    maxNonTaxedValue,
+    preracun_na_bruto,
+    stopa
+  );
+  let calclulation = employeeTravelingExpenseCalculator.getCalculation(
+    props.employeeWithRelation
+  );
 
   function onDoubleClick(relationWithDays: RelationWithDays) {
     if (status == U_RADU.value)
@@ -91,7 +99,6 @@ export default function OneRelationTemplate(props: Props) {
     dispatch(openAddRelationWithDaysMoad(props.employeeWithRelation.id));
   };
 
-
   return (
     <tr style={{ borderBottom: '2px solid #3f0e40' }}>
       <td style={{ verticalAlign: 'middle' }}>
@@ -124,7 +131,7 @@ export default function OneRelationTemplate(props: Props) {
                   <tr key={i}>
                     <td style={{ width: columnWidths.relationName }}>
                       <div style={{ display: 'inline-block' }}>
-                        {relationWithDays.relation.name}
+                        {`${relationWithDays.relation.name} - ${relationWithDays.relation.lokacija.naziv}`}
                       </div>
                       {status == U_RADU.value ? (
                         <div
@@ -166,9 +173,7 @@ export default function OneRelationTemplate(props: Props) {
                         width: columnWidths.sumPerEmployee
                       }}
                     >
-                      {numberWithThousandSeparator(
-                        calclulation.neto
-                      )}
+                      {numberWithThousandSeparator(calclulation.neto)}
                     </td>
                   </tr>
                 )
@@ -211,9 +216,7 @@ export default function OneRelationTemplate(props: Props) {
           width: columnWidths.tax
         }}
       >
-        {numberWithThousandSeparator(
-          calclulation.porez
-        )}
+        {numberWithThousandSeparator(calclulation.porez)}
       </td>
       {status == U_RADU.value ? (
         <td

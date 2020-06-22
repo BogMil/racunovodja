@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { Row, Col, Button, Container, Table } from 'react-bootstrap';
 import routes from '../../../../constants/routes.json';
@@ -27,7 +27,12 @@ import {
   create_PPP_PD_XML_File,
   createPdfFile
 } from '../../travelingExpenses.fileCreators';
-import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
+import {
+  GET_PUTNI_TROSKOVI_PPP_PD_DIR,
+  ROOT_DIR,
+  DODATNI_PRIHODI_DIR,
+  PUTNI_TROSKOVI_DIR
+} from '../../../../constants/files';
 import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
 import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
 import { areYouSure } from '../../../../utils/yesNoModal';
@@ -35,6 +40,8 @@ import { handleResponse } from '../../../../utils/responseHandler';
 import * as service from '../../travelingExpenses.service';
 import styles from './details.css';
 import { get as getUserDetails } from '../../../userDetails/userDetails.service';
+var remote = require('electron').remote;
+var fs = remote.require('fs');
 
 export default function Details() {
   const { id } = useParams();
@@ -53,7 +60,6 @@ export default function Details() {
 
   let isCreate_PPP_PD_Disabled =
     store.employees_with_relation.filter(employeeWithRelation => {
-      console.log(employeeWithRelation.employee.municipality);
       return employeeWithRelation.employee.municipality == null;
     }).length > 0;
 
@@ -85,20 +91,22 @@ export default function Details() {
 
   const createXml = async () => {
     handleResponse(await getUserDetails(), (res: any) => {
-      const { shell } = require('electron');
       create_PPP_PD_XML_File(store.year, store.month, store, res.data);
-      shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+      forceUpdate();
     });
   };
 
   const createPdf = async () => {
     handleResponse(await getUserDetails(), (res: any) => {
-      const { shell } = require('electron');
       createPdfFile(store.year, store.month, store, res.data);
-      // shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+      forceUpdate();
     });
   };
-  createPdf();
+
+  const openFolder = () => {
+    const { shell } = require('electron');
+    shell.openItem(GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month));
+  };
   const zakljucaj = () => {
     areYouSure({
       title: 'Zaključavanje obračuna',
@@ -111,6 +119,9 @@ export default function Details() {
       }
     });
   };
+
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
 
   return (
     <Container fluid className={`${styles['details-container']} noselect`}>
@@ -160,6 +171,19 @@ export default function Details() {
                   className={styles['details-header-btn']}
                 >
                   <i className="fa fa-file-code" />
+                </Button>
+                <Button
+                  variant="success"
+                  title="otvori folder"
+                  disabled={
+                    !fs.existsSync(
+                      GET_PUTNI_TROSKOVI_PPP_PD_DIR(store.year, store.month)
+                    )
+                  }
+                  onClick={openFolder}
+                  className={styles['details-header-btn']}
+                >
+                  <i className="fa fa-folder-open" />
                 </Button>
               </>
             ) : null}

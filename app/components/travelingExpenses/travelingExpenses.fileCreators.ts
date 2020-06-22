@@ -58,12 +58,7 @@ export async function createPdfFile(
       return 0;
     }
   };
-  // let x=travelingExpense.employees_with_relation.map(e=>{
-  //   let arr=[];
-  //   arr[0]=e.employee.jmbg;
-  //   arr[1]=e.employee.last_name + ' ' + e.employee.last_name;
 
-  // })
   const leftBorders = [false, false, true, true];
   const middleBorders = [true, false, true, true];
   const rightBorders = [true, false, false, true];
@@ -276,71 +271,113 @@ export async function createPdfFile(
   var docDefinition = {
     pageSize: 'A4',
     pageMargins: [10, 20, 10, 20],
-    header: function() {
-      // if (currentPage != 1)
-      return {
-        text: `Obračun putnih troškova za ${getMonthName(month)} / ${year}`,
-        style: 'header',
-        alignment: 'center',
-        fontSize: 10
-      };
+    header: function(currentPage: number) {
+      if (currentPage != 1)
+        return {
+          text: `Obračun putnih troškova za ${getMonthName(month)} / ${year}`,
+          style: 'header',
+          alignment: 'center',
+          fontSize: 10
+        };
     },
     footer: function(currentPage: number, pageCount: number) {
       return {
-        text: `${currentPage}/${pageCount}`,
-        fontSize: 10,
-        alignment: 'center'
+        width: '*',
+        columns: [
+          {
+            text: `obračunao : `,
+            fontSize: 10,
+            alignment: 'center',
+            width: 100
+          },
+          {
+            width: 'auto',
+            margin: [5, 5, 0, 0],
+            table: {
+              widths: [200],
+              body: [[{ text: '', border: [false, false, false, true] }]]
+            }
+          },
+          {
+            text: `odgovorno lice : `,
+            fontSize: 10,
+            alignment: 'center',
+            width: 100
+          },
+          {
+            width: 'auto',
+            margin: [5, 5, 0, 0],
+            table: {
+              widths: [200],
+              body: [[{ text: '', border: [false, false, false, true] }]]
+            }
+          },
+          {
+            width: '*',
+            text: `${currentPage}/${pageCount}`,
+            fontSize: 10,
+            alignment: 'right',
+            margin: [0, 0, 10, 0]
+          }
+        ]
       };
     },
     pageOrientation: 'landscape',
     content: [
       { text: userDetails.naziv_skole, margin: [0, 0, 0, 30] },
       {
-        // pageBreak: 'after',
+        text: `Obračun putnih troškova za ${getMonthName(month)} / ${year}`,
+        style: 'header',
+        margin: [0, 140, 0, 10],
+        alignment: 'center',
+        fontSize: 14
+      },
+      {
+        pageBreak: 'after',
         margin: [0, 0, 0, 30],
         columns: [
           { width: '*', text: '' },
           {
             width: 'auto',
+            margin: [0, 0, 0, 0],
             table: {
-              widths: [100, 100, 100, 100, 100, 100],
+              widths: [100, 100],
               body: [
                 [
-                  {
-                    text: 'SUMA : ',
-                    alignment: 'center',
-                    rowSpan: 2,
-                    margin: [0, 10, 0, 0]
-                  },
                   { text: 'Neto', alignment: 'center' },
-                  { text: `Neoporezivo`, alignment: 'center' },
-                  { text: 'Oporezivo', alignment: 'center' },
-                  { text: 'Bruto', alignment: 'center' },
-                  { text: 'Porez', alignment: 'center' }
-                ],
-                [
-                  {},
                   {
                     text: `${numberWithThousandSeparator(netoTotal)}`,
-                    alignment: 'center'
-                  },
+                    alignment: 'right'
+                  }
+                ],
+                [
+                  { text: `Neoporezivo`, alignment: 'center' },
                   {
                     text: `${numberWithThousandSeparator(neoporeziviDeoTotal)}`,
-                    alignment: 'center'
-                  },
+                    alignment: 'right'
+                  }
+                ],
+                [
+                  { text: 'Oporezivo', alignment: 'center' },
                   {
                     text: `${numberWithThousandSeparator(oporeziviDeoTotal)}`,
-                    alignment: 'center'
-                  },
+                    alignment: 'right'
+                  }
+                ],
+                [
+                  { text: 'Bruto', alignment: 'center' },
                   {
                     text: `${numberWithThousandSeparator(
                       brutoOporeziviDeoTotal
                     )}`,
-                    alignment: 'center'
-                  },
+                    alignment: 'right'
+                  }
+                ],
+                [
+                  { text: 'Porez', alignment: 'center' },
                   {
                     text: `${numberWithThousandSeparator(porezTotal)}`,
-                    alignment: 'center'
+                    alignment: 'right'
                   }
                 ]
               ],
@@ -397,11 +434,6 @@ export async function createPdfFile(
               { text: 'Bruto', alignment: 'center', italics: true },
               { text: 'Porez', alignment: 'center', italics: true }
             ],
-            ...tableBody(),
-            ...tableBody(),
-            ...tableBody(),
-            ...tableBody(),
-            ...tableBody(),
             ...tableBody()
           ]
         },

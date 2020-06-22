@@ -22,7 +22,7 @@ export type TravelingExpenseCDTO = {
 export const newTravelingExpenseCDTO = () => {
   let now = new Date(Date.now());
 
-  let month = now.getMonth() + 1;
+  let month = now.getMonth();
   let year = now.getFullYear();
   return {
     id: 0,

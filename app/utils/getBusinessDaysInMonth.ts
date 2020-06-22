@@ -14,5 +14,6 @@ export function getBusinesDaysInMonth(month: number, year: number) {
   for (var i = 1; i <= days; i++) {
     if (isWeekday(year, month, i)) weekdays++;
   }
+
   return weekdays;
 }
