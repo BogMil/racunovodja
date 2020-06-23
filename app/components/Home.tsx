@@ -5,7 +5,7 @@ import routes from '../constants/routes.json';
 export default function Home() {
   return (
     <div>
-      <h2>Dobrodošli u informacioni sistem Računovođa</h2>
+      <h2>Dobrodošli u informacioni sistem "Računovođa"</h2>
     </div>
   );
 }
