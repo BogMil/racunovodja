@@ -51,7 +51,7 @@ export default function UploadFileModal() {
     []
   );
 
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = React.useState<string[]>([]);
 
   const openDialog = () => {
     dialog
@@ -65,7 +65,7 @@ export default function UploadFileModal() {
         }
       })
       .catch(err => {
-        console.log(err);
+        dialog.showMessageBox({ message: err });
       });
   };
 
@@ -124,6 +124,7 @@ export default function UploadFileModal() {
           setMissingEmployees([]);
           return;
         }
+        dialog.showErrorBox('q', e);
       }
     }
   }, [files]);
