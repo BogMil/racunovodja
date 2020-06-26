@@ -49,7 +49,7 @@ export default function UserDetailsModalComponent() {
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Matični broj</Form.Label>
+                <Form.Label>Naziv škole </Form.Label>
                 <Form.Control
                   name="naziv_skole"
                   placeholder="Naziv škole"
