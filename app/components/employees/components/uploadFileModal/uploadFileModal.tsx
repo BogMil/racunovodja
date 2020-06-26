@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Modal,
@@ -11,7 +11,6 @@ import {
 } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
-import { useFilePicker } from 'react-sage';
 import { close } from './uploadFileModal.actions';
 import { reloadEmployees } from '../../employees.actions';
 
@@ -22,6 +21,7 @@ import { Employee } from '../../../../services/employeeExtractor/employeeExtract
 import ClipLoader from 'react-spinners/ClipLoader';
 import * as service from '../../employee.service';
 import { EmployeeCDTO } from '../../types';
+const { dialog, getCurrentWindow } = require('electron').remote;
 
 const employeeExtractor = new PdfEmployeeExtractor();
 
@@ -51,7 +51,23 @@ export default function UploadFileModal() {
     []
   );
 
-  const { files, onClick, HiddenFileInput } = useFilePicker({});
+  const [files, setFiles] = useState<string[]>([]);
+
+  const openDialog = () => {
+    dialog
+      .showOpenDialog(getCurrentWindow(), {
+        properties: ['openFile'],
+        filters: [{ name: 'Custom File Type', extensions: ['pdf'] }]
+      })
+      .then(result => {
+        if (!result.canceled) {
+          setFiles(result.filePaths);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const fetchMissingEmployees = async (extractedEmployees: Employee[]) => {
     let jmbgs = extractedEmployees.map(e => e.jmbg);
@@ -84,12 +100,13 @@ export default function UploadFileModal() {
     });
     dispatch(reloadEmployees());
   };
+
   useEffect(() => {
     let file = files ? files[0] : null;
     if (!file) return;
     setError('');
-    setFilePath(file.path);
-    loadEmployees(file.path);
+    setFilePath(file);
+    loadEmployees(file);
     setMissingEmployees([]);
     setInsertingEmployees(false);
 
@@ -140,8 +157,7 @@ export default function UploadFileModal() {
                   style={{ resize: 'none' }}
                 />
                 <InputGroup.Append>
-                  <Button onClick={onClick}>Učitaj fajl</Button>
-                  <HiddenFileInput accept=".pdf" multiple={false} />
+                  <Button onClick={openDialog}>Učitaj fajl</Button>
                 </InputGroup.Append>
               </InputGroup>
               {error && <span style={{ color: 'red' }}>{error}</span>}
