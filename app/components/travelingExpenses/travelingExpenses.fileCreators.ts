@@ -14,6 +14,7 @@ import { numberWithThousandSeparator } from '../../utils/numberWithThousandSepar
 import getMonthName from '../../utils/getMonthName';
 import { UserDetails } from '../userDetails/userDetails.types';
 import { daysInMonth, isWeekday } from '../../utils/getBusinessDaysInMonth';
+const { dialog, getCurrentWindow } = require('electron').remote;
 
 var fs = require('fs');
 const { shell } = require('electron');
@@ -28,7 +29,13 @@ export function create_PPP_PD_XML_File(
   let filePath = _create_PPP_PD_xmlFile(year, month);
   let xmlContent = createXmlContent(year, month, travelingExpense, userDetails);
   fs.writeFile(filePath, xmlContent, (e: any) => {
-    console.log(e);
+    if (e == null) {
+      dialog.showMessageBox(getCurrentWindow(), {
+        title: 'Računovođa',
+        message: 'PPP PD prijava je uspešno kreirana',
+        type: 'info'
+      });
+    }
   });
 }
 
@@ -469,6 +476,12 @@ export async function createPdfFile(
 
   pdfDoc.pipe(fs.createWriteStream(filePath));
   pdfDoc.end();
+
+  dialog.showMessageBox(getCurrentWindow(), {
+    title: 'Računovođa',
+    message: 'PDF fajl je uspešno kreiran',
+    type: 'info'
+  });
 }
 
 function createXmlContent(
@@ -577,9 +590,7 @@ function createXmlContent(
 function _create_PPP_PD_xmlFile(year: number, month: number) {
   let root = createRootFolder(year, month);
   let filePath = `${root}\\${PUTNI_TROSKOVI_PPP_PD_XML_FILE(year, month)}`;
-  fs.writeFile(filePath, '', (e: any) => {
-    console.log(e);
-  });
+  fs.writeFile(filePath, '', (e: any) => {});
 
   return filePath;
 }
@@ -587,9 +598,7 @@ function _create_PPP_PD_xmlFile(year: number, month: number) {
 function _createPdfFile(year: number, month: number) {
   let root = createRootFolder(year, month);
   let filePath = `${root}\\${PUTNI_TROSKOVI_PDF_FILE(year, month)}`;
-  fs.writeFile(filePath, '', (e: any) => {
-    console.log(e);
-  });
+  fs.writeFile(filePath, '', (e: any) => {});
 
   return filePath;
 }
@@ -599,40 +608,26 @@ function createRootFolder(year: number, month: number) {
   if (!fs.existsSync(`C:\\${ROOT_DIR}\\${year}`))
     fs.mkdir(`C:\\${ROOT_DIR}\\${year}`, () => {});
 
-  if (!fs.existsSync(`C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}`))
-    fs.mkdir(`C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}`, () => {});
+  if (!fs.existsSync(`C:\\${ROOT_DIR}\\${year}\\${month}`))
+    fs.mkdir(`C:\\${ROOT_DIR}\\${year}\\${month}`, () => {});
 
   if (
-    !fs.existsSync(
-      `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\`
-    )
+    !fs.existsSync(`C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}`)
   )
     fs.mkdir(
-      `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`,
+      `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}`,
       () => {}
     );
 
   if (
     !fs.existsSync(
-      `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\`
+      `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\`
     )
   )
     fs.mkdir(
-      `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`,
+      `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`,
       () => {}
     );
 
-  if (
-    !fs.existsSync(
-      `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\${month}`
-    )
-  )
-    fs.mkdir(
-      `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\${month}`,
-      (e: any) => {
-        console.log(e);
-      }
-    );
-
-  return `C:\\${ROOT_DIR}\\${year}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\${month}`;
+  return `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`;
 }

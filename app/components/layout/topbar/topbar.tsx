@@ -14,7 +14,7 @@ export default function TopBar() {
   };
   return (
     <Navbar className={styles.topbar + ' noselect'}>
-      <Navbar.Brand className={styles.brand}>Shone kralj {v}</Navbar.Brand>
+      <Navbar.Brand className={styles.brand}> {v}</Navbar.Brand>
       <div style={{ position: 'absolute', right: 0, top: -2 }}>
         <Button onClick={minimize} variant="light" className={styles.btn}>
           <i className="fa fa-minus" />

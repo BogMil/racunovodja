@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { Row, Col, Button, Container, Table } from 'react-bootstrap';
 import routes from '../../../../constants/routes.json';
@@ -27,12 +27,7 @@ import {
   create_PPP_PD_XML_File,
   createPdfFile
 } from '../../travelingExpenses.fileCreators';
-import {
-  GET_PUTNI_TROSKOVI_PPP_PD_DIR,
-  ROOT_DIR,
-  DODATNI_PRIHODI_DIR,
-  PUTNI_TROSKOVI_DIR
-} from '../../../../constants/files';
+import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
 import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
 import { numberWithThousandSeparator } from '../../../../utils/numberWithThousandSeparator';
 import { areYouSure } from '../../../../utils/yesNoModal';
@@ -58,7 +53,7 @@ export default function Details() {
     };
   }, []);
 
-  let isCreate_PPP_PD_Disabled =
+  let hasEmployeesWithoutMunicipality =
     store.employees_with_relation.filter(employeeWithRelation => {
       return employeeWithRelation.employee.municipality == null;
     }).length > 0;
@@ -143,7 +138,12 @@ export default function Details() {
             {store.status == U_RADU.value ? (
               <Button
                 variant="success"
-                title="Završi"
+                title={
+                  hasEmployeesWithoutMunicipality
+                    ? 'Nemaju svi zaposleni definisanu opštinu stanovanja!'
+                    : 'Završi obračun'
+                }
+                disabled={hasEmployeesWithoutMunicipality}
                 onClick={zakljucaj}
                 className={styles['details-header-btn']}
               >
@@ -162,11 +162,11 @@ export default function Details() {
                 <Button
                   variant="success"
                   title={
-                    isCreate_PPP_PD_Disabled
+                    hasEmployeesWithoutMunicipality
                       ? 'Nemaju svi zaposleni definisanu opštinu stanovanja!'
                       : 'kreiraj pd prijavu'
                   }
-                  disabled={isCreate_PPP_PD_Disabled}
+                  disabled={hasEmployeesWithoutMunicipality}
                   onClick={createXml}
                   className={styles['details-header-btn']}
                 >
