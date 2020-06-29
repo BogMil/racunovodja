@@ -8,7 +8,7 @@ import * as service from '../../relations.service';
 import { handleResponse } from '../../../../../utils/responseHandler';
 import { CREATE_MODE, EDIT_MODE } from '../../../../../constants/modalModes';
 
-export default function CreateEmployeeModal() {
+export default function CreateRelationModal() {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
     return state.relationsCombined.relationModal;
@@ -78,7 +78,9 @@ export default function CreateEmployeeModal() {
                   <option>---</option>;
                   {store.lokacije.map((lokacija, i) => {
                     return (
-                      <option value={lokacija.id}>{lokacija.naziv}</option>
+                      <option key={i} value={lokacija.id}>
+                        {lokacija.naziv}
+                      </option>
                     );
                   })}
                 </Form.Control>
