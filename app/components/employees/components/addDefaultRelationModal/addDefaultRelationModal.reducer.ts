@@ -6,6 +6,7 @@ import {
   HANDLE_CHANGE
 } from './addDefaultRelationModal.actions';
 import { Employee, DefaultRelation } from '../../types';
+import { Relation } from '../../../sifarnici/relations/relations.types';
 
 const initialState: AddDefaultRelationModalStore = {
   show: false,
@@ -17,7 +18,7 @@ const initialState: AddDefaultRelationModalStore = {
 export type AddDefaultRelationModalStore = {
   show: boolean;
   employee: Employee;
-  availableRelations: DefaultRelation[];
+  availableRelations: Relation[];
   selectedRelation: number;
 };
 

@@ -1,3 +1,5 @@
+import { Relation } from '../sifarnici/relations/relations.types';
+
 export type Employee = {
   id: number;
   active: boolean;
@@ -7,7 +9,7 @@ export type Employee = {
   first_name: string;
   banc_account: string;
   municipality: Municipality;
-  default_relations: DefaultRelation[];
+  default_relations: Relation[];
   email: string;
 };
 

@@ -8,7 +8,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../../../../../reducers';
 import * as service from '../../../../travelingExpenses.service';
-import { reloadTravelingExpenseDetails, reloadCurrentTravelingExpenseDetails } from '../../details.actions';
+import {
+  reloadTravelingExpenseDetails,
+  reloadCurrentTravelingExpenseDetails
+} from '../../details.actions';
 import { handleResponse } from '../../../../../../utils/responseHandler';
 
 type Props = {
@@ -16,7 +19,7 @@ type Props = {
   year: number;
 };
 
-export default function AddRelationWithDaysModal(props:Props) {
+export default function AddRelationWithDaysModal(props: Props) {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
     return state.travelingExpensesCombined.addRelationWithDays;
@@ -79,9 +82,7 @@ export default function AddRelationWithDaysModal(props:Props) {
       autoFocus
     >
       <Modal.Header closeButton onHide={handleClose}>
-        <Modal.Title as="h5">
-          Dodavanje relacije zaposlenom
-        </Modal.Title>
+        <Modal.Title as="h5">Dodavanje relacije zaposlenom</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form.Group>
@@ -97,7 +98,8 @@ export default function AddRelationWithDaysModal(props:Props) {
             {store.relations.map(relation => {
               return (
                 <option key={relation.id} value={relation.id}>
-                  {relation.name} : {relation.price} RSD
+                  {relation.name} - {relation.lokacija.naziv} : {relation.price}{' '}
+                  RSD
                 </option>
               );
             })}
@@ -105,7 +107,7 @@ export default function AddRelationWithDaysModal(props:Props) {
         </Form.Group>
 
         <div style={{ textAlign: 'center', width: '100%' }}>
-        <Form.Label>Broj dana</Form.Label>
+          <Form.Label>Broj dana</Form.Label>
           <Form.Control
             style={{ width: 70, margin: '0 auto' }}
             type="number"

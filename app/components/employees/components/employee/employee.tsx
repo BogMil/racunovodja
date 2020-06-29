@@ -115,7 +115,9 @@ export default function EmployeeComponent(props: Props) {
             {employee.default_relations.map((defaultRelation, i) => (
               <tr key={i}>
                 <td style={{ padding: 0 }}>
-                  <div style={{ float: 'left' }}>{defaultRelation.name}</div>
+                  <div style={{ float: 'left' }}>
+                    {defaultRelation.name} - {defaultRelation.lokacija?.naziv}
+                  </div>
                   <div style={{ float: 'right' }}>
                     <DeleteRowButton
                       title="Ukloni podrazumevanu relaciju"

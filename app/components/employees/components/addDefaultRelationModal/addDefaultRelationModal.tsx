@@ -67,7 +67,7 @@ export default function AddDefaultRealtionModal() {
             {store.availableRelations.map(relation => {
               return (
                 <option key={relation.id} value={relation.id}>
-                  {relation.name}
+                  {relation.name} - {relation.lokacija?.naziv}
                 </option>
               );
             })}

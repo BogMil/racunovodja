@@ -320,7 +320,7 @@ export default function Details() {
           style={{ backgroundColor: columColors.tax }}
           className={styles['details-total']}
         >
-          Bruto oporezivo: {numberWithThousandSeparator(porezTotal)}
+          Porez: {numberWithThousandSeparator(porezTotal)}
         </div>
       </Row>
       <EditDaysModal year={store.year} month={store.month} />
