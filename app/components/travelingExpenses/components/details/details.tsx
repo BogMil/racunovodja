@@ -25,7 +25,8 @@ import { initialState } from './details.reducer';
 import { columnWidths, columColors } from './details.columnStyles';
 import {
   create_PPP_PD_XML_File,
-  createPdfFile
+  createPdfFile,
+  createVirmaniPdfFile
 } from '../../travelingExpenses.fileCreators';
 import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
 import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
@@ -97,6 +98,14 @@ export default function Details() {
       forceUpdate();
     });
   };
+
+  const kreirajNalogeZaPlacanje = async () => {
+    handleResponse(await getUserDetails(), (res: any) => {
+      createVirmaniPdfFile(store.year, store.month, store, res.data);
+      // forceUpdate();
+    });
+  };
+  kreirajNalogeZaPlacanje();
 
   const openFolder = () => {
     const { shell } = require('electron');
@@ -171,6 +180,18 @@ export default function Details() {
                   className={styles['details-header-btn']}
                 >
                   <i className="fa fa-file-code" />
+                </Button>
+                <Button
+                  variant="success"
+                  title={
+                    hasEmployeesWithoutMunicipality
+                      ? 'Nemaju svi zaposleni definisanu opštinu stanovanja!'
+                      : 'kreiraj naloge za prenos'
+                  }
+                  onClick={kreirajNalogeZaPlacanje}
+                  className={styles['details-header-btn']}
+                >
+                  <i className="fa fa-file" />
                 </Button>
                 <Button
                   variant="success"

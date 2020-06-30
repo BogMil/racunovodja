@@ -3,7 +3,8 @@ import {
   DODATNI_PRIHODI_DIR,
   PUTNI_TROSKOVI_DIR,
   PUTNI_TROSKOVI_PPP_PD_XML_FILE,
-  PUTNI_TROSKOVI_PDF_FILE
+  PUTNI_TROSKOVI_PDF_FILE,
+  VIRMANI_PDF_FILE
 } from '../../constants/files';
 import {
   EmployeeWithRelations,
@@ -602,6 +603,15 @@ function _createPdfFile(year: number, month: number) {
 
   return filePath;
 }
+
+function _createVirmaniPdfFile(year: number, month: number) {
+  let root = createRootFolder(year, month);
+  let filePath = `${root}\\${VIRMANI_PDF_FILE(year, month)}`;
+  fs.writeFile(filePath, '', (e: any) => {});
+
+  return filePath;
+}
+
 function createRootFolder(year: number, month: number) {
   if (!fs.existsSync(`C:\\${ROOT_DIR}`)) fs.mkdir(`C:\\${ROOT_DIR}`, () => {});
 
@@ -630,4 +640,423 @@ function createRootFolder(year: number, month: number) {
     );
 
   return `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`;
+}
+
+export async function createVirmaniPdfFile(
+  year: number,
+  month: number,
+  travelingExpense: TravelingExpenseWithDetails,
+  userDetails: UserDetails
+) {
+  let filePath = _createVirmaniPdfFile(year, month);
+  const fs = require('fs');
+  let pdfMake = require('pdfmake/build/pdfmake');
+  let pdfFonts = require('pdfmake/build/vfs_fonts');
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+  const zeroPadding = {
+    paddingLeft: function() {
+      return 0;
+    },
+    paddingRight: function() {
+      return 0;
+    },
+    paddingTop: function() {
+      return 0;
+    },
+    paddingBottom: function() {
+      return 0;
+    }
+  };
+
+  const topBottomPadding = {
+    paddingLeft: function() {
+      return 0;
+    },
+    paddingRight: function() {
+      return 0;
+    },
+    paddingTop: function() {
+      return 1.5;
+    },
+    paddingBottom: function() {
+      return 1.5;
+    }
+  };
+
+  let netoTotal = 0;
+  let neoporeziviDeoTotal = 0;
+  let oporeziviDeoTotal = 0;
+  let brutoOporeziviDeoTotal = 0;
+  let porezTotal = 0;
+
+  travelingExpense.employees_with_relation.forEach(
+    (employeeWithRelation: EmployeeWithRelations) => {
+      let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
+        travelingExpense.year,
+        travelingExpense.month,
+        travelingExpense.maxNonTaxedValue,
+        travelingExpense.preracun_na_bruto,
+        travelingExpense.stopa
+      );
+      let calculation = employeeTravelingExpenseCalculator.getCalculation(
+        employeeWithRelation
+      );
+      netoTotal += calculation.neto;
+      neoporeziviDeoTotal += calculation.neoporezivo;
+      oporeziviDeoTotal += calculation.oporezivo;
+      brutoOporeziviDeoTotal += calculation.brutoOporezivo;
+      porezTotal += calculation.porez;
+    }
+  );
+  const noBorders = [false, false, false, false];
+  const thinTableBorders = {
+    hLineWidth: function(i, node) {
+      return 0.5;
+    },
+    vLineWidth: function(i, node) {
+      return 0.05;
+    }
+  };
+
+  let nalog = () => [
+    {
+      text: 'НАЛОГ ЗА ПРЕНОС',
+      bold: true,
+      alignment: 'right',
+      fontSize: 14
+    },
+    {
+      margin: [0, 0, 0, 0],
+      table: {
+        widths: ['*', '*'],
+        body: [
+          [
+            {
+              border: [false, false, true, false],
+              margin: [0, 0, 20, 0],
+
+              stack: [
+                { text: 'платилац', style: 'labels' },
+                {
+                  table: {
+                    widths: ['*'],
+                    heights: [40],
+                    body: [['']]
+                  },
+                  layout: { ...thinTableBorders }
+                },
+                //
+                { text: 'сврха плаћања', style: 'labels' },
+                {
+                  table: {
+                    widths: ['*'],
+                    heights: [40],
+                    body: [['']]
+                  },
+                  layout: { ...thinTableBorders }
+                },
+                //
+                { text: 'прималац', style: 'labels' },
+                {
+                  table: {
+                    widths: ['*'],
+                    heights: [40],
+                    body: [['']]
+                  },
+                  layout: { ...thinTableBorders }
+                }
+              ]
+            },
+            {
+              border: noBorders,
+              margin: [20, 0, 0, 0],
+
+              stack: [
+                {
+                  table: {
+                    widths: [40, 10, 40, 10, '*'],
+                    heights: [10],
+                    body: [
+                      [
+                        {
+                          text: 'шифра \nплаћања',
+                          style: 'labels',
+                          border: noBorders
+                        },
+                        { text: '', border: noBorders },
+                        {
+                          text: 'валута',
+                          style: 'labels',
+                          margin: [0, 10, 0, 0],
+                          border: noBorders
+                        },
+                        { text: '', border: noBorders },
+                        {
+                          text: 'износ',
+                          style: 'labels',
+                          margin: [0, 10, 0, 0],
+                          border: noBorders
+                        }
+                      ],
+                      [
+                        '',
+                        { text: '', border: noBorders },
+                        'asd',
+                        { text: '', border: noBorders },
+                        ''
+                      ]
+                    ]
+                  },
+                  layout: { ...thinTableBorders, ...topBottomPadding }
+                },
+
+                {
+                  table: {
+                    widths: ['*'],
+                    heights: [10],
+                    body: [
+                      [
+                        {
+                          text: 'рачун платиоца',
+                          style: 'labels',
+                          border: noBorders
+                        }
+                      ],
+                      [{ text: 'as', alignment: 'center' }]
+                    ]
+                  },
+                  layout: { ...thinTableBorders, ...topBottomPadding }
+                },
+                {
+                  table: {
+                    widths: [40, 10, '*'],
+                    heights: [10],
+                    body: [
+                      [
+                        {
+                          text: 'позив на број (задужење)',
+                          style: 'labels',
+                          border: noBorders,
+                          colSpan: 3
+                        },
+                        {},
+                        {}
+                      ],
+                      ['a', { text: '', border: noBorders }, 'asd']
+                    ]
+                  },
+                  layout: { ...thinTableBorders, ...topBottomPadding }
+                },
+
+                {
+                  table: {
+                    widths: ['*'],
+                    heights: [10],
+                    body: [
+                      [
+                        {
+                          text: 'рачун примаоца',
+                          style: 'labels',
+                          border: noBorders
+                        }
+                      ],
+                      [{ text: 'as', alignment: 'center' }]
+                    ]
+                  },
+                  layout: { ...thinTableBorders, ...topBottomPadding }
+                },
+
+                {
+                  table: {
+                    widths: [40, 10, '*'],
+                    heights: [10],
+                    body: [
+                      [
+                        {
+                          text: 'позив на број (одобрење)',
+                          style: 'labels',
+                          border: noBorders,
+                          colSpan: 3
+                        },
+                        {},
+                        {}
+                      ],
+                      ['a', { text: '', border: noBorders }, 'asd']
+                    ]
+                  },
+                  layout: { ...thinTableBorders, ...topBottomPadding }
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      layout: { ...zeroPadding, ...thinTableBorders }
+    },
+    ///-------------------------------
+    {
+      margin: [0, 0, 0, 0],
+      table: {
+        widths: ['*', '*'],
+        body: [
+          [
+            {
+              border: noBorders,
+              margin: [0, 0, 20, 0],
+
+              stack: [
+                {
+                  margin: [0, 15, 0, 0],
+                  table: {
+                    widths: [100, 50, '*'],
+                    heights: [10],
+                    body: [
+                      [
+                        {
+                          text: 'печат и потпис платиоца/примаоца',
+                          colSpan: 2,
+                          style: 'labels',
+                          border: [false, true, false, false]
+                        },
+                        {},
+                        { text: '', border: noBorders }
+                      ],
+                      [
+                        {
+                          text: '',
+                          border: noBorders,
+                          margin: [0, 10, 0, 0]
+                        },
+                        {
+                          text: '',
+                          colSpan: 2,
+                          border: [false, false, false, true]
+                        }
+                      ],
+                      [
+                        {
+                          text: '',
+                          border: noBorders,
+                          margin: [0, 10, 0, 0]
+                        },
+                        {
+                          text: 'место и датум пријема',
+                          style: 'labels',
+                          colSpan: 2,
+                          border: noBorders
+                        }
+                      ]
+                    ]
+                  },
+                  layout: { ...thinTableBorders }
+                }
+              ]
+            },
+            {
+              margin: [20, 43, 0, 0],
+              border: noBorders,
+              table: {
+                widths: [150],
+                heights: [10],
+                body: [
+                  [
+                    {
+                      text: 'датум извршења',
+                      style: 'labels',
+                      border: [false, true, false, false]
+                    }
+                  ]
+                ]
+              },
+              layout: { ...thinTableBorders, ...topBottomPadding }
+            }
+          ]
+        ]
+      },
+      layout: { ...zeroPadding }
+    },
+    { text: 'Образац бр. 3', alignment: 'center', style: 'labels' },
+    {
+      margin: [0, 10, 0, 0],
+      table: {
+        widths: ['*'],
+        body: [[{ text: '', border: [false, true, false, false] }]]
+      },
+      layout: { ...thinTableBorders }
+    }
+  ];
+
+  var docDefinition = {
+    pageSize: 'A4',
+    pageMargins: [20, 10, 20, 20],
+
+    content: [
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog(),
+      nalog()
+    ],
+    styles: {
+      labels: {
+        fontSize: 8,
+        color: 'black'
+      }
+    }
+  };
+
+  let pdfDoc = pdfMake.createPdf(docDefinition).getStream();
+
+  pdfDoc.pipe(fs.createWriteStream(filePath));
+  pdfDoc.end();
+
+  // dialog.showMessageBox(getCurrentWindow(), {
+  //   title: 'Računovođa',
+  //   message: 'Nalozi za plaćanje su uspešno kreirani',
+  //   type: 'info'
+  // });
 }
