@@ -709,17 +709,25 @@ export async function createVirmaniPdfFile(
       porezTotal += calculation.porez;
     }
   );
+
   const noBorders = [false, false, false, false];
   const thinTableBorders = {
-    hLineWidth: function(i, node) {
+    hLineWidth: function() {
       return 0.5;
     },
-    vLineWidth: function(i, node) {
+    vLineWidth: function() {
       return 0.05;
     }
   };
 
-  let nalog = () => [
+  type NalogProps = {
+    platilac: string;
+    primalac: string;
+    iznos: string;
+    racunPrimaoca: string;
+  };
+
+  let nalog = (props: NalogProps) => [
     {
       text: 'НАЛОГ ЗА ПРЕНОС',
       bold: true,
@@ -742,11 +750,10 @@ export async function createVirmaniPdfFile(
                   table: {
                     widths: ['*'],
                     heights: [40],
-                    body: [['']]
+                    body: [[props.platilac]]
                   },
                   layout: { ...thinTableBorders }
                 },
-                //
                 { text: 'сврха плаћања', style: 'labels' },
                 {
                   table: {
@@ -762,7 +769,7 @@ export async function createVirmaniPdfFile(
                   table: {
                     widths: ['*'],
                     heights: [40],
-                    body: [['']]
+                    body: [[props.primalac]]
                   },
                   layout: { ...thinTableBorders }
                 }
@@ -804,7 +811,7 @@ export async function createVirmaniPdfFile(
                         { text: '', border: noBorders },
                         'asd',
                         { text: '', border: noBorders },
-                        ''
+                        { text: props.iznos, alignment: 'right' }
                       ]
                     ]
                   },
@@ -861,7 +868,7 @@ export async function createVirmaniPdfFile(
                           border: noBorders
                         }
                       ],
-                      [{ text: 'as', alignment: 'center' }]
+                      [{ text: props.racunPrimaoca, alignment: 'center' }]
                     ]
                   },
                   layout: { ...thinTableBorders, ...topBottomPadding }
@@ -894,7 +901,6 @@ export async function createVirmaniPdfFile(
       },
       layout: { ...zeroPadding, ...thinTableBorders }
     },
-    ///-------------------------------
     {
       margin: [0, 0, 0, 0],
       table: {
@@ -978,7 +984,7 @@ export async function createVirmaniPdfFile(
     },
     { text: 'Образац бр. 3', alignment: 'center', style: 'labels' },
     {
-      margin: [0, 10, 0, 0],
+      margin: [0, 10, 0, 10],
       table: {
         widths: ['*'],
         body: [[{ text: '', border: [false, true, false, false] }]]
@@ -987,60 +993,39 @@ export async function createVirmaniPdfFile(
     }
   ];
 
+  let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
+    travelingExpense.year,
+    travelingExpense.month,
+    travelingExpense.maxNonTaxedValue,
+    travelingExpense.preracun_na_bruto,
+    travelingExpense.stopa
+  );
+
+  let nalozi = travelingExpense.employees_with_relation.map(
+    employeeWithRelation => {
+      let calculation = employeeTravelingExpenseCalculator.getCalculation(
+        employeeWithRelation
+      );
+
+      let _nalog = nalog({
+        platilac: userDetails.naziv_skole,
+        primalac:
+          employeeWithRelation.employee.last_name +
+          ' ' +
+          employeeWithRelation.employee.first_name,
+        iznos: numberWithThousandSeparator(calculation.neto),
+        racunPrimaoca: employeeWithRelation.employee.banc_account
+      });
+
+      return _nalog;
+    }
+  );
+
   var docDefinition = {
     pageSize: 'A4',
-    pageMargins: [20, 10, 20, 20],
+    pageMargins: [20, 10, 20, 0],
 
-    content: [
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog(),
-      nalog()
-    ],
+    content: nalozi,
     styles: {
       labels: {
         fontSize: 8,
