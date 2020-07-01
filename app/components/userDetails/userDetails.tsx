@@ -43,6 +43,10 @@ export default function UserDetailsComponent() {
             <td>{store.userDetails.municipality?.name}</td>
           </tr>
           <tr>
+            <td>Mesto</td>
+            <td>{store.userDetails.mesto}</td>
+          </tr>
+          <tr>
             <td>Ulica i broj</td>
             <td>{store.userDetails.ulica_i_broj}</td>
           </tr>
@@ -53,6 +57,10 @@ export default function UserDetailsComponent() {
           <tr>
             <td>Telefon</td>
             <td>{store.userDetails.telefon}</td>
+          </tr>
+          <tr>
+            <td>Bankovni račun</td>
+            <td>{store.userDetails.bankovni_racun}</td>
           </tr>
           <tr>
             <td colSpan={2} style={{ textAlign: 'center' }}>

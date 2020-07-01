@@ -36,6 +36,8 @@ import { handleResponse } from '../../../../utils/responseHandler';
 import * as service from '../../travelingExpenses.service';
 import styles from './details.css';
 import { get as getUserDetails } from '../../../userDetails/userDetails.service';
+import KreirajNalogeZaPrenosModalComponent from './components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal';
+import { open as openKreirajNalogeZaPrenosModal } from './components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal.actions';
 var remote = require('electron').remote;
 var fs = remote.require('fs');
 
@@ -100,12 +102,13 @@ export default function Details() {
   };
 
   const kreirajNalogeZaPlacanje = async () => {
-    handleResponse(await getUserDetails(), (res: any) => {
-      createVirmaniPdfFile(store.year, store.month, store, res.data);
-      // forceUpdate();
-    });
+    dispatch(openKreirajNalogeZaPrenosModal());
+    // handleResponse(await getUserDetails(), (res: any) => {
+    //   createVirmaniPdfFile(store.year, store.month, store, res.data);
+    //   // forceUpdate();
+    // });
   };
-  kreirajNalogeZaPlacanje();
+  // kreirajNalogeZaPlacanje();
 
   const openFolder = () => {
     const { shell } = require('electron');
@@ -347,6 +350,7 @@ export default function Details() {
       <EditDaysModal year={store.year} month={store.month} />
       <AddEmployeeModal />
       <AddRelationWithDaysModal year={store.year} month={store.month} />
+      <KreirajNalogeZaPrenosModalComponent />
     </Container>
   );
 }

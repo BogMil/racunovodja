@@ -10,6 +10,8 @@ export type UserDetails = {
   ulica_i_broj: string;
   email: string;
   naziv_skole: string;
+  bankovni_racun: string;
+  mesto: string;
 };
 
 export const getInitialUserDetails = () => {
@@ -22,6 +24,8 @@ export const getInitialUserDetails = () => {
     telefon: '',
     ulica_i_broj: '',
     email: '',
-    naziv_skole: ''
+    naziv_skole: '',
+    bankovni_racun: '',
+    mesto: ''
   } as UserDetails;
 };

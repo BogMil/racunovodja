@@ -807,9 +807,9 @@ export async function createVirmaniPdfFile(
                         }
                       ],
                       [
-                        '',
+                        { text: '242', alignment: 'center' },
                         { text: '', border: noBorders },
-                        'asd',
+                        { text: 'РСД', alignment: 'center' },
                         { text: '', border: noBorders },
                         { text: props.iznos, alignment: 'right' }
                       ]
@@ -850,7 +850,11 @@ export async function createVirmaniPdfFile(
                         {},
                         {}
                       ],
-                      ['a', { text: '', border: noBorders }, 'asd']
+                      [
+                        { text: '97', alignment: 'center' },
+                        { text: '', border: noBorders },
+                        'asd'
+                      ]
                     ]
                   },
                   layout: { ...thinTableBorders, ...topBottomPadding }
@@ -889,7 +893,11 @@ export async function createVirmaniPdfFile(
                         {},
                         {}
                       ],
-                      ['a', { text: '', border: noBorders }, 'asd']
+                      [
+                        { text: '97', alignment: 'center' },
+                        { text: '', border: noBorders },
+                        'asd'
+                      ]
                     ]
                   },
                   layout: { ...thinTableBorders, ...topBottomPadding }

@@ -18,6 +18,10 @@ import addRelationWithDays, {
   AddRelationWithDaysModalStore
 } from './components/details/components/addRelationWithDaysModal/addRelationWithDaysModal.reducer';
 
+import kreirajNalogeZaPrenosModal, {
+  KreirajNalogeZaPrenosModalStore
+} from './components/details/components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal.reducer';
+
 export default function createCombinedReducer() {
   return combineReducers({
     travelingExpenses,
@@ -25,7 +29,8 @@ export default function createCombinedReducer() {
     travelingExpenseDetails,
     editDaysModal,
     addEmployeeModal,
-    addRelationWithDays
+    addRelationWithDays,
+    kreirajNalogeZaPrenosModal
   });
 }
 
@@ -36,4 +41,5 @@ export type TravelingExpenseCombinedReducer = {
   editDaysModal: EditDaysModalStore;
   addEmployeeModal: AddEmployeeModalStore;
   addRelationWithDays: AddRelationWithDaysModalStore;
+  kreirajNalogeZaPrenosModal: KreirajNalogeZaPrenosModalStore;
 };

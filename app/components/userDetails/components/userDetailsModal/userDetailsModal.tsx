@@ -44,7 +44,9 @@ export default function UserDetailsModalComponent() {
         <Modal.Title as="h5">Ažuriranje opštih podataka</Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>
+      <Modal.Body
+        style={{ overflowY: 'auto', overflowX: 'hidden', maxHeight: 500 }}
+      >
         <Form>
           <Row>
             <Col>
@@ -88,7 +90,20 @@ export default function UserDetailsModalComponent() {
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Opština stanovanja</Form.Label>
+                <Form.Label>Bankovni rаčun</Form.Label>
+                <Form.Control
+                  name="bankovni_racun"
+                  placeholder="Bankovni raćun"
+                  value={userDetails.bankovni_racun}
+                  onChange={onHandleChange}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Opština</Form.Label>
                 <Form.Control
                   as="select"
                   custom
@@ -104,6 +119,19 @@ export default function UserDetailsModalComponent() {
                     );
                   })}
                 </Form.Control>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Mesto</Form.Label>
+                <Form.Control
+                  name="mesto"
+                  placeholder="Mesto raćun"
+                  value={userDetails.mesto}
+                  onChange={onHandleChange}
+                />
               </Form.Group>
             </Col>
           </Row>
