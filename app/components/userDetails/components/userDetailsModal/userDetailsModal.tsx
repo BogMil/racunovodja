@@ -64,6 +64,37 @@ export default function UserDetailsModalComponent() {
           <Row>
             <Col>
               <Form.Group>
+                <Form.Label>Tip škole</Form.Label>
+                <Form.Control
+                  as="select"
+                  custom
+                  name="tip_skole"
+                  onChange={onHandleChange}
+                  value={userDetails.tip_skole ?? ''}
+                >
+                  <option value="">---</option>
+                  <option value="0">Osnovna</option>
+                  <option value="1">Srednja</option>
+                </Form.Control>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Šifra škole</Form.Label>
+                <Form.Control
+                  name="sifra_skole"
+                  placeholder="Šifra škole"
+                  value={userDetails.sifra_skole ?? ''}
+                  onChange={onHandleChange}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
                 <Form.Label>Matični broj</Form.Label>
                 <Form.Control
                   name="maticni_broj"

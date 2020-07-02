@@ -16,6 +16,17 @@ export default function UserDetailsComponent() {
     dispatch(loadUserDetails());
   }, []);
 
+  let getNazivTipaSkole = (id: number | null) => {
+    switch (id) {
+      case 0:
+        return 'Osnovna';
+      case 1:
+        return 'Srednja';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="noselect">
       <Table striped bordered hover size="sm">
@@ -29,6 +40,14 @@ export default function UserDetailsComponent() {
           <tr>
             <td>Naziv škole</td>
             <td>{store.userDetails.naziv_skole}</td>
+          </tr>
+          <tr>
+            <td>Tip škole</td>
+            <td>{getNazivTipaSkole(store.userDetails.tip_skole)}</td>
+          </tr>
+          <tr>
+            <td>Šifra škole</td>
+            <td>{store.userDetails.sifra_skole}</td>
           </tr>
           <tr>
             <td>Maticni broj</td>

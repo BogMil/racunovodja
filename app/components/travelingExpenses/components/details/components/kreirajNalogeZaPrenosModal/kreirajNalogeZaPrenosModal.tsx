@@ -4,31 +4,78 @@ import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { close, handleChange } from './kreirajNalogeZaPrenosModal.actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../../../../../reducers';
-import userDetails from '../../../../../userDetails/userDetails.reducer';
 import DatePicker from 'react-datepicker';
-import { registerLocale, setDefaultLocale } from 'react-datepicker';
-import sr from 'date-fns/locale/sr-Latn';
-registerLocale('sr', sr);
+import { get as getUserDetails } from '../../../../../userDetails/userDetails.service';
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import { handleResponse } from '../../../../../../utils/responseHandler';
+import { createVirmaniPdfFile } from '../../../../travelingExpenses.fileCreators';
+import { ObavezanPodatakNijeSetovanException } from '../../../../../../services/employeeExtractor/exceptions/obavezanPodatakNijeSetovanException';
+const { dialog, getCurrentWindow } = require('electron').remote;
 
-export default function KreirajNalogeZaPrenosModalComponent() {
+type Props = {
+  forceUpdate: () => void;
+};
+export default function KreirajNalogeZaPrenosModalComponent(props: Props) {
   const dispatch = useDispatch();
   const { show, podaciONalogu } = useSelector((state: AppStore) => {
     return state.travelingExpensesCombined.kreirajNalogeZaPrenosModal;
+  });
+  const detailsStore = useSelector((state: AppStore) => {
+    return state.travelingExpensesCombined.travelingExpenseDetails;
   });
 
   const handleClose = () => {
     dispatch(close());
   };
 
-  const handleSave = async () => {};
+  const kreirajNalogeZaPrenos = async () => {
+    handleResponse(await getUserDetails(), async (res: any) => {
+      try {
+        await createVirmaniPdfFile(
+          detailsStore.year,
+          detailsStore.month,
+          detailsStore,
+          res.data,
+          podaciONalogu
+        );
+        props.forceUpdate();
+        dialog.showMessageBox(getCurrentWindow(), {
+          title: 'Računovođa',
+          message: 'Nalozi za prenos su uspešno kreirani',
+          type: 'info'
+        });
+        handleClose();
+      } catch (e) {
+        if (e instanceof ObavezanPodatakNijeSetovanException) {
+          dialog.showMessageBox(getCurrentWindow(), {
+            title: 'Računovođa',
+            message: 'Tip škole nije setovan!',
+            type: 'error'
+          });
+          return;
+        }
+        dialog.showMessageBox(getCurrentWindow(), {
+          title: 'Računovođa',
+          message: 'Nepredviđena greška',
+          type: 'error'
+        });
+      }
+    });
+  };
 
   const onHandleChange = (e: any) => {
     let value = e.target.value;
     let name = e.target.name;
     dispatch(handleChange(name, value));
   };
+  const setDatumPrijema = (date: Date) => {
+    dispatch(handleChange('datumPrijema', date));
+  };
+  const setDatumIzvrsenja = (date: Date) => {
+    dispatch(handleChange('datumIzvrsenja', date));
+  };
+
   return (
     <Modal
       backdrop="static"
@@ -54,8 +101,8 @@ export default function KreirajNalogeZaPrenosModalComponent() {
                 onChange={onHandleChange}
                 value={podaciONalogu.izvorPrihoda}
               >
-                <option value="01">Redovni troškovi (opština)</option>
-                <option value="04">Sopstvena sredstva</option>
+                <option value="01">Redovni troškovi (opština) - 01</option>
+                <option value="04">Sopstvena sredstva - 04</option>
               </Form.Control>
             </Form.Group>
           </Col>
@@ -67,7 +114,7 @@ export default function KreirajNalogeZaPrenosModalComponent() {
               <div style={{ width: '100%' }}>
                 <DatePicker
                   selected={podaciONalogu.datumPrijema}
-                  onChange={date => console.log(date)}
+                  onChange={date => setDatumPrijema(date)}
                   dateFormat=" d.M.yyyy"
                 />
               </div>
@@ -81,7 +128,7 @@ export default function KreirajNalogeZaPrenosModalComponent() {
               <div style={{ width: '100%' }}>
                 <DatePicker
                   selected={podaciONalogu.datumIzvrsenja}
-                  onChange={date => console.log(date)}
+                  onChange={date => setDatumIzvrsenja(date)}
                   dateFormat=" d.M.yyyy"
                 />
               </div>
@@ -105,9 +152,9 @@ export default function KreirajNalogeZaPrenosModalComponent() {
         <Button
           style={{ margin: '0 auto' }}
           variant="primary"
-          onClick={handleSave}
+          onClick={kreirajNalogeZaPrenos}
         >
-          Sačuvaj
+          Kreiraj
         </Button>
       </Modal.Footer>
     </Modal>

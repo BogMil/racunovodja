@@ -25,8 +25,7 @@ import { initialState } from './details.reducer';
 import { columnWidths, columColors } from './details.columnStyles';
 import {
   create_PPP_PD_XML_File,
-  createPdfFile,
-  createVirmaniPdfFile
+  createPdfFile
 } from '../../travelingExpenses.fileCreators';
 import { GET_PUTNI_TROSKOVI_PPP_PD_DIR } from '../../../../constants/files';
 import { U_RADU, ZAVRSEN } from '../../../../constants/statuses';
@@ -103,10 +102,6 @@ export default function Details() {
 
   const kreirajNalogeZaPlacanje = async () => {
     dispatch(openKreirajNalogeZaPrenosModal());
-    // handleResponse(await getUserDetails(), (res: any) => {
-    //   createVirmaniPdfFile(store.year, store.month, store, res.data);
-    //   // forceUpdate();
-    // });
   };
   // kreirajNalogeZaPlacanje();
 
@@ -350,7 +345,7 @@ export default function Details() {
       <EditDaysModal year={store.year} month={store.month} />
       <AddEmployeeModal />
       <AddRelationWithDaysModal year={store.year} month={store.month} />
-      <KreirajNalogeZaPrenosModalComponent />
+      <KreirajNalogeZaPrenosModalComponent forceUpdate={forceUpdate} />
     </Container>
   );
 }
