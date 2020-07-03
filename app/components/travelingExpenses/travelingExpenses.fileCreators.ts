@@ -4,7 +4,7 @@ import {
   PUTNI_TROSKOVI_DIR,
   PUTNI_TROSKOVI_PPP_PD_XML_FILE,
   PUTNI_TROSKOVI_PDF_FILE,
-  VIRMANI_PDF_FILE
+  NALOZI_ZA_PRENOS_PDF_FILE
 } from '../../constants/files';
 import {
   EmployeeWithRelations,
@@ -17,6 +17,7 @@ import { UserDetails } from '../userDetails/userDetails.types';
 import { daysInMonth, isWeekday } from '../../utils/getBusinessDaysInMonth';
 import { PodaciONalogu } from './components/details/components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal.reducer';
 import { ObavezanPodatakNijeSetovanException } from '../../services/employeeExtractor/exceptions/obavezanPodatakNijeSetovanException';
+import { UserDetailsCombinedReducer } from '../userDetails/userDetails.combinedReducer';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 var fs = require('fs');
@@ -608,7 +609,7 @@ function _createPdfFile(year: number, month: number) {
 
 function _createVirmaniPdfFile(year: number, month: number) {
   let root = createRootFolder(year, month);
-  let filePath = `${root}\\${VIRMANI_PDF_FILE(year, month)}`;
+  let filePath = `${root}\\${NALOZI_ZA_PRENOS_PDF_FILE(year, month)}`;
   fs.writeFile(filePath, '', (e: any) => {});
 
   return filePath;
@@ -644,6 +645,44 @@ function createRootFolder(year: number, month: number) {
   return `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`;
 }
 
+function getTipSkole(userDetails: UserDetails) {
+  switch (userDetails.tip_skole) {
+    case 0:
+      return '921';
+    case 1:
+      return '920';
+    default:
+      throw new ObavezanPodatakNijeSetovanException(
+        'Tip škole nije definisan.'
+      );
+  }
+}
+
+function getSifraSkole(userDetails: UserDetails) {
+  if (userDetails.sifra_skole != '' && userDetails.sifra_skole != null)
+    return userDetails.sifra_skole;
+  else
+    throw new ObavezanPodatakNijeSetovanException(
+      'Šifra škole nije definisana.'
+    );
+}
+
+function mod97(br: string, os: number) {
+  var c,
+    x,
+    kb = 0;
+
+  for (x = br.length - 1; !(x < 0); x--) {
+    c = parseInt(br.charAt(x));
+    kb = (kb + os * c) % 97;
+    os = (os * 10) % 97;
+  }
+
+  kb = 98 - kb;
+
+  return kb;
+}
+
 export async function createVirmaniPdfFile(
   year: number,
   month: number,
@@ -652,25 +691,15 @@ export async function createVirmaniPdfFile(
   podaciONalogu: PodaciONalogu
 ) {
   let konto = '415112';
-  let tipSkole = '';
-  switch (userDetails.tip_skole) {
-    case 0:
-      tipSkole = '921';
-      break;
-    case 1:
-      tipSkole = '920';
-      break;
-    default:
-      throw new ObavezanPodatakNijeSetovanException(
-        'Tip škole nije definisan.'
-      );
-  }
-  let sifraSkole;
-  if (userDetails.sifra_skole != '') sifraSkole = userDetails.sifra_skole;
-  else
-    throw new ObavezanPodatakNijeSetovanException(
-      'Šifra škole nije definisana.'
-    );
+  let tipSkole = getTipSkole(userDetails);
+  let sifraSkole = getSifraSkole(userDetails);
+
+  let kontrolniBroj = mod97(
+    `${sifraSkole}${konto}00${podaciONalogu.izvorPrihoda}${tipSkole}`,
+    100
+  );
+
+  let pozivNaBrojZaduzenje = `${kontrolniBroj}-${sifraSkole}-${konto}-00-${podaciONalogu.izvorPrihoda}-${tipSkole}`;
 
   let filePath = _createVirmaniPdfFile(year, month);
   const fs = require('fs');
@@ -885,7 +914,7 @@ export async function createVirmaniPdfFile(
                           [
                             { text: '97', alignment: 'center' },
                             { text: '', border: noBorders },
-                            'asd'
+                            { text: pozivNaBrojZaduzenje, alignment: 'center' }
                           ]
                         ]
                       },

@@ -50,7 +50,7 @@ export default function KreirajNalogeZaPrenosModalComponent(props: Props) {
         if (e instanceof ObavezanPodatakNijeSetovanException) {
           dialog.showMessageBox(getCurrentWindow(), {
             title: 'Računovođa',
-            message: 'Tip škole nije setovan!',
+            message: e.message,
             type: 'error'
           });
           return;

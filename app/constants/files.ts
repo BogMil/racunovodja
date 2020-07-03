@@ -7,8 +7,8 @@ export const PUTNI_TROSKOVI_PPP_PD_XML_FILE = (year: number, month: number) =>
 export const PUTNI_TROSKOVI_PDF_FILE = (year: number, month: number) =>
   `putni-troškovi-${year}-${month}.pdf`;
 
-export const VIRMANI_PDF_FILE = (year: number, month: number) =>
-  `putni-troškovi-virmani-${year}-${month}.pdf`;
+export const NALOZI_ZA_PRENOS_PDF_FILE = (year: number, month: number) =>
+  `putni-troškovi-nalozi-za-prenos-${year}-${month}.pdf`;
 
 export const CREATE_MODE = 'CREATE_MODE';
 
