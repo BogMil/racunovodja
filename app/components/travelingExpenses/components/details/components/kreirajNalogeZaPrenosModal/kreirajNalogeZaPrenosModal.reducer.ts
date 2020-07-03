@@ -2,14 +2,16 @@ import { Action } from '../../../../../../reducers/types';
 import { NAMESPACE, CLOSE, OPEN } from './kreirajNalogeZaPrenosModal.actions';
 import { HANDLE_CHANGE } from './kreirajNalogeZaPrenosModal.actions';
 
-const initialState: KreirajNalogeZaPrenosModalStore = {
-  show: false,
-  podaciONalogu: {
-    datumIzvrsenja: new Date(),
-    izvorPrihoda: '01',
-    datumPrijema: new Date(),
-    pozivNaBrojOdobrenje: ''
-  } as PodaciONalogu
+const initialState = (): KreirajNalogeZaPrenosModalStore => {
+  return {
+    show: false,
+    podaciONalogu: {
+      datumIzvrsenja: new Date(),
+      izvorPrihoda: '01',
+      datumPrijema: new Date(),
+      pozivNaBrojOdobrenje: ''
+    } as PodaciONalogu
+  };
 };
 
 export type KreirajNalogeZaPrenosModalStore = {
@@ -25,7 +27,7 @@ export type PodaciONalogu = {
 };
 
 export default function reducer(
-  state: KreirajNalogeZaPrenosModalStore = initialState,
+  state: KreirajNalogeZaPrenosModalStore = initialState(),
   action: Action
 ) {
   if (action.namespace != NAMESPACE) return state;
@@ -37,7 +39,7 @@ export default function reducer(
       };
 
     case CLOSE:
-      return initialState;
+      return initialState();
 
     case HANDLE_CHANGE:
       let { name, value } = action.payload;

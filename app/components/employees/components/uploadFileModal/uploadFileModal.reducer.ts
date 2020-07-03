@@ -1,10 +1,5 @@
 import { Action } from '../../../../reducers/types';
-import {
-  NAMESPACE,
-  CLOSE,
-  OPEN,
-  HANDLE_CHANGE
-} from './uploadFileModal.actions';
+import { NAMESPACE, CLOSE, OPEN } from './uploadFileModal.actions';
 
 const initialState: UploadFileModalStore = {
   show: false,
