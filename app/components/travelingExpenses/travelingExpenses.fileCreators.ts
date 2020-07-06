@@ -14,7 +14,11 @@ import {
 import { numberWithThousandSeparator } from '../../utils/numberWithThousandSeparator';
 import getMonthName from '../../utils/getMonthName';
 import { UserDetails } from '../userDetails/userDetails.types';
-import { daysInMonth, isWeekday } from '../../utils/getBusinessDaysInMonth';
+import {
+  daysInMonth,
+  isWeekday,
+  getBusinesDaysInMonth
+} from '../../utils/getBusinessDaysInMonth';
 import { PodaciONalogu } from './components/details/components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal.reducer';
 import { ObavezanPodatakNijeSetovanException } from '../../services/employeeExtractor/exceptions/obavezanPodatakNijeSetovanException';
 import { UserDetailsCombinedReducer } from '../userDetails/userDetails.combinedReducer';
@@ -569,6 +573,10 @@ function createXmlContent(
         employeeWithRelations.employee.municipality.code
       );
       PodaciOPrihodima.ele('tns:SVP', 101110000);
+      PodaciOPrihodima.ele(
+        'tns:MesecniFondSati',
+        getBusinesDaysInMonth(month, year) * 8
+      );
       PodaciOPrihodima.ele(
         'tns:Bruto',
         numberWithThousandSeparator(calculation.brutoOporezivo, 2, '')
