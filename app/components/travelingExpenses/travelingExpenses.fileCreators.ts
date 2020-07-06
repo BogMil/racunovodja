@@ -566,7 +566,6 @@ function createXmlContent(
         employeeWithRelations.employee.municipality.code
       );
       PodaciOPrihodima.ele('tns:SVP', 101110000);
-      // PodaciOPrihodima.ele('tns:MesecniFondSati', 168);
       PodaciOPrihodima.ele(
         'tns:Bruto',
         numberWithThousandSeparator(calculation.brutoOporezivo, 2, '')
@@ -579,12 +578,12 @@ function createXmlContent(
         'tns:Porez',
         numberWithThousandSeparator(calculation.porez, 2, '')
       );
-      PodaciOPrihodima.ele('tns:OsnovicaDoprinosi', '0.0');
-      PodaciOPrihodima.ele('tns:PIO', '0.0');
-      PodaciOPrihodima.ele('tns:ZDR', '0.0');
-      PodaciOPrihodima.ele('tns:NEZ', '0.0');
-      PodaciOPrihodima.ele('tns:PIOBen', '0.0');
-      PodaciOPrihodima.ele('tns:DeklarisaniMFP');
+      // PodaciOPrihodima.ele('tns:OsnovicaDoprinosi', '0.0');
+      // PodaciOPrihodima.ele('tns:PIO', '0.0');
+      // PodaciOPrihodima.ele('tns:ZDR', '0.0');
+      // PodaciOPrihodima.ele('tns:NEZ', '0.0');
+      // PodaciOPrihodima.ele('tns:PIOBen', '0.0');
+      // PodaciOPrihodima.ele('tns:DeklarisaniMFP');
     }
   );
 
