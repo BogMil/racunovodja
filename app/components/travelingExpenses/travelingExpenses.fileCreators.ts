@@ -498,11 +498,28 @@ function createXmlContent(
   travelingExpense: TravelingExpenseWithDetails,
   userDetails: UserDetails
 ) {
-  let days = daysInMonth(month + 1, year);
+  let days = daysInMonth(month, year);
   while (!isWeekday(year, month + 1, days)) {
     days--;
   }
-  let datumPlacanja = `${year}-${month + 1}-${days}`;
+
+  let monthZaDatumPlacanjaStr = month.toString();
+  let monthZaDatumPlacanjaStrFromat =
+    monthZaDatumPlacanjaStr.length == 1
+      ? '0' + monthZaDatumPlacanjaStr
+      : monthZaDatumPlacanjaStr;
+
+  let monthZaObracunskiPeriod = month - 1 == 0 ? 12 : month - 1;
+  let monthZaObracunskiPeriodStr = monthZaObracunskiPeriod.toString();
+  let monthZaObracunskiPeriodStrFromat =
+    monthZaObracunskiPeriodStr.length == 1
+      ? '0' + monthZaObracunskiPeriodStr
+      : monthZaObracunskiPeriodStr;
+
+  let daysStr = days.toString();
+  let daysStrFormat = daysStr.length == 1 ? '0' + daysStr : daysStr;
+
+  let datumPlacanja = `${year}-${monthZaDatumPlacanjaStrFromat}-${daysStrFormat}`;
   var xml = builder.create('tns:PodaciPoreskeDeklaracije');
   xml.att('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
   xml.att('xmlns:tns', 'http://pid.purs.gov.rs');
@@ -513,7 +530,7 @@ function createXmlContent(
   PodaciOPrijavi.ele('tns:VrstaPrijave', 1);
   PodaciOPrijavi.ele(
     'tns:ObracunskiPeriod',
-    month.toString().length == 1 ? `${year}-0${month}` : `${year}-${month}`
+    `${year}-${monthZaObracunskiPeriodStrFromat}`
   );
   PodaciOPrijavi.ele('tns:DatumPlacanja', datumPlacanja);
   PodaciOPrijavi.ele('tns:NajnizaOsnovica', 0);
