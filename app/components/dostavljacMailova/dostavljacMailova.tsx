@@ -11,7 +11,7 @@ import PlatniListicTemplate from './components/platniListicMissingEmployeesTempl
 import ObustavaTemplate from './components/obustavaMissingEmployeesTemplate';
 import { Redirect } from 'react-router';
 import routes from '../../constants/routes.json';
-import { PodaciOSlanju } from './dostavljacMailova.types';
+import { PodaciOSlanjuZaIzborZaposlenih } from './dostavljacMailova.types';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 const employeeExtractor = new PdfDataExtractor();
@@ -157,7 +157,7 @@ export default function DostavljacMailovaComponent() {
             state: {
               filePath: filePath,
               zaposleniUFajlu: allExtractedEmployees
-            } as PodaciOSlanju
+            } as PodaciOSlanjuZaIzborZaposlenih
           }}
         />
       )}

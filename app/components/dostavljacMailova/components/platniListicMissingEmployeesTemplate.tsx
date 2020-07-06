@@ -6,7 +6,7 @@ import { handleResponse } from '../../../utils/responseHandler';
 import { SUCCESS } from '../../../constants/responseStatuses';
 import { useHistory } from 'react-router';
 import routes from '../../../constants/routes.json';
-import { PodaciOSlanju } from '../dostavljacMailova.types';
+import { PodaciOSlanjuZaIzborZaposlenih } from '../dostavljacMailova.types';
 
 type Props = {
   missingEmployees: Employee[];
@@ -45,7 +45,10 @@ export default function PlatniListicTemplate(props: Props) {
               if (i + 1 == missingEmployees.length)
                 history.push({
                   pathname: routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH,
-                  state: { filePath, zaposleniUFajlu } as PodaciOSlanju
+                  state: {
+                    filePath,
+                    zaposleniUFajlu
+                  } as PodaciOSlanjuZaIzborZaposlenih
                 });
             }
           }

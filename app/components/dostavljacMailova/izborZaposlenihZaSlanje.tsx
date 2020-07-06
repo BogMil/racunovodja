@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
-import { PodaciOSlanju } from './dostavljacMailova.types';
+import {
+  PodaciOSlanjuZaIzborZaposlenih,
+  PodaciOSlanjuZaSlanje
+} from './dostavljacMailova.types';
 import { get as getAllEmployees } from '../employees/employee.service';
 import { Employee } from '../employees/types';
 import { handleResponse } from '../../utils/responseHandler';
@@ -15,7 +18,7 @@ function isValidEmail(email: string) {
 
 export default function IzborZaposlenihZaSlanje() {
   const history = useHistory();
-  const state = useLocation().state as PodaciOSlanju;
+  const state = useLocation().state as PodaciOSlanjuZaIzborZaposlenih;
 
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [brojeviCekiranihZaposlenih, setBrojeviCekiranihZaposlenih] = useState<
@@ -80,7 +83,14 @@ export default function IzborZaposlenihZaSlanje() {
     let odabraniZaposleni = employees.filter(x =>
       brojeviCekiranihZaposlenih.includes(x.number)
     );
-    console.log(odabraniZaposleni);
+    history.push({
+      pathname: routes.DOSTAVLJAC_MAILOVA_SLANJE,
+      state: {
+        filePath: state.filePath,
+        odabraniZaposleni,
+        fileSubject
+      } as PodaciOSlanjuZaSlanje
+    });
   };
 
   return (
