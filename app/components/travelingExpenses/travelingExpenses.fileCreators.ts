@@ -507,7 +507,10 @@ function createXmlContent(
   let PodaciOPrijavi = xml.ele('tns:PodaciOPrijavi');
   PodaciOPrijavi.ele('tns:KlijentskaOznakaDeklaracije', 1);
   PodaciOPrijavi.ele('tns:VrstaPrijave', 1);
-  PodaciOPrijavi.ele('tns:ObracunskiPeriod', `${year}-${month}`);
+  PodaciOPrijavi.ele(
+    'tns:ObracunskiPeriod',
+    month.toString().length == 1 ? `${year}-0${month}` : `${year}-${month}`
+  );
   PodaciOPrijavi.ele('tns:DatumPlacanja', datumPlacanja);
   PodaciOPrijavi.ele('tns:NajnizaOsnovica', 0);
 
