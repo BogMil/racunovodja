@@ -14,6 +14,7 @@ import TravelExpensesDetails from './components/travelingExpenses/components/det
 import UserDetailsComponent from './components/userDetails/userDetails';
 import LokacijeComponent from './components/sifarnici/lokacije/lokacije';
 import DostavljacMailovaComponent from './components/dostavljacMailova/dostavljacMailova';
+import IzborZaposlenihZaSlanje from './components/dostavljacMailova/izborZaposlenihZaSlanje';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);
@@ -52,6 +53,9 @@ export default function Routes() {
         </PrivateRoute>
         <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA}>
           <DostavljacMailovaComponent />
+        </PrivateRoute>
+        <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH}>
+          <IzborZaposlenihZaSlanje />
         </PrivateRoute>
       </Switch>
     </App>

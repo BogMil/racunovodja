@@ -90,3 +90,11 @@ export async function getMissingJmbgs(jmbgs: string[]) {
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function getMissingEmployeeNumbers(numbers: string[]) {
+  let res = await axios
+    .post(`${BASE_URL}/api/user/getMissingEmployeeNumbers`, { numbers })
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

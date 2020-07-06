@@ -16,12 +16,10 @@ import getMonthName from '../../utils/getMonthName';
 import { UserDetails } from '../userDetails/userDetails.types';
 import { daysInMonth, isWeekday } from '../../utils/getBusinessDaysInMonth';
 import { PodaciONalogu } from './components/details/components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal.reducer';
-import { ObavezanPodatakNijeSetovanException } from '../../services/employeeExtractor/exceptions/obavezanPodatakNijeSetovanException';
-import { UserDetailsCombinedReducer } from '../userDetails/userDetails.combinedReducer';
+import { ObavezanPodatakNijeSetovanException } from '../../services/pdfParser/exceptions/obavezanPodatakNijeSetovanException';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 var fs = require('fs');
-const { shell } = require('electron');
 var builder = require('xmlbuilder');
 
 export function create_PPP_PD_XML_File(
@@ -594,7 +592,7 @@ function createXmlContent(
 function _create_PPP_PD_xmlFile(year: number, month: number) {
   let root = createRootFolder(year, month);
   let filePath = `${root}\\${PUTNI_TROSKOVI_PPP_PD_XML_FILE(year, month)}`;
-  fs.writeFile(filePath, '', (e: any) => {});
+  fs.writeFile(filePath, '', () => {});
 
   return filePath;
 }
@@ -602,7 +600,7 @@ function _create_PPP_PD_xmlFile(year: number, month: number) {
 function _createPdfFile(year: number, month: number) {
   let root = createRootFolder(year, month);
   let filePath = `${root}\\${PUTNI_TROSKOVI_PDF_FILE(year, month)}`;
-  fs.writeFile(filePath, '', (e: any) => {});
+  fs.writeFile(filePath, '', () => {});
 
   return filePath;
 }
@@ -610,7 +608,7 @@ function _createPdfFile(year: number, month: number) {
 function _createVirmaniPdfFile(year: number, month: number) {
   let root = createRootFolder(year, month);
   let filePath = `${root}\\${NALOZI_ZA_PRENOS_PDF_FILE(year, month)}`;
-  fs.writeFile(filePath, '', (e: any) => {});
+  fs.writeFile(filePath, '', () => {});
 
   return filePath;
 }
@@ -736,32 +734,6 @@ export async function createVirmaniPdfFile(
       return 0.5;
     }
   };
-
-  let netoTotal = 0;
-  let neoporeziviDeoTotal = 0;
-  let oporeziviDeoTotal = 0;
-  let brutoOporeziviDeoTotal = 0;
-  let porezTotal = 0;
-
-  travelingExpense.employees_with_relation.forEach(
-    (employeeWithRelation: EmployeeWithRelations) => {
-      let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
-        travelingExpense.year,
-        travelingExpense.month,
-        travelingExpense.maxNonTaxedValue,
-        travelingExpense.preracun_na_bruto,
-        travelingExpense.stopa
-      );
-      let calculation = employeeTravelingExpenseCalculator.getCalculation(
-        employeeWithRelation
-      );
-      netoTotal += calculation.neto;
-      neoporeziviDeoTotal += calculation.neoporezivo;
-      oporeziviDeoTotal += calculation.oporezivo;
-      brutoOporeziviDeoTotal += calculation.brutoOporezivo;
-      porezTotal += calculation.porez;
-    }
-  );
 
   const noBorders = [false, false, false, false];
   const thinTableBorders = {

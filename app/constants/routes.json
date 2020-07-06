@@ -11,5 +11,6 @@
   "TRAVEL_EXPENSES_DETAILS": "/travel_expenses_details",
   "OTHER_SETTINGS": "/other_settings",
   "LOCATIONS": "/locations",
-  "DOSTAVLJAC_MAILOVA": "/dostavljac_mailova"
+  "DOSTAVLJAC_MAILOVA": "/dostavljac_mailova",
+  "DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH": "/dostavljac_mailova-izbor_zaposlenih"
 }
