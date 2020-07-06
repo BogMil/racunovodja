@@ -36,7 +36,9 @@ export default function IzborZaposlenihZaSlanje() {
         );
         setEmployees(zaposleniSaValidnimEmailomKojiPostojeUFajlu);
         setBrojeviCekiranihZaposlenih(
-          zaposleniSaValidnimEmailomKojiPostojeUFajlu.map(x => x.number)
+          zaposleniSaValidnimEmailomKojiPostojeUFajlu.map(
+            (x: Employee) => x.number
+          )
         );
       });
     }
@@ -78,6 +80,7 @@ export default function IzborZaposlenihZaSlanje() {
     let odabraniZaposleni = employees.filter(x =>
       brojeviCekiranihZaposlenih.includes(x.number)
     );
+    console.log(odabraniZaposleni);
   };
 
   return (
@@ -118,7 +121,7 @@ export default function IzborZaposlenihZaSlanje() {
                   <th>Broj zaposlenog</th>
                   <th>Prezime</th>
                   <th>Ime</th>
-                  <th>Broj računa</th>
+                  <th>Email</th>
                 </tr>
               </thead>
               <tbody>
@@ -139,7 +142,7 @@ export default function IzborZaposlenihZaSlanje() {
                       <td>{e.number}</td>
                       <td>{e.last_name}</td>
                       <td>{e.first_name}</td>
-                      <td>{e.banc_account}</td>
+                      <td>{e.email}</td>
                     </tr>
                   );
                 })}
