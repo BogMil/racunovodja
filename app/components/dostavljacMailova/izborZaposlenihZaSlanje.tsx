@@ -4,7 +4,7 @@ import { PodaciOSlanju } from './dostavljacMailova.types';
 import { get as getAllEmployees } from '../employees/employee.service';
 import { Employee } from '../employees/types';
 import { handleResponse } from '../../utils/responseHandler';
-import { Row, Col, Table, Button, Container } from 'react-bootstrap';
+import { Row, Col, Table, Button, Container, Form } from 'react-bootstrap';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { useHistory } from 'react-router-dom';
 import routes from '../../constants/routes.json';
@@ -18,7 +18,11 @@ export default function IzborZaposlenihZaSlanje() {
   const state = useLocation().state as PodaciOSlanju;
 
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [brojeviCekiranihZaposlenih, setBrojeviCekiranihZaposlenih] = useState<
+    string[]
+  >([]);
   const [fileSubject, setFileSubject] = useState('');
+  const [izaberiSve, setIzaberiSve] = useState(true);
   useEffect(() => {
     async function getUserEmployees() {
       handleResponse(await getAllEmployees(), (res: any) => {
@@ -31,6 +35,9 @@ export default function IzborZaposlenihZaSlanje() {
             state.zaposleniUFajlu.filter(z => z.number == x.number).length > 0
         );
         setEmployees(zaposleniSaValidnimEmailomKojiPostojeUFajlu);
+        setBrojeviCekiranihZaposlenih(
+          zaposleniSaValidnimEmailomKojiPostojeUFajlu.map(x => x.number)
+        );
       });
     }
 
@@ -43,8 +50,38 @@ export default function IzborZaposlenihZaSlanje() {
     getFileSubject();
   }, []);
 
+  const cekirajZaposlenog = (number: string) => {
+    let _brojeviCekiranihZaposlenih = brojeviCekiranihZaposlenih.map(x => x);
+    let cekiraniZaposleni = _brojeviCekiranihZaposlenih.filter(
+      x => x == number
+    );
+    if (cekiraniZaposleni.length == 0)
+      setBrojeviCekiranihZaposlenih([number, ..._brojeviCekiranihZaposlenih]);
+    else {
+      _brojeviCekiranihZaposlenih = _brojeviCekiranihZaposlenih.filter(
+        x => x != number
+      );
+      setBrojeviCekiranihZaposlenih(_brojeviCekiranihZaposlenih);
+    }
+  };
+
+  const onIzaberiSve = () => {
+    let newVal = !izaberiSve;
+    setIzaberiSve(newVal);
+    if (newVal == false) setBrojeviCekiranihZaposlenih([]);
+    else {
+      setBrojeviCekiranihZaposlenih(employees.map(x => x.number));
+    }
+  };
+
+  const onNastavi = () => {
+    let odabraniZaposleni = employees.filter(x =>
+      brojeviCekiranihZaposlenih.includes(x.number)
+    );
+  };
+
   return (
-    <Container>
+    <Container className="noselect">
       <Row>
         <Col md={11}>
           <div>
@@ -87,7 +124,17 @@ export default function IzborZaposlenihZaSlanje() {
               <tbody>
                 {employees.map(e => {
                   return (
-                    <tr key={e.jmbg} onClick={() => console.log('asd')}>
+                    <tr
+                      key={e.jmbg}
+                      onClick={() => cekirajZaposlenog(e.number)}
+                      style={{
+                        backgroundColor:
+                          brojeviCekiranihZaposlenih.filter(x => x == e.number)
+                            .length > 0
+                            ? '#e26d5a'
+                            : ''
+                      }}
+                    >
                       <td>{e.jmbg}</td>
                       <td>{e.number}</td>
                       <td>{e.last_name}</td>
@@ -98,6 +145,22 @@ export default function IzborZaposlenihZaSlanje() {
                 })}
               </tbody>
             </Table>
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>Izabrano {brojeviCekiranihZaposlenih.length} zaposlenih</Col>
+        <Col>
+          <div style={{ float: 'right' }}>
+            <Form.Group>
+              <Form.Check
+                id="izaberiSveChk"
+                type="checkbox"
+                label="Izaberi sve"
+                checked={izaberiSve}
+                onChange={onIzaberiSve}
+              />
+            </Form.Group>
           </div>
         </Col>
       </Row>
@@ -115,7 +178,12 @@ export default function IzborZaposlenihZaSlanje() {
             >
               Odustani
             </Button>
-            <Button>Nastavi</Button>
+            <Button
+              disabled={brojeviCekiranihZaposlenih.length == 0}
+              onClick={onNastavi}
+            >
+              Nastavi
+            </Button>
           </div>
         </Col>
       </Row>
