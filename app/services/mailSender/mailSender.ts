@@ -1,10 +1,34 @@
+import { promisify } from 'util';
+
 const nodemailer = require('nodemailer');
 const imaps = require('imap-simple');
 const MailComposer = require('nodemailer/lib/mail-composer');
 const util = require('util');
 
 export class MailSender {
-  private static _createTransporter(user: string, pass: string) {
+  private _transporter: any;
+  private _sendMail: any;
+  private _connection: any;
+
+  public async init(user: string, pass: string) {
+    try {
+      this._transporter = this._createTransporter(user, pass);
+      this._sendMail = promisify(this._transporter.sendMail).bind(
+        this._transporter
+      );
+
+      var config = this._createImapConfig(user, pass);
+      this._connection = await imaps.connect(config);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  public closeConnections() {
+    this._connection.end();
+  }
+
+  private _createTransporter(user: string, pass: string) {
     return nodemailer.createTransport({
       host: 'mail.bogmilko.rs',
       port: 465,
@@ -16,7 +40,7 @@ export class MailSender {
     });
   }
 
-  private static _createImapConfig(user: string, pass: string) {
+  private _createImapConfig(user: string, pass: string) {
     return {
       imap: {
         user,
@@ -30,38 +54,26 @@ export class MailSender {
     };
   }
 
-  public static async send(
+  public async send(
     user: string,
     pass: string,
     mailObject: any
   ): Promise<void> {
-    let transporter = this._createTransporter(user, pass);
-    transporter.sendMail(mailObject, async (error: any, info: any) => {
-      if (error != null) {
-        console.log(error);
-      }
-
-      var config = this._createImapConfig(user, pass);
-      console.log('config created');
-
-      var mail = new MailComposer(mailObject);
-      console.log('mail created');
-
-      imaps.connect(config).then(function(connection: any) {
-        mail.compile().build(async function(err: any, message: any) {
-          if (err) console.log(err);
-          connection.append(
-            message,
-            {
-              mailbox: 'INBOX.Sent',
-              flags: '\\Seen'
-            },
-            e => {
-              console.log(e);
-            }
-          );
-        });
-      });
+    let info = await this._sendMail(mailObject);
+    if (!info) {
+      console.log(info);
+    }
+    var mail = new MailComposer(mailObject);
+    let compiledMail = mail.compile();
+    let buildMail = promisify(compiledMail.build).bind(compiledMail);
+    let message = await buildMail();
+    let putIntoSentBox = promisify(this._connection.append).bind(
+      this._connection
+    );
+    let res = await putIntoSentBox(message, {
+      mailbox: 'INBOX.Sent',
+      flags: '\\Seen'
     });
+    console.log(res);
   }
 }

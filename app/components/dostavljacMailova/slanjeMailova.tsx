@@ -9,6 +9,7 @@ import { PDFDocument } from 'pdf-lib';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { MailSender } from '../../services/mailSender/mailSender';
 import { send } from 'process';
+import { promisify } from 'util';
 
 const fs = require('fs');
 const pdfMake = require('pdfmake/build/pdfmake');
@@ -27,6 +28,7 @@ export default function SlanjeMailovaComponent() {
 
   const [sendingResults, setSendingResults] = useState<String[]>([]);
 
+  const mailSender: MailSender = new MailSender();
   const test = async () => {
     let filePdfBytes = fs.readFileSync(filePath);
     let file = await PDFDocument.load(filePdfBytes);
@@ -54,29 +56,36 @@ export default function SlanjeMailovaComponent() {
       };
 
       let emailProps: MailProps = {
-        user: 'test@bogmilko.rs',
-        pass: 'grobarDS1!',
+        user: 'podrska@bogmilko.rs',
+        pass: '',
         mail
       };
+
       console.log('sending...');
       await trySendMail(emailProps, zaposleni);
       console.log('sent');
     };
+
+    mailSender.init('podrska@bogmilko.rs', '');
+
     for (const zaposleni of odabraniZaposleni) {
       await z(zaposleni);
     }
+    mailSender.closeConnections();
   };
-
+  let x = [];
   const trySendMail = async (
     emailProps: MailProps,
     zaposleni: DbEmployeeWithPages
   ) => {
     try {
-      await MailSender.send(emailProps.user, emailProps.pass, emailProps.mail);
-      let _sendingResults = [...sendingResults, zaposleni.dbEmployee.last_name];
-      setSendingResults(_sendingResults);
+      await mailSender.send(emailProps.user, emailProps.pass, emailProps.mail);
+      x.push(zaposleni.dbEmployee.last_name);
+      setSendingResults([...x]);
     } catch (e) {
       console.log(e);
+      x.push(zaposleni.dbEmployee.last_name);
+      setSendingResults([...x]);
     }
   };
 
