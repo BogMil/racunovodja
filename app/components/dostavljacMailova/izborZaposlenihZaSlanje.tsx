@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
   PodaciOSlanjuZaIzborZaposlenih,
-  PodaciOSlanjuZaSlanje
+  PodaciOSlanjuZaSlanje,
+  DbEmployeeWithPages
 } from './dostavljacMailova.types';
 import { get as getAllEmployees } from '../employees/employee.service';
 import { Employee } from '../employees/types';
@@ -83,11 +84,23 @@ export default function IzborZaposlenihZaSlanje() {
     let odabraniZaposleni = employees.filter(x =>
       brojeviCekiranihZaposlenih.includes(x.number)
     );
+
+    let zaposleniSaStranicama = odabraniZaposleni.map(zaposleni => {
+      let pageNumbers = state.zaposleniUFajlu.filter(
+        x => x.number == zaposleni.number
+      )[0].pageNumbers;
+
+      return {
+        dbEmployee: zaposleni,
+        pageNumbers
+      } as DbEmployeeWithPages;
+    });
+
     history.push({
       pathname: routes.DOSTAVLJAC_MAILOVA_SLANJE,
       state: {
         filePath: state.filePath,
-        odabraniZaposleni,
+        odabraniZaposleni: zaposleniSaStranicama,
         fileSubject
       } as PodaciOSlanjuZaSlanje
     });

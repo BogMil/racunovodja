@@ -8,6 +8,11 @@ export type PodaciOSlanjuZaIzborZaposlenih = {
 
 export type PodaciOSlanjuZaSlanje = {
   filePath: string;
-  odabraniZaposleni: DbEmployee[];
+  odabraniZaposleni: DbEmployeeWithPages[];
   fileSubject: string;
+};
+
+export type DbEmployeeWithPages = {
+  dbEmployee: DbEmployee;
+  pageNumbers: number[];
 };

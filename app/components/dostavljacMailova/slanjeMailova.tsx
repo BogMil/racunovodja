@@ -1,95 +1,99 @@
-import React, { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router';
-import routes from '../../constants/routes.json';
-import { PodaciOSlanjuZaSlanje } from './dostavljacMailova.types';
-import { Container, Row, Col, Button, Table, Form } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router';
+import {
+  PodaciOSlanjuZaSlanje,
+  DbEmployeeWithPages
+} from './dostavljacMailova.types';
+import { Container, Row, Col, Button, Table } from 'react-bootstrap';
 import { PDFDocument } from 'pdf-lib';
-const nodemailer = require('nodemailer');
-const imaps = require('imap-simple');
+import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
+import { MailSender } from '../../services/mailSender/mailSender';
+import { send } from 'process';
+
+const fs = require('fs');
+const pdfMake = require('pdfmake/build/pdfmake');
+const pdfFonts = require('pdfmake/build/vfs_fonts');
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+const pdfjs = require('pdfjs-dist');
+const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+const pdfDataExtractor = new PdfDataExtractor();
+
+type MailProps = { user: string; pass: string; mail: any };
+
 export default function SlanjeMailovaComponent() {
   const { filePath, fileSubject, odabraniZaposleni } = useLocation()
     .state as PodaciOSlanjuZaSlanje;
 
+  const [sendingResults, setSendingResults] = useState<String[]>([]);
+
   const test = async () => {
-    const fs = require('fs');
-    let pdfMake = require('pdfmake/build/pdfmake');
-    let pdfFonts = require('pdfmake/build/vfs_fonts');
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    let filePdfBytes = fs.readFileSync(filePath);
+    let file = await PDFDocument.load(filePdfBytes);
+    let subject = await pdfDataExtractor.subject(filePath);
 
-    const pdfjs = require('pdfjs-dist');
-    const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
-    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+    const z = async (zaposleni: DbEmployeeWithPages) => {
+      let pdfBytes = await kreirajPdfFajlSaRelefantimStranicama(
+        zaposleni,
+        file
+      );
 
-    let doc = await pdfjs.getDocument(filePath).promise;
-    let page = await doc.getPage(1);
-
-    // This pipes the POST data to the file
-    const pdfDoc = await PDFDocument.create();
-    let firstDonorPdfBytes = fs.readFileSync(filePath);
-
-    const firstDonorPdfDoc = await PDFDocument.load(firstDonorPdfBytes);
-    const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [0]);
-
-    pdfDoc.addPage(firstDonorPage);
-    const pdfBytes = await pdfDoc.save();
-
-    // fs.writeFile('C:\\Users\\VS\\OneDrive\\Desktop\\a.pdf', pdfBytes, e => {
-    //   console.log(e);
-    // });
-
-    let transporter = nodemailer.createTransport({
-      host: 'mail.bogmilko.rs',
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: 'podrska@bogmilko.rs', // generated ethereal user
-        pass: 'grobarDS1!' // generated ethereal password
-      }
-    });
-
-    const MailComposer = require('nodemailer/lib/mail-composer');
-    let _mail = {
-      from: '"Fred Foo 👻" <podrska@bogmilko.rs>', // sender address
-      to: 'bogmilko@gmail.com', // list of receivers
-      subject: 'Hello ✔', // Subject line
-      text: 'Hello world?', // plain text body
-      html: '<b>Hello world?</b>', // html body
-      attachments: [
-        {
-          filename: 'text2.pdf',
-          content: pdfBytes
-        }
-      ]
-    };
-    var mail = new MailComposer(_mail);
-
-    let info = await transporter.sendMail(_mail, (error, info) => {
-      console.log(error);
-      var config = {
-        imap: {
-          user: 'podrska@bogmilko.rs',
-          password: 'grobarDS1!',
-          host: 'mail.bogmilko.rs',
-          port: 993,
-          tls: true,
-          authTimeout: 3000,
-          tlsOptions: { rejectUnauthorized: false }
-        }
+      let mail = {
+        from: 'test@bogmilko.rs',
+        to: zaposleni.dbEmployee.email,
+        subject: subject,
+        text: 'У прилогу достављамо',
+        html:
+          '<b>Ovaj mail je dostavljen putem aplikacije Računovođa.</b><br/><b>www.bogmilko.rs</b>',
+        attachments: [
+          {
+            filename: subject + '.pdf',
+            content: pdfBytes
+          }
+        ]
       };
 
-      imaps.connect(config).then(async function(connection) {
-        mail.compile().build(function(err, message) {
-          connection.append(message, {
-            mailbox: 'INBOX.Sent',
-            flags: '\\Seen'
-          });
-        });
-      });
-    });
-
-    console.log(info);
+      let emailProps: MailProps = {
+        user: 'test@bogmilko.rs',
+        pass: 'grobarDS1!',
+        mail
+      };
+      console.log('sending...');
+      await trySendMail(emailProps, zaposleni);
+      console.log('sent');
+    };
+    for (const zaposleni of odabraniZaposleni) {
+      await z(zaposleni);
+    }
   };
 
+  const trySendMail = async (
+    emailProps: MailProps,
+    zaposleni: DbEmployeeWithPages
+  ) => {
+    try {
+      await MailSender.send(emailProps.user, emailProps.pass, emailProps.mail);
+      let _sendingResults = [...sendingResults, zaposleni.dbEmployee.last_name];
+      setSendingResults(_sendingResults);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  async function kreirajPdfFajlSaRelefantimStranicama(
+    zaposleni: DbEmployeeWithPages,
+    file: PDFDocument
+  ): Promise<Uint8Array> {
+    let pdfDoc = await PDFDocument.create();
+
+    for (let i = 0; i < zaposleni.pageNumbers.length; i++) {
+      let [page] = await pdfDoc.copyPages(file, [zaposleni.pageNumbers[i] - 1]);
+      pdfDoc.addPage(page);
+    }
+
+    return await pdfDoc.save();
+  }
+  console.log(sendingResults);
   return (
     <Container className="noselect">
       <Row>
@@ -112,16 +116,13 @@ export default function SlanjeMailovaComponent() {
             }}
           >
             <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>JMBG</th>
-                  <th>Broj zaposlenog</th>
-                  <th>Prezime</th>
-                  <th>Ime</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
+              <tbody>
+                {sendingResults.map((s, i) => (
+                  <tr>
+                    <td key={i}>{s}</td>
+                  </tr>
+                ))}
+              </tbody>
             </Table>
           </div>
         </Col>
