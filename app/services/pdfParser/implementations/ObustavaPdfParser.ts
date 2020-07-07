@@ -1,10 +1,19 @@
-import { Employee, IPdfParser } from '../pdfParser.types';
+import {
+  ExtractedEmployeeWithPageNumbers,
+  IPdfParser
+} from '../pdfParser.types';
 import { getMonthNameCyr } from '../../../utils/getMonthName';
+import { OBUSTAVA } from '../../../constants/indikatoriFajlovaZaSlanje';
+import { getLinesFromPage } from '../../../utils/pdfFileManipulations/getLinesFromPage';
 
 export class ObustavaPdfParser implements IPdfParser {
-  private _employee: Employee = new Employee();
+  private _employee: ExtractedEmployeeWithPageNumbers = new ExtractedEmployeeWithPageNumbers();
 
-  public extractEmployees(lines: string[]): Employee {
+  public async extractEmployees(
+    page: any
+  ): Promise<ExtractedEmployeeWithPageNumbers> {
+    let lines = await getLinesFromPage(page);
+
     let setFullName = (line: string) => {
       line = line.trim();
       let firstSpacePos = line.indexOf(' ');
@@ -20,7 +29,7 @@ export class ObustavaPdfParser implements IPdfParser {
       this._employee.number = line.substr(0, firstSpacePos);
     };
 
-    this._employee = new Employee();
+    this._employee = new ExtractedEmployeeWithPageNumbers();
     setFullName(lines[8]);
     setNumber(lines[8]);
     this._employee.banc_account = '';
@@ -29,7 +38,9 @@ export class ObustavaPdfParser implements IPdfParser {
     return this._employee;
   }
 
-  public extractSubject(lines: string[]): string {
+  public async extractSubject(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
+
     let line = lines[6].trim();
     let dashPos = line.indexOf('-');
     let slashPos = line.indexOf('/');
@@ -39,5 +50,14 @@ export class ObustavaPdfParser implements IPdfParser {
     return `Рекапитулација обустава за ${getMonthNameCyr(
       mesec
     )}/${godina} - ${deoPlate}. део`;
+  }
+
+  public async isPageForNewEmployee(page: any): Promise<boolean> {
+    try {
+      let lines = await getLinesFromPage(page);
+      return lines[4] == OBUSTAVA;
+    } catch (e) {
+      return false;
+    }
   }
 }

@@ -1,10 +1,18 @@
-import { Employee, IPdfParser } from '../pdfParser.types';
+import {
+  ExtractedEmployeeWithPageNumbers,
+  IPdfParser
+} from '../pdfParser.types';
 import { getMonthNameCyr } from '../../../utils/getMonthName';
+import { PLATNI_LISTIC } from '../../../constants/indikatoriFajlovaZaSlanje';
+import { getLinesFromPage } from '../../../utils/pdfFileManipulations/getLinesFromPage';
 
 export class PLv1PdfParser implements IPdfParser {
-  private _employee: Employee = new Employee();
+  private _employee: ExtractedEmployeeWithPageNumbers = new ExtractedEmployeeWithPageNumbers();
 
-  public extractEmployees(lines: string[]): Employee {
+  public async extractEmployees(
+    page: any
+  ): Promise<ExtractedEmployeeWithPageNumbers> {
+    let lines = await getLinesFromPage(page);
     let setFullName = (line: string) => {
       let separator = line.lastIndexOf(' ');
       this._employee.last_name = line.substr(0, separator);
@@ -23,7 +31,7 @@ export class PLv1PdfParser implements IPdfParser {
       this._employee.banc_account = line;
     };
 
-    this._employee = new Employee();
+    this._employee = new ExtractedEmployeeWithPageNumbers();
     setFullName(lines[1]);
     setNumber(lines[5]);
     setJmbg(lines[20]);
@@ -32,7 +40,8 @@ export class PLv1PdfParser implements IPdfParser {
     return this._employee;
   }
 
-  public extractSubject(lines: string[]): string {
+  public async extractSubject(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
     let godinaLine = lines[3].trim();
     let spacePos = godinaLine.indexOf(' ');
     let godina = godinaLine.substr(spacePos + 1);
@@ -42,5 +51,14 @@ export class PLv1PdfParser implements IPdfParser {
     return `Платни листић za ${getMonthNameCyr(
       mesec
     )}/${godina} - ${deoPlate}. део`;
+  }
+
+  public async isPageForNewEmployee(page: any): Promise<boolean> {
+    try {
+      let lines = await getLinesFromPage(page);
+      return lines[15] == PLATNI_LISTIC;
+    } catch (e) {
+      return false;
+    }
   }
 }

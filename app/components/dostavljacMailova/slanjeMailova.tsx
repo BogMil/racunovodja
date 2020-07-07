@@ -4,7 +4,8 @@ import routes from '../../constants/routes.json';
 import { PodaciOSlanjuZaSlanje } from './dostavljacMailova.types';
 import { Container, Row, Col, Button, Table, Form } from 'react-bootstrap';
 import { PDFDocument } from 'pdf-lib';
-
+const nodemailer = require('nodemailer');
+const imaps = require('imap-simple');
 export default function SlanjeMailovaComponent() {
   const { filePath, fileSubject, odabraniZaposleni } = useLocation()
     .state as PodaciOSlanjuZaSlanje;
@@ -32,12 +33,62 @@ export default function SlanjeMailovaComponent() {
     pdfDoc.addPage(firstDonorPage);
     const pdfBytes = await pdfDoc.save();
 
-    fs.writeFile('C:\\Users\\VS\\OneDrive\\Desktop\\a.pdf', pdfBytes, e => {
-      console.log(e);
-    });
-  };
+    // fs.writeFile('C:\\Users\\VS\\OneDrive\\Desktop\\a.pdf', pdfBytes, e => {
+    //   console.log(e);
+    // });
 
-  test();
+    let transporter = nodemailer.createTransport({
+      host: 'mail.bogmilko.rs',
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: 'podrska@bogmilko.rs', // generated ethereal user
+        pass: 'grobarDS1!' // generated ethereal password
+      }
+    });
+
+    const MailComposer = require('nodemailer/lib/mail-composer');
+    let _mail = {
+      from: '"Fred Foo 👻" <podrska@bogmilko.rs>', // sender address
+      to: 'bogmilko@gmail.com', // list of receivers
+      subject: 'Hello ✔', // Subject line
+      text: 'Hello world?', // plain text body
+      html: '<b>Hello world?</b>', // html body
+      attachments: [
+        {
+          filename: 'text2.pdf',
+          content: pdfBytes
+        }
+      ]
+    };
+    var mail = new MailComposer(_mail);
+
+    let info = await transporter.sendMail(_mail, (error, info) => {
+      console.log(error);
+      var config = {
+        imap: {
+          user: 'podrska@bogmilko.rs',
+          password: 'grobarDS1!',
+          host: 'mail.bogmilko.rs',
+          port: 993,
+          tls: true,
+          authTimeout: 3000,
+          tlsOptions: { rejectUnauthorized: false }
+        }
+      };
+
+      imaps.connect(config).then(async function(connection) {
+        mail.compile().build(function(err, message) {
+          connection.append(message, {
+            mailbox: 'INBOX.Sent',
+            flags: '\\Seen'
+          });
+        });
+      });
+    });
+
+    console.log(info);
+  };
 
   return (
     <Container className="noselect">
@@ -75,6 +126,7 @@ export default function SlanjeMailovaComponent() {
           </div>
         </Col>
       </Row>
+      <Button onClick={test}>asd</Button>
     </Container>
   );
 }

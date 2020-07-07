@@ -1,12 +1,14 @@
-export class Employee {
+export class ExtractedEmployeeWithPageNumbers {
   public first_name: string = '';
   public last_name: string = '';
   public banc_account: string = '';
   public jmbg: string = '';
   public number: string = '';
+  public pageNumbers: number[] = [];
 }
 
 export interface IPdfParser {
-  extractEmployees(lines: string[]): Employee;
-  extractSubject(lines: string[]): string;
+  extractEmployees(page: any): Promise<ExtractedEmployeeWithPageNumbers>;
+  extractSubject(page: any): Promise<string>;
+  isPageForNewEmployee(page: any): Promise<boolean>;
 }

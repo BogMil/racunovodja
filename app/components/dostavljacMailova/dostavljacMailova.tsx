@@ -5,7 +5,7 @@ import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { InvalidFileException } from '../../services/pdfParser/exceptions/invalidFileException';
 import { handleResponse } from '../../utils/responseHandler';
 import * as service from '../../components/employees/employee.service';
-import { Employee } from '../../services/pdfParser/pdfParser.types';
+import { ExtractedEmployeeWithPageNumbers } from '../../services/pdfParser/pdfParser.types';
 import { FileChecker } from '../../services/FileChecker';
 import PlatniListicTemplate from './components/platniListicMissingEmployeesTemplate';
 import ObustavaTemplate from './components/obustavaMissingEmployeesTemplate';
@@ -22,11 +22,11 @@ export default function DostavljacMailovaComponent() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [fetchedEmployees, setFetchedEmployees] = React.useState(false);
   const [error, setError] = React.useState('');
-  const [missingEmployees, setMissingEmployees] = React.useState<Employee[]>(
-    []
-  );
+  const [missingEmployees, setMissingEmployees] = React.useState<
+    ExtractedEmployeeWithPageNumbers[]
+  >([]);
   const [allExtractedEmployees, setAllExtractedEmployees] = React.useState<
-    Employee[]
+    ExtractedEmployeeWithPageNumbers[]
   >([]);
 
   const setInitialState = () => {
@@ -54,7 +54,9 @@ export default function DostavljacMailovaComponent() {
       });
   };
 
-  const fetchMissingEmployees = async (extractedEmployees: Employee[]) => {
+  const fetchMissingEmployees = async (
+    extractedEmployees: ExtractedEmployeeWithPageNumbers[]
+  ) => {
     let numbers = extractedEmployees.map(e => e.number);
     handleResponse(
       await service.getMissingEmployeeNumbers(numbers),
@@ -86,6 +88,7 @@ export default function DostavljacMailovaComponent() {
         setFetchedEmployees(false);
         setIsPlatniListic(await FileChecker.isPlatniListic(filePath));
         let extractedEmployees = await employeeExtractor.employees(filePath);
+        console.log(extractedEmployees);
         setAllExtractedEmployees(extractedEmployees);
         await fetchMissingEmployees(extractedEmployees);
         setIsLoading(false);

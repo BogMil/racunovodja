@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col, Table, Button, ProgressBar } from 'react-bootstrap';
-import { Employee } from '../../../services/pdfParser/pdfParser.types';
+import { ExtractedEmployeeWithPageNumbers } from '../../../services/pdfParser/pdfParser.types';
 import { createEmployee as insertEmployee } from '../../employees/employee.service';
 import { handleResponse } from '../../../utils/responseHandler';
 import { SUCCESS } from '../../../constants/responseStatuses';
@@ -9,10 +9,10 @@ import routes from '../../../constants/routes.json';
 import { PodaciOSlanjuZaIzborZaposlenih } from '../dostavljacMailova.types';
 
 type Props = {
-  missingEmployees: Employee[];
+  missingEmployees: ExtractedEmployeeWithPageNumbers[];
   filePath: string;
   setInitialState: () => void;
-  zaposleniUFajlu: Employee[];
+  zaposleniUFajlu: ExtractedEmployeeWithPageNumbers[];
 };
 
 export default function PlatniListicTemplate(props: Props) {

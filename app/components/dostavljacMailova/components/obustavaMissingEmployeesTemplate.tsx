@@ -1,11 +1,11 @@
 import React from 'react';
 import { Row, Col, Table, Button } from 'react-bootstrap';
-import { Employee } from '../../../services/pdfParser/pdfParser.types';
+import { ExtractedEmployeeWithPageNumbers } from '../../../services/pdfParser/pdfParser.types';
 
 type Props = {
-  missingEmployees: Employee[];
+  missingEmployees: ExtractedEmployeeWithPageNumbers[];
   setInitialState: () => void;
-  zaposleniUFajlu: Employee[];
+  zaposleniUFajlu: ExtractedEmployeeWithPageNumbers[];
   filePath: string;
 };
 

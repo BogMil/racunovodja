@@ -17,7 +17,7 @@ import { reloadEmployees } from '../../employees.actions';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { PdfDataExtractor } from '../../../../services/pdfParser/PdfDataExtractor';
 import { InvalidFileException } from '../../../../services/pdfParser/exceptions/invalidFileException';
-import { Employee } from '../../../../services/pdfParser/pdfParser.types';
+import { ExtractedEmployeeWithPageNumbers } from '../../../../services/pdfParser/pdfParser.types';
 import ClipLoader from 'react-spinners/ClipLoader';
 import * as service from '../../employee.service';
 import { EmployeeCDTO } from '../../types';
@@ -47,9 +47,9 @@ export default function UploadFileModal() {
   ] = React.useState(false);
   const [insertingProgress, setInsertingProgress] = React.useState(0);
   const [insertingEmployees, setInsertingEmployees] = React.useState(false);
-  const [missingEmployees, setMissingEmployees] = React.useState<Employee[]>(
-    []
-  );
+  const [missingEmployees, setMissingEmployees] = React.useState<
+    ExtractedEmployeeWithPageNumbers[]
+  >([]);
 
   const [files, setFiles] = React.useState<string[]>([]);
 
@@ -69,7 +69,9 @@ export default function UploadFileModal() {
       });
   };
 
-  const fetchMissingEmployees = async (extractedEmployees: Employee[]) => {
+  const fetchMissingEmployees = async (
+    extractedEmployees: ExtractedEmployeeWithPageNumbers[]
+  ) => {
     let jmbgs = extractedEmployees.map(e => e.jmbg);
     handleResponse(await service.getMissingJmbgs(jmbgs), (res: any) => {
       if (res.data.length > 0) {

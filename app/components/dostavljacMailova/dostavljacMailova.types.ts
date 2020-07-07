@@ -1,9 +1,9 @@
-import { Employee } from '../../services/pdfParser/pdfParser.types';
+import { ExtractedEmployeeWithPageNumbers } from '../../services/pdfParser/pdfParser.types';
 import { Employee as DbEmployee } from '../employees/types';
 
 export type PodaciOSlanjuZaIzborZaposlenih = {
   filePath: string;
-  zaposleniUFajlu: Employee[];
+  zaposleniUFajlu: ExtractedEmployeeWithPageNumbers[];
 };
 
 export type PodaciOSlanjuZaSlanje = {
