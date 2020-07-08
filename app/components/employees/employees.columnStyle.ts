@@ -7,7 +7,7 @@ export const columnWidths = {
   brojRacuna: 200,
   opstina: 150,
   relacije: 300,
-  email: 200,
+  email: 300,
   actions: 70,
 
   sum(): number {

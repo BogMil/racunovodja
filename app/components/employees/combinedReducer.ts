@@ -10,13 +10,17 @@ import employeeModal, {
 import uploadModal, {
   UploadFileModalStore
 } from './components/uploadFileModal/uploadFileModal.reducer';
+import DPLEmailSyncModal, {
+  DPLEmailSyncModalStore
+} from './components/DPLEmailSyncModal/DPLEmailSyncModal.reducer';
 
 export default function createCombinedReducer() {
   return combineReducers({
     addDefaultRelationModal,
     employees,
     employeeModal,
-    uploadModal
+    uploadModal,
+    DPLEmailSyncModal
   });
 }
 
@@ -25,4 +29,5 @@ export type EmployeeCombinedReducer = {
   employees: EmployeesStore;
   employeeModal: EmployeeModalStore;
   uploadModal: UploadFileModalStore;
+  DPLEmailSyncModal: DPLEmailSyncModalStore;
 };

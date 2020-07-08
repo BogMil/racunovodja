@@ -7,15 +7,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadEmployees } from './employees.actions';
 import { AppStore } from '../../reducers';
 import { openCreate } from './components/employeeModal/employeeModal.actions';
+import { open as openDPLEmailSyncModal } from './components/DPLEmailSyncModal/DPLEmailSyncModal.actions';
+
 import UploadFileModal from './components/uploadFileModal/uploadFileModal';
 import { open } from './components/uploadFileModal/uploadFileModal.actions';
 import { columnWidths } from './employees.columnStyle';
+import DPLEmailSyncModal from './components/DPLEmailSyncModal/DPLEmailSyncModal';
+import { DPL_DB_FILE } from '../../constants/files';
+const fs = require('fs');
 
 export default function Employees() {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
     return state.employeesCombined.employees;
   });
+
+  const postojiDostavljacPlatnihListica = fs.existsSync(DPL_DB_FILE());
 
   useEffect(() => {
     dispatch(loadEmployees());
@@ -27,6 +34,10 @@ export default function Employees() {
 
   const openUploadDialog = () => {
     dispatch(open());
+  };
+
+  const _openDPLEmailSyncModal = () => {
+    dispatch(openDPLEmailSyncModal());
   };
 
   return (
@@ -52,7 +63,6 @@ export default function Employees() {
           >
             <thead>
               <tr>
-                {/* <th style={{ width: columnWidths.activan }}>Aktivan</th> */}
                 <th style={{ width: columnWidths.jmbg }}>JMBG</th>
                 <th style={{ width: columnWidths.broj }}>Broj</th>
                 <th style={{ width: columnWidths.prezime }}>Prezime</th>
@@ -92,6 +102,21 @@ export default function Employees() {
                   >
                     <i className="fa fa-file-upload" />
                   </Button>
+                  {postojiDostavljacPlatnihListica && (
+                    <Button
+                      title="Povuci email adrese iz Dostavljača platnih listića"
+                      style={{
+                        backgroundColor: '#201547',
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        paddingTop: 0,
+                        paddingBottom: 0
+                      }}
+                      onClick={_openDPLEmailSyncModal}
+                    >
+                      <i className="fa fa-paper-plane" />
+                    </Button>
+                  )}
                 </th>
               </tr>
             </thead>
@@ -108,6 +133,7 @@ export default function Employees() {
       <AddDefaultRealtionModal />
       <EmployeeModal />
       <UploadFileModal />
+      <DPLEmailSyncModal />
     </Container>
   );
 }
