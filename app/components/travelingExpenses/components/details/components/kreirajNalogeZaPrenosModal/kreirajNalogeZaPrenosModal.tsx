@@ -10,7 +10,7 @@ import { get as getUserDetails } from '../../../../../userDetails/userDetails.se
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import { handleResponse } from '../../../../../../utils/responseHandler';
 import { createVirmaniPdfFile } from '../../../../travelingExpenses.fileCreators';
-import { ObavezanPodatakNijeSetovanException } from '../../../../../../services/employeeExtractor/exceptions/obavezanPodatakNijeSetovanException';
+import { ObavezanPodatakNijeSetovanException } from '../../../../../../services/pdfParser/exceptions/obavezanPodatakNijeSetovanException';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 type Props = {

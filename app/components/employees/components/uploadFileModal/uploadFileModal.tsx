@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Modal,
@@ -15,15 +15,15 @@ import { close } from './uploadFileModal.actions';
 import { reloadEmployees } from '../../employees.actions';
 
 import { handleResponse } from '../../../../utils/responseHandler';
-import { PdfEmployeeExtractor } from '../../../../services/employeeExtractor/ExmployeePdfExtractor';
-import { InvalidFileException } from '../../../../services/employeeExtractor/exceptions/invalidFileException';
-import { Employee } from '../../../../services/employeeExtractor/employeeExtractor.types';
+import { PdfDataExtractor } from '../../../../services/pdfParser/PdfDataExtractor';
+import { InvalidFileException } from '../../../../services/pdfParser/exceptions/invalidFileException';
+import { ExtractedEmployeeWithPageNumbers } from '../../../../services/pdfParser/pdfParser.types';
 import ClipLoader from 'react-spinners/ClipLoader';
 import * as service from '../../employee.service';
 import { EmployeeCDTO } from '../../types';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
-const employeeExtractor = new PdfEmployeeExtractor();
+const employeeExtractor = new PdfDataExtractor();
 
 export default function UploadFileModal() {
   const dispatch = useDispatch();
@@ -47,9 +47,9 @@ export default function UploadFileModal() {
   ] = React.useState(false);
   const [insertingProgress, setInsertingProgress] = React.useState(0);
   const [insertingEmployees, setInsertingEmployees] = React.useState(false);
-  const [missingEmployees, setMissingEmployees] = React.useState<Employee[]>(
-    []
-  );
+  const [missingEmployees, setMissingEmployees] = React.useState<
+    ExtractedEmployeeWithPageNumbers[]
+  >([]);
 
   const [files, setFiles] = React.useState<string[]>([]);
 
@@ -69,7 +69,9 @@ export default function UploadFileModal() {
       });
   };
 
-  const fetchMissingEmployees = async (extractedEmployees: Employee[]) => {
+  const fetchMissingEmployees = async (
+    extractedEmployees: ExtractedEmployeeWithPageNumbers[]
+  ) => {
     let jmbgs = extractedEmployees.map(e => e.jmbg);
     handleResponse(await service.getMissingJmbgs(jmbgs), (res: any) => {
       if (res.data.length > 0) {
@@ -113,7 +115,7 @@ export default function UploadFileModal() {
     async function loadEmployees(path: string) {
       try {
         await setFetchingMissingEmployees(true);
-        let extractedEmployees = await employeeExtractor.extractFromFile(path);
+        let extractedEmployees = await employeeExtractor.employees(path);
         await fetchMissingEmployees(extractedEmployees);
 
         await setFetchingMissingEmployees(false);

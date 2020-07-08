@@ -41,6 +41,11 @@ export default function SideBar() {
           navigateTo={routes.EMPLOYEES}
           text="Zaposleni"
         />
+        <MenuItem
+          iconClassName="fa fa-paper-plane"
+          navigateTo={routes.DOSTAVLJAC_MAILOVA}
+          text="Mail dostavljač"
+        />
         <SubMenu text="Šifarnici">
           <MenuItem
             iconClassName="fa fa-map-marker"

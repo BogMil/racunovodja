@@ -65,20 +65,6 @@ export default function EmployeeComponent(props: Props) {
 
   return (
     <tr style={{ backgroundColor: !employee.active ? '#FFD7D7' : '' }}>
-      {/* <td
-        className={styles.employeeCell}
-        style={{
-          textAlign: 'center',
-          width: columnWidths.activan
-        }}
-      >
-        <Form.Check
-          type="checkbox"
-          label=""
-          disabled
-          checked={employee.active}
-        />
-      </td> */}
       <td style={{ width: columnWidths.jmbg }} className={styles.employeeCell}>
         {employee.jmbg}
       </td>
