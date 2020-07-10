@@ -51,7 +51,8 @@ export function open() {
           );
           if (
             employeesFromDbWithSameJmbg.length == 1 &&
-            employeesFromDbWithSameJmbg[0].email == ''
+            (employeesFromDbWithSameJmbg[0].email == '' ||
+              employeesFromDbWithSameJmbg[0].email == null)
           )
             employeeToSyncEmail.push({
               dbEmployee: employeesFromDbWithSameJmbg[0],

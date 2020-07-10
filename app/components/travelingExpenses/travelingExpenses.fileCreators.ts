@@ -496,23 +496,25 @@ function createXmlContent(
   travelingExpense: TravelingExpenseWithDetails,
   userDetails: UserDetails
 ) {
-  let days = daysInMonth(month, year);
-  while (!isWeekday(year, month + 1, days)) {
-    days--;
-  }
-
-  let monthZaDatumPlacanjaStr = month.toString();
+  let monthZaDatumPlacanja = month - 1 == 0 ? 12 : month + 1;
+  let monthZaDatumPlacanjaStr = monthZaDatumPlacanja.toString();
   let monthZaDatumPlacanjaStrFromat =
     monthZaDatumPlacanjaStr.length == 1
       ? '0' + monthZaDatumPlacanjaStr
       : monthZaDatumPlacanjaStr;
 
-  let monthZaObracunskiPeriod = month - 1 == 0 ? 12 : month - 1;
+  let monthZaObracunskiPeriod = month - 1 == 0 ? 12 : month;
+
   let monthZaObracunskiPeriodStr = monthZaObracunskiPeriod.toString();
   let monthZaObracunskiPeriodStrFromat =
     monthZaObracunskiPeriodStr.length == 1
       ? '0' + monthZaObracunskiPeriodStr
       : monthZaObracunskiPeriodStr;
+
+  let days = daysInMonth(monthZaDatumPlacanja, year);
+  while (!isWeekday(year, month + 1, days)) {
+    days--;
+  }
 
   let daysStr = days.toString();
   let daysStrFormat = daysStr.length == 1 ? '0' + daysStr : daysStr;
@@ -590,7 +592,7 @@ function createXmlContent(
       PodaciOPrihodima.ele('tns:SVP', 101110000);
       PodaciOPrihodima.ele(
         'tns:MesecniFondSati',
-        getBusinesDaysInMonth(month, year) * 8
+        getBusinesDaysInMonth(monthZaObracunskiPeriod, year) * 8
       );
       PodaciOPrihodima.ele(
         'tns:Bruto',

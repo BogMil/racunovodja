@@ -39,7 +39,7 @@ export default function SlanjeMailovaComponent() {
         let slanjeMailovaService = new SlanjeMailovaService({
           filePath: filePath,
           user: 'test@bogmilko.rs',
-          pass: ''
+          pass: 'grobarDS1!'
         });
 
         let rezultatiSlanjaTemp: RezultatSlanja[] = [];
