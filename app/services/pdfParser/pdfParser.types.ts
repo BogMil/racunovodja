@@ -10,5 +10,8 @@ export class ExtractedEmployeeWithPageNumbers {
 export interface IPdfParser {
   extractEmployees(page: any): Promise<ExtractedEmployeeWithPageNumbers>;
   extractSubject(page: any): Promise<string>;
+  getFileType(): string;
   isPageForNewEmployee(page: any): Promise<boolean>;
+  extractYear(page: any): Promise<string>;
+  extractMonth(page: any): Promise<string>;
 }

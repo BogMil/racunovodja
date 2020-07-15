@@ -4,7 +4,8 @@ import {
   PUTNI_TROSKOVI_DIR,
   PUTNI_TROSKOVI_PPP_PD_XML_FILE,
   PUTNI_TROSKOVI_PDF_FILE,
-  NALOZI_ZA_PRENOS_PDF_FILE
+  NALOZI_ZA_PRENOS_PDF_FILE,
+  mk_PUTNI_TROSKOVI_DIR
 } from '../../constants/files';
 import {
   EmployeeWithRelations,
@@ -599,7 +600,7 @@ function createXmlContent(
     );
     PodaciOPrihodima.ele(
       'tns:OsnovicaPorez',
-      numberWithThousandSeparator(calculation.oporezivo, 2, '')
+      numberWithThousandSeparator(calculation.brutoOporezivo, 2, '')
     );
     PodaciOPrihodima.ele(
       'tns:Porez',
@@ -617,7 +618,7 @@ function createXmlContent(
 }
 
 function _create_PPP_PD_xmlFile(year: number, month: number) {
-  let root = createRootFolder(year, month);
+  let root = mk_PUTNI_TROSKOVI_DIR(year, month);
   let filePath = `${root}\\${PUTNI_TROSKOVI_PPP_PD_XML_FILE(year, month)}`;
   fs.writeFile(filePath, '', () => {});
 
@@ -625,7 +626,7 @@ function _create_PPP_PD_xmlFile(year: number, month: number) {
 }
 
 function _createPdfFile(year: number, month: number) {
-  let root = createRootFolder(year, month);
+  let root = mk_PUTNI_TROSKOVI_DIR(year, month);
   let filePath = `${root}\\${PUTNI_TROSKOVI_PDF_FILE(year, month)}`;
   fs.writeFile(filePath, '', () => {});
 
@@ -633,41 +634,11 @@ function _createPdfFile(year: number, month: number) {
 }
 
 function _createVirmaniPdfFile(year: number, month: number) {
-  let root = createRootFolder(year, month);
+  let root = mk_PUTNI_TROSKOVI_DIR(year, month);
   let filePath = `${root}\\${NALOZI_ZA_PRENOS_PDF_FILE(year, month)}`;
   fs.writeFile(filePath, '', () => {});
 
   return filePath;
-}
-
-function createRootFolder(year: number, month: number) {
-  if (!fs.existsSync(`C:\\${ROOT_DIR}`)) fs.mkdir(`C:\\${ROOT_DIR}`, () => {});
-
-  if (!fs.existsSync(`C:\\${ROOT_DIR}\\${year}`))
-    fs.mkdir(`C:\\${ROOT_DIR}\\${year}`, () => {});
-
-  if (!fs.existsSync(`C:\\${ROOT_DIR}\\${year}\\${month}`))
-    fs.mkdir(`C:\\${ROOT_DIR}\\${year}\\${month}`, () => {});
-
-  if (
-    !fs.existsSync(`C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}`)
-  )
-    fs.mkdir(
-      `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}`,
-      () => {}
-    );
-
-  if (
-    !fs.existsSync(
-      `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}\\`
-    )
-  )
-    fs.mkdir(
-      `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`,
-      () => {}
-    );
-
-  return `C:\\${ROOT_DIR}\\${year}\\${month}\\${DODATNI_PRIHODI_DIR}\\${PUTNI_TROSKOVI_DIR}`;
 }
 
 function getTipSkole(userDetails: UserDetails) {

@@ -10,9 +10,17 @@ export type PodaciOSlanjuZaSlanje = {
   filePath: string;
   odabraniZaposleni: DbEmployeeWithPages[];
   fileSubject: string;
+  fileType: string;
+  godina: string;
 };
 
 export type DbEmployeeWithPages = {
   dbEmployee: DbEmployee;
   pageNumbers: number[];
+};
+
+export type RezultatSlanja = {
+  zaposleni: string;
+  message: string;
+  uspesno: boolean;
 };

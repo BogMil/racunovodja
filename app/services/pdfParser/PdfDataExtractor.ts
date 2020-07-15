@@ -41,11 +41,33 @@ export class PdfDataExtractor {
     }
   }
 
-  public async subject(path: string) {
+  public async subjectAsync(path: string) {
     let doc = await pdfjs.getDocument(path).promise;
     let pdfParser = await PdfParserFactory.ForFile(path);
 
     let page = await doc.getPage(1);
     return await pdfParser.extractSubject(page);
+  }
+
+  public async fileTypeAsync(path: string) {
+    let pdfParser = await PdfParserFactory.ForFile(path);
+    return pdfParser.getFileType();
+  }
+
+  public async yearAsync(path: string) {
+    let doc = await pdfjs.getDocument(path).promise;
+    let pdfParser = await PdfParserFactory.ForFile(path);
+
+    let page = await doc.getPage(1);
+
+    return pdfParser.extractYear(page);
+  }
+
+  public async monthAsync(path: string) {
+    let doc = await pdfjs.getDocument(path).promise;
+    let pdfParser = await PdfParserFactory.ForFile(path);
+
+    let page = await doc.getPage(1);
+    return pdfParser.extractMonth(page);
   }
 }

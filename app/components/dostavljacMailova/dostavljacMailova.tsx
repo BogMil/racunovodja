@@ -88,7 +88,6 @@ export default function DostavljacMailovaComponent() {
         setFetchedEmployees(false);
         setIsPlatniListic(await FileChecker.isPlatniListic(filePath));
         let extractedEmployees = await employeeExtractor.employees(filePath);
-        console.log(extractedEmployees);
         setAllExtractedEmployees(extractedEmployees);
         await fetchMissingEmployees(extractedEmployees);
         setIsLoading(false);

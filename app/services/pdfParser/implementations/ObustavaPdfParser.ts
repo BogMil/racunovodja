@@ -7,6 +7,24 @@ import { OBUSTAVA } from '../../../constants/indikatoriFajlovaZaSlanje';
 import { getLinesFromPage } from '../../../utils/pdfFileManipulations/getLinesFromPage';
 
 export class ObustavaPdfParser implements IPdfParser {
+  async extractYear(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
+    let line = lines[6].trim();
+    let slashPos = line.indexOf('/');
+    let godina = line.substr(slashPos + 1);
+    return godina;
+  }
+  async extractMonth(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
+    let line = lines[6].trim();
+    let dashPos = line.indexOf('-');
+    let mesec = parseInt(line.substr(0, dashPos));
+    return mesec.toString();
+  }
+  getFileType(): string {
+    return OBUSTAVA;
+  }
+
   private _employee: ExtractedEmployeeWithPageNumbers = new ExtractedEmployeeWithPageNumbers();
 
   public async extractEmployees(

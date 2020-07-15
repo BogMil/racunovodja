@@ -7,7 +7,23 @@ import { PLATNI_LISTIC } from '../../../constants/indikatoriFajlovaZaSlanje';
 import { getLinesFromPage } from '../../../utils/pdfFileManipulations/getLinesFromPage';
 
 export class PLv1PdfParser implements IPdfParser {
+  async extractMonth(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
+
+    return parseInt(lines[10].substr(0, 2)).toString();
+  }
+  async extractYear(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
+    let godinaLine = lines[3].trim();
+    let spacePos = godinaLine.indexOf(' ');
+
+    return godinaLine.substr(spacePos + 1);
+  }
   private _employee: ExtractedEmployeeWithPageNumbers = new ExtractedEmployeeWithPageNumbers();
+
+  getFileType(): string {
+    return PLATNI_LISTIC;
+  }
 
   public async extractEmployees(
     page: any

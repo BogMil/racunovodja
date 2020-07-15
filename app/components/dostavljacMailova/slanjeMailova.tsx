@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router';
-import { PodaciOSlanjuZaSlanje } from './dostavljacMailova.types';
+import {
+  PodaciOSlanjuZaSlanje,
+  RezultatSlanja
+} from './dostavljacMailova.types';
 import { Container, Row, Col, Button, Table } from 'react-bootstrap';
 import ClipLoader from 'react-spinners/ClipLoader';
 
@@ -11,21 +14,25 @@ const pdfjs = require('pdfjs-dist');
 const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import routes from '../../constants/routes.json';
-import { SlanjeMailovaService } from './slanjeMailova.service';
+import {
+  SlanjeMailovaService,
+  saveSendingMailResult
+} from './slanjeMailova.service';
 import { MailAuthException } from '../../services/mailSender/exceptions/mailAuthException';
 import { NepredvidjenException } from '../../services/mailSender/exceptions/nepredvidjenException';
+import { createPdfFile } from './dostavljacMailova.fileCreators';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
-type RezultatSlanja = {
-  zaposleni: string;
-  message: string;
-  uspesno: boolean;
-};
 export default function SlanjeMailovaComponent() {
   const history = useHistory();
   try {
-    const { filePath, fileSubject, odabraniZaposleni } = useLocation()
-      .state as PodaciOSlanjuZaSlanje;
+    const {
+      filePath,
+      fileSubject,
+      odabraniZaposleni,
+      fileType,
+      godina
+    } = useLocation().state as PodaciOSlanjuZaSlanje;
 
     const [sendingResults, setSendingResults] = useState<RezultatSlanja[]>([]);
     const [slanjeUToku, setSlanjeUToku] = useState(true);
@@ -35,14 +42,14 @@ export default function SlanjeMailovaComponent() {
     }, []);
 
     const posaljiMailoveAsync = async () => {
+      let rezultatiSlanjaTemp: RezultatSlanja[] = [];
+
       try {
         let slanjeMailovaService = new SlanjeMailovaService({
           filePath: filePath,
           user: 'test@bogmilko.rs',
           pass: 'grobarDS1!'
         });
-
-        let rezultatiSlanjaTemp: RezultatSlanja[] = [];
 
         await slanjeMailovaService.posaljiEmailoveZaposlenima({
           listaZaposlenih: odabraniZaposleni,
@@ -63,6 +70,12 @@ export default function SlanjeMailovaComponent() {
             setSendingResults([...rezultatiSlanjaTemp]);
           }
         });
+        saveSendingMailResult({
+          success: true,
+          subject: fileSubject,
+          fileType: fileType
+        });
+
         setSlanjeUToku(false);
       } catch (e) {
         setSlanjeUToku(false);
@@ -80,10 +93,19 @@ export default function SlanjeMailovaComponent() {
             type: 'error'
           });
         }
+
+        saveSendingMailResult({
+          success: false,
+          subject: fileSubject,
+          fileType: fileType,
+          errorMessage: e.message
+        });
+      } finally {
+        if (rezultatiSlanjaTemp.length > 0)
+          await createPdfFile(godina, fileSubject, rezultatiSlanjaTemp);
       }
     };
 
-    console.log(sendingResults);
     return (
       <Container
         className="noselect"

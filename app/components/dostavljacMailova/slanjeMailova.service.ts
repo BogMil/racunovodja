@@ -1,8 +1,11 @@
-import { DbEmployeeWithPages } from './dostavljacMailova.types';
+import { DbEmployeeWithPages, RezultatSlanja } from './dostavljacMailova.types';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { MailSender } from '../../services/mailSender/mailSender';
+import axios from 'axios';
+import { BASE_URL } from '../../config';
 const fs = require('fs');
+const API_URL = `${BASE_URL}/api/mailSending`;
 
 export class SlanjeMailovaService {
   private _subject: string;
@@ -22,7 +25,7 @@ export class SlanjeMailovaService {
   private async _initAsync() {
     let filePdfBytes = fs.readFileSync(this._filePath);
     this._izvorniPdfFajl = await PDFDocument.load(filePdfBytes);
-    this._subject = await new PdfDataExtractor().subject(this._filePath);
+    this._subject = await new PdfDataExtractor().subjectAsync(this._filePath);
     await this._mailSender.initAsync(this._user, this._pass);
   }
 
@@ -33,7 +36,6 @@ export class SlanjeMailovaService {
   }) {
     try {
       await this._initAsync();
-
       for (let zaposleni of config.listaZaposlenih) {
         try {
           await this._posaljiEmailZaposlenom(zaposleni);
@@ -94,4 +96,13 @@ export class SlanjeMailovaService {
       ]
     };
   }
+}
+
+export async function saveSendingMailResult(props: {
+  success: boolean;
+  subject: string;
+  fileType: string;
+  errorMessage?: string;
+}) {
+  await axios.post(`${API_URL}/result`, { ...props });
 }
