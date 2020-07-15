@@ -556,64 +556,62 @@ function createXmlContent(
   PodaciOIsplatiocu.ele('tns:eMail', userDetails.email);
 
   let DeklarisaniPrihodi = xml.ele('tns:DeklarisaniPrihodi');
+  let redniBroj = 1;
+  travelingExpense.employees_with_relation.forEach(employeeWithRelations => {
+    let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
+      travelingExpense.year,
+      travelingExpense.month,
+      travelingExpense.maxNonTaxedValue,
+      travelingExpense.preracun_na_bruto,
+      travelingExpense.stopa
+    );
+    let calculation = employeeTravelingExpenseCalculator.getCalculation(
+      employeeWithRelations
+    );
 
-  travelingExpense.employees_with_relation.forEach(
-    (employeeWithRelations, i) => {
-      let employeeTravelingExpenseCalculator = new EmployeeTravelingExpenseCalculator(
-        travelingExpense.year,
-        travelingExpense.month,
-        travelingExpense.maxNonTaxedValue,
-        travelingExpense.preracun_na_bruto,
-        travelingExpense.stopa
-      );
-      let calculation = employeeTravelingExpenseCalculator.getCalculation(
-        employeeWithRelations
-      );
+    if (calculation.porez == 0) return;
 
-      let PodaciOPrihodima = DeklarisaniPrihodi.ele('tns:PodaciOPrihodima');
-      PodaciOPrihodima.ele('tns:RedniBroj', i + 1);
-      PodaciOPrihodima.ele('tns:VrstaIdentifikatoraPrimaoca', 1);
-      PodaciOPrihodima.ele(
-        'tns:IdentifikatorPrimaoca',
-        employeeWithRelations.employee.jmbg
-      );
-      PodaciOPrihodima.ele(
-        'tns:Prezime',
-        employeeWithRelations.employee.last_name
-      );
-      PodaciOPrihodima.ele(
-        'tns:Ime',
-        employeeWithRelations.employee.first_name
-      );
-      PodaciOPrihodima.ele(
-        'tns:OznakaPrebivalista',
-        employeeWithRelations.employee.municipality.code
-      );
-      PodaciOPrihodima.ele('tns:SVP', 101110000);
-      PodaciOPrihodima.ele(
-        'tns:MesecniFondSati',
-        getBusinesDaysInMonth(monthZaObracunskiPeriod, year) * 8
-      );
-      PodaciOPrihodima.ele(
-        'tns:Bruto',
-        numberWithThousandSeparator(calculation.brutoOporezivo, 2, '')
-      );
-      PodaciOPrihodima.ele(
-        'tns:OsnovicaPorez',
-        numberWithThousandSeparator(calculation.oporezivo, 2, '')
-      );
-      PodaciOPrihodima.ele(
-        'tns:Porez',
-        numberWithThousandSeparator(calculation.porez, 2, '')
-      );
-      PodaciOPrihodima.ele('tns:OsnovicaDoprinosi', '0.0');
-      PodaciOPrihodima.ele('tns:PIO', '0.0');
-      PodaciOPrihodima.ele('tns:ZDR', '0.0');
-      PodaciOPrihodima.ele('tns:NEZ', '0.0');
-      PodaciOPrihodima.ele('tns:PIOBen', '0.0');
-      PodaciOPrihodima.ele('tns:DeklarisaniMFP');
-    }
-  );
+    let PodaciOPrihodima = DeklarisaniPrihodi.ele('tns:PodaciOPrihodima');
+    PodaciOPrihodima.ele('tns:RedniBroj', redniBroj);
+    redniBroj++;
+    PodaciOPrihodima.ele('tns:VrstaIdentifikatoraPrimaoca', 1);
+    PodaciOPrihodima.ele(
+      'tns:IdentifikatorPrimaoca',
+      employeeWithRelations.employee.jmbg
+    );
+    PodaciOPrihodima.ele(
+      'tns:Prezime',
+      employeeWithRelations.employee.last_name
+    );
+    PodaciOPrihodima.ele('tns:Ime', employeeWithRelations.employee.first_name);
+    PodaciOPrihodima.ele(
+      'tns:OznakaPrebivalista',
+      employeeWithRelations.employee.municipality.code
+    );
+    PodaciOPrihodima.ele('tns:SVP', 101110000);
+    PodaciOPrihodima.ele(
+      'tns:MesecniFondSati',
+      getBusinesDaysInMonth(monthZaObracunskiPeriod, year) * 8
+    );
+    PodaciOPrihodima.ele(
+      'tns:Bruto',
+      numberWithThousandSeparator(calculation.brutoOporezivo, 2, '')
+    );
+    PodaciOPrihodima.ele(
+      'tns:OsnovicaPorez',
+      numberWithThousandSeparator(calculation.oporezivo, 2, '')
+    );
+    PodaciOPrihodima.ele(
+      'tns:Porez',
+      numberWithThousandSeparator(calculation.porez, 2, '')
+    );
+    PodaciOPrihodima.ele('tns:OsnovicaDoprinosi', '0.0');
+    PodaciOPrihodima.ele('tns:PIO', '0.0');
+    PodaciOPrihodima.ele('tns:ZDR', '0.0');
+    PodaciOPrihodima.ele('tns:NEZ', '0.0');
+    PodaciOPrihodima.ele('tns:PIOBen', '0.0');
+    PodaciOPrihodima.ele('tns:DeklarisaniMFP');
+  });
 
   return xml.end({ pretty: true });
 }
