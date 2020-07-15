@@ -84,12 +84,13 @@ export default function DPLEmailSyncModal() {
           </div>
         )}
       </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="primary" onClick={handleSave}>
-          Učitaj
-        </Button>
-      </Modal.Footer>
+      {employeeToSyncEmail.length > 0 ? (
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleSave}>
+            Učitaj
+          </Button>
+        </Modal.Footer>
+      ) : null}
     </Modal>
   );
 }
