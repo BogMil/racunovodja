@@ -7,14 +7,18 @@ import { OBUSTAVA } from '../../../constants/indikatoriFajlovaZaSlanje';
 import { getLinesFromPage } from '../../../utils/pdfFileManipulations/getLinesFromPage';
 
 export class ObustavaPdfParser implements IPdfParser {
-  async extractYear(page: any): Promise<string> {
+  async extractNazivSkoleAsync(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
+    return lines[5].trim();
+  }
+  async extractYearAsync(page: any): Promise<string> {
     let lines = await getLinesFromPage(page);
     let line = lines[6].trim();
     let slashPos = line.indexOf('/');
     let godina = line.substr(slashPos + 1);
     return godina;
   }
-  async extractMonth(page: any): Promise<string> {
+  async extractMonthAsync(page: any): Promise<string> {
     let lines = await getLinesFromPage(page);
     let line = lines[6].trim();
     let dashPos = line.indexOf('-');
@@ -27,7 +31,7 @@ export class ObustavaPdfParser implements IPdfParser {
 
   private _employee: ExtractedEmployeeWithPageNumbers = new ExtractedEmployeeWithPageNumbers();
 
-  public async extractEmployees(
+  public async extractEmployeesAsync(
     page: any
   ): Promise<ExtractedEmployeeWithPageNumbers> {
     let lines = await getLinesFromPage(page);
@@ -56,7 +60,7 @@ export class ObustavaPdfParser implements IPdfParser {
     return this._employee;
   }
 
-  public async extractSubject(page: any): Promise<string> {
+  public async extractSubjectAsync(page: any): Promise<string> {
     let lines = await getLinesFromPage(page);
 
     let line = lines[6].trim();
@@ -70,7 +74,7 @@ export class ObustavaPdfParser implements IPdfParser {
     )}/${godina} - ${deoPlate}. део`;
   }
 
-  public async isPageForNewEmployee(page: any): Promise<boolean> {
+  public async isPageForNewEmployeeAsync(page: any): Promise<boolean> {
     try {
       let lines = await getLinesFromPage(page);
       return lines[4] == OBUSTAVA;

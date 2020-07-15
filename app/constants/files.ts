@@ -80,3 +80,6 @@ export const mk_IZVESTAJI_SLANJA_MAILOVA_DIR = (year: string) => {
 
   return `C:\\${ROOT_DIR}\\${year}\\${IZVESTAJI_SLANJA_MAILOVA_DIR}`;
 };
+
+export const get_IZVESTAJI_SLANJA_MAILOVA_DIR = (year: string) =>
+  `C:\\${ROOT_DIR}\\${year}\\${IZVESTAJI_SLANJA_MAILOVA_DIR}`;

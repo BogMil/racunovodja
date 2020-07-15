@@ -5,7 +5,6 @@ import { MailSender } from '../../services/mailSender/mailSender';
 import axios from 'axios';
 import { BASE_URL } from '../../config';
 const fs = require('fs');
-const API_URL = `${BASE_URL}/api/mailSending`;
 
 export class SlanjeMailovaService {
   private _subject: string;
@@ -97,12 +96,14 @@ export class SlanjeMailovaService {
     };
   }
 }
+const API_URL = `${BASE_URL}/api/slanjeMailova`;
 
-export async function saveSendingMailResult(props: {
+export async function logSendingMail(props: {
   success: boolean;
   subject: string;
-  fileType: string;
-  errorMessage?: string;
+  type: string;
+  naziv_skole_iz_fajla: string;
+  error_message?: string;
 }) {
-  await axios.post(`${API_URL}/result`, { ...props });
+  await axios.post(`${API_URL}/log`, { ...props });
 }

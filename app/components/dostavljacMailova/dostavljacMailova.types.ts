@@ -12,6 +12,7 @@ export type PodaciOSlanjuZaSlanje = {
   fileSubject: string;
   fileType: string;
   godina: string;
+  nazivSkoleIzFajla: string;
 };
 
 export type DbEmployeeWithPages = {

@@ -15,7 +15,7 @@ export class PdfDataExtractor {
     for (let i = 1; i <= doc.numPages; i++) {
       let page = await doc.getPage(i);
 
-      let employee = await pdfParser.extractEmployees(page);
+      let employee = await pdfParser.extractEmployeesAsync(page);
       employee.pageNumbers.push(i);
 
       let nextPageNum = i + 1;
@@ -37,7 +37,9 @@ export class PdfDataExtractor {
     return employees;
 
     async function isPageForNewEmployee(pageNum: number) {
-      return await pdfParser.isPageForNewEmployee(await doc.getPage(pageNum));
+      return await pdfParser.isPageForNewEmployeeAsync(
+        await doc.getPage(pageNum)
+      );
     }
   }
 
@@ -46,7 +48,7 @@ export class PdfDataExtractor {
     let pdfParser = await PdfParserFactory.ForFile(path);
 
     let page = await doc.getPage(1);
-    return await pdfParser.extractSubject(page);
+    return await pdfParser.extractSubjectAsync(page);
   }
 
   public async fileTypeAsync(path: string) {
@@ -60,7 +62,7 @@ export class PdfDataExtractor {
 
     let page = await doc.getPage(1);
 
-    return pdfParser.extractYear(page);
+    return pdfParser.extractYearAsync(page);
   }
 
   public async monthAsync(path: string) {
@@ -68,6 +70,14 @@ export class PdfDataExtractor {
     let pdfParser = await PdfParserFactory.ForFile(path);
 
     let page = await doc.getPage(1);
-    return pdfParser.extractMonth(page);
+    return pdfParser.extractMonthAsync(page);
+  }
+
+  public async nazivSkoleAsync(path: string) {
+    let doc = await pdfjs.getDocument(path).promise;
+    let pdfParser = await PdfParserFactory.ForFile(path);
+
+    let page = await doc.getPage(1);
+    return pdfParser.extractNazivSkoleAsync(page);
   }
 }

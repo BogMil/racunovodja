@@ -30,6 +30,7 @@ export default function IzborZaposlenihZaSlanje() {
     const [fileSubject, setFileSubject] = useState('');
     const [fileType, setFileType] = useState('');
     const [godina, setGodina] = useState('');
+    const [nazivSkoleIzFajla, setNazivSkoleIzFajla] = useState('');
     const [izaberiSve, setIzaberiSve] = useState(true);
     useEffect(() => {
       async function getUserEmployees() {
@@ -66,6 +67,13 @@ export default function IzborZaposlenihZaSlanje() {
         setGodina(await pdfDataExtractor.yearAsync(state.filePath));
       }
 
+      async function getNazivSkoleIzFajla() {
+        let pdfDataExtractor = new PdfDataExtractor();
+        setNazivSkoleIzFajla(
+          await pdfDataExtractor.nazivSkoleAsync(state.filePath)
+        );
+      }
+      getNazivSkoleIzFajla();
       getYear();
       getUserEmployees();
       getFileSubject();
@@ -119,7 +127,8 @@ export default function IzborZaposlenihZaSlanje() {
           odabraniZaposleni: zaposleniSaStranicama,
           fileSubject,
           fileType,
-          godina
+          godina,
+          nazivSkoleIzFajla
         } as PodaciOSlanjuZaSlanje
       });
     };

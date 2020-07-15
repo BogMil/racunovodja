@@ -14,13 +14,12 @@ const pdfjs = require('pdfjs-dist');
 const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import routes from '../../constants/routes.json';
-import {
-  SlanjeMailovaService,
-  saveSendingMailResult
-} from './slanjeMailova.service';
+import { SlanjeMailovaService, logSendingMail } from './slanjeMailova.service';
 import { MailAuthException } from '../../services/mailSender/exceptions/mailAuthException';
 import { NepredvidjenException } from '../../services/mailSender/exceptions/nepredvidjenException';
 import { createPdfFile } from './dostavljacMailova.fileCreators';
+import { get as getUserDetails } from '../userDetails/userDetails.service';
+import { SUCCESS } from '../../constants/responseStatuses';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 export default function SlanjeMailovaComponent() {
@@ -31,7 +30,8 @@ export default function SlanjeMailovaComponent() {
       fileSubject,
       odabraniZaposleni,
       fileType,
-      godina
+      godina,
+      nazivSkoleIzFajla
     } = useLocation().state as PodaciOSlanjuZaSlanje;
 
     const [sendingResults, setSendingResults] = useState<RezultatSlanja[]>([]);
@@ -45,10 +45,15 @@ export default function SlanjeMailovaComponent() {
       let rezultatiSlanjaTemp: RezultatSlanja[] = [];
 
       try {
+        var userDetailsRes = await getUserDetails();
+        if (userDetailsRes.status != SUCCESS)
+          throw new Error('Greška prilikom učitavanja korisničkih podataka');
+
+        let userDetails = userDetailsRes.data;
         let slanjeMailovaService = new SlanjeMailovaService({
           filePath: filePath,
-          user: 'test@bogmilko.rs',
-          pass: 'grobarDS1!'
+          user: userDetails.email_za_slanje,
+          pass: userDetails.password_email_za_slanje
         });
 
         await slanjeMailovaService.posaljiEmailoveZaposlenima({
@@ -70,10 +75,12 @@ export default function SlanjeMailovaComponent() {
             setSendingResults([...rezultatiSlanjaTemp]);
           }
         });
-        saveSendingMailResult({
+
+        logSendingMail({
           success: true,
           subject: fileSubject,
-          fileType: fileType
+          type: fileType,
+          naziv_skole_iz_fajla: nazivSkoleIzFajla
         });
 
         setSlanjeUToku(false);
@@ -94,11 +101,12 @@ export default function SlanjeMailovaComponent() {
           });
         }
 
-        saveSendingMailResult({
+        logSendingMail({
           success: false,
           subject: fileSubject,
-          fileType: fileType,
-          errorMessage: e.message
+          type: fileType,
+          error_message: e.message,
+          naziv_skole_iz_fajla: nazivSkoleIzFajla
         });
       } finally {
         if (rezultatiSlanjaTemp.length > 0)

@@ -7,12 +7,16 @@ import { PLATNI_LISTIC } from '../../../constants/indikatoriFajlovaZaSlanje';
 import { getLinesFromPage } from '../../../utils/pdfFileManipulations/getLinesFromPage';
 
 export class PLv1PdfParser implements IPdfParser {
-  async extractMonth(page: any): Promise<string> {
+  async extractNazivSkoleAsync(page: any): Promise<string> {
+    let lines = await getLinesFromPage(page);
+    return lines[4].trim();
+  }
+  async extractMonthAsync(page: any): Promise<string> {
     let lines = await getLinesFromPage(page);
 
     return parseInt(lines[10].substr(0, 2)).toString();
   }
-  async extractYear(page: any): Promise<string> {
+  async extractYearAsync(page: any): Promise<string> {
     let lines = await getLinesFromPage(page);
     let godinaLine = lines[3].trim();
     let spacePos = godinaLine.indexOf(' ');
@@ -25,7 +29,7 @@ export class PLv1PdfParser implements IPdfParser {
     return PLATNI_LISTIC;
   }
 
-  public async extractEmployees(
+  public async extractEmployeesAsync(
     page: any
   ): Promise<ExtractedEmployeeWithPageNumbers> {
     let lines = await getLinesFromPage(page);
@@ -56,7 +60,7 @@ export class PLv1PdfParser implements IPdfParser {
     return this._employee;
   }
 
-  public async extractSubject(page: any): Promise<string> {
+  public async extractSubjectAsync(page: any): Promise<string> {
     let lines = await getLinesFromPage(page);
     let godinaLine = lines[3].trim();
     let spacePos = godinaLine.indexOf(' ');
@@ -69,7 +73,7 @@ export class PLv1PdfParser implements IPdfParser {
     )}/${godina} - ${deoPlate}. део`;
   }
 
-  public async isPageForNewEmployee(page: any): Promise<boolean> {
+  public async isPageForNewEmployeeAsync(page: any): Promise<boolean> {
     try {
       let lines = await getLinesFromPage(page);
       return lines[15] == PLATNI_LISTIC;

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Form, InputGroup, Button } from 'react-bootstrap';
+import { Container, Form, InputGroup, Button, Row, Col } from 'react-bootstrap';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { InvalidFileException } from '../../services/pdfParser/exceptions/invalidFileException';
@@ -12,8 +12,10 @@ import ObustavaTemplate from './components/obustavaMissingEmployeesTemplate';
 import { Redirect } from 'react-router';
 import routes from '../../constants/routes.json';
 import { PodaciOSlanjuZaIzborZaposlenih } from './dostavljacMailova.types';
+import { get_IZVESTAJI_SLANJA_MAILOVA_DIR } from '../../constants/files';
+import { shell } from 'electron';
 const { dialog, getCurrentWindow } = require('electron').remote;
-
+const fs = require('fs');
 const employeeExtractor = new PdfDataExtractor();
 
 export default function DostavljacMailovaComponent() {
@@ -52,6 +54,16 @@ export default function DostavljacMailovaComponent() {
       .catch(err => {
         dialog.showMessageBox({ message: err });
       });
+  };
+
+  const otvoriFolderSaIzvestajima = () => {
+    shell.openItem(
+      get_IZVESTAJI_SLANJA_MAILOVA_DIR(new Date().getFullYear().toString())
+    );
+  };
+
+  const otvoriMail = () => {
+    shell.openExternal('https://host105.dwhost.net:2096/');
   };
 
   const fetchMissingEmployees = async (
@@ -111,9 +123,29 @@ export default function DostavljacMailovaComponent() {
       console.log('fale');
   }, [missingEmployees]);
 
+  const currentYear = new Date().getFullYear();
+  const folderSaIzvestajimaPostoji = fs.existsSync(
+    get_IZVESTAJI_SLANJA_MAILOVA_DIR(currentYear.toString())
+  );
+
   return (
     <Container style={{ marginTop: 10 }} className="noselect">
-      <Form>
+      <Row>
+        <Col>
+          <Button title="Otvori mail" onClick={otvoriMail}>
+            <i className="fa fa-envelope" />
+          </Button>
+          {folderSaIzvestajimaPostoji && (
+            <Button
+              title="Otvori folder sa izveštajima slanja mail-ova za tekuću godinu."
+              onClick={otvoriFolderSaIzvestajima}
+            >
+              <i className="fa fa-folder" />
+            </Button>
+          )}
+        </Col>
+      </Row>
+      <Form style={{ marginTop: 10 }}>
         <div>
           <div>
             <InputGroup className="mb-3">
