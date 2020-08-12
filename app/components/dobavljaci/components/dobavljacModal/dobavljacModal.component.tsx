@@ -102,6 +102,32 @@ export default function DobavljacModalComponent() {
               </Form.Group>
             </Col>
           </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Kontakt</Form.Label>
+                <Form.Control
+                  name="kontakt"
+                  onChange={handleChange}
+                  placeholder="Unesite kontakt"
+                  value={dobavljac.kontakt}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  name="email"
+                  onChange={handleChange}
+                  placeholder="Unesite email"
+                  value={dobavljac.email}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
         </Form>
       </Modal.Body>
 

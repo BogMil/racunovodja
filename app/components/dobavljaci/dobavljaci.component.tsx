@@ -14,6 +14,9 @@ import {
   openEdit
 } from './components/dobavljacModal/dobavljacModal.actions';
 import DobavljacModalComponent from './components/dobavljacModal/dobavljacModal.component';
+import DetailsRowButton from '../common/rowButtons/detailsRowButton';
+import routes from '../../constants/routes.json';
+import { NavLink } from 'react-router-dom';
 
 export default function DobavljaciComponent() {
   const dispatch = useDispatch();
@@ -43,6 +46,7 @@ export default function DobavljaciComponent() {
   const openCreateModal = () => {
     dispatch(openCreate());
   };
+
   return (
     <>
       <Table striped bordered hover size="sm">
@@ -51,7 +55,7 @@ export default function DobavljaciComponent() {
             <th>Naziv</th>
             <th>PIB</th>
             <th>Žiro račun</th>
-            <th style={{ textAlign: 'center', width: 70 }}>
+            <th style={{ textAlign: 'center', width: 110 }}>
               <Button
                 onClick={openCreateModal}
                 title="Kreiraj novog dobavljača"
@@ -83,6 +87,18 @@ export default function DobavljaciComponent() {
                   title="Ažuriranje relacije"
                   style={{ marginRight: 5 }}
                 />
+
+                <NavLink
+                  to={{
+                    pathname: `${routes.DETALJI_DOBAVLJACA}/${dobavljac.id}`
+                  }}
+                >
+                  <DetailsRowButton
+                    style={{ marginRight: 5 }}
+                    title="Detalji"
+                    onClick={() => {}}
+                  />
+                </NavLink>
 
                 <DeleteRowButton
                   onClick={() => {

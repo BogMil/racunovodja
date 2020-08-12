@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import {
@@ -8,10 +8,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../../../../../reducers';
 import * as service from '../../../../travelingExpenses.service';
-import {
-  reloadTravelingExpenseDetails,
-  reloadCurrentTravelingExpenseDetails
-} from '../../details.actions';
+import { reloadCurrentTravelingExpenseDetails } from '../../details.actions';
 import { handleResponse } from '../../../../../../utils/responseHandler';
 
 type Props = {

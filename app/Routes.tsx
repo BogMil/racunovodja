@@ -17,6 +17,7 @@ import DostavljacMailovaComponent from './components/dostavljacMailova/dostavlja
 import IzborZaposlenihZaSlanje from './components/dostavljacMailova/izborZaposlenihZaSlanje';
 import SlanjeMailovaComponent from './components/dostavljacMailova/slanjeMailova';
 import DobavljaciComponent from './components/dobavljaci/dobavljaci.component';
+import DobavljacDetaljiComponent from './components/dobavljaci/components/detaljiDobavljaca/detaljiDobavljaca.component';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);
@@ -63,9 +64,14 @@ export default function Routes() {
           <SlanjeMailovaComponent />
         </PrivateRoute>
 
+        {/* -------------------------DOBAVLJACI------------------------- */}
         <PrivateRoute path={routes.DOBAVLJACI}>
           <DobavljaciComponent />
         </PrivateRoute>
+        <PrivateRoute path={routes.DETALJI_DOBAVLJACA + '/:id'}>
+          <DobavljacDetaljiComponent />
+        </PrivateRoute>
+        {/* -------------------------DOBAVLJACI------------------------- */}
       </Switch>
     </App>
   );

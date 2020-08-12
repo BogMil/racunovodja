@@ -36,3 +36,11 @@ export async function update(cdto: DobavljacCDTO) {
     .catch(axiosErrorHandler);
   return res;
 }
+
+export async function details(id: number) {
+  let res = await axios
+    .get(`${API_URL}/${id}/details`)
+    .then(res => res.data)
+    .catch(axiosErrorHandler);
+  return res;
+}

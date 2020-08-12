@@ -5,6 +5,8 @@ export type Dobavljac = {
   adresa: string;
   pib: string;
   ziro_racun: string;
+  email: string;
+  kontakt: string;
 };
 
 export type DobavljacCDTO = {
@@ -14,6 +16,8 @@ export type DobavljacCDTO = {
   adresa: string;
   pib: string;
   ziro_racun: string;
+  email: string;
+  kontakt: string;
 };
 
 export const newDobavljacCDTO = () => {
@@ -23,6 +27,24 @@ export const newDobavljacCDTO = () => {
     user_id: -1,
     adresa: '',
     pib: '',
-    ziro_racun: ''
+    ziro_racun: '',
+    email: '',
+    kontakt: ''
   } as DobavljacCDTO;
+};
+
+export type DetaljiDobavljaca = Dobavljac & {
+  id: number;
+  naziv: string;
+  user_id: number;
+  adresa: string;
+  pib: string;
+  ziro_racun: string;
+  email: string;
+  kontakt: string;
+};
+
+export const detaljiDobavljacaInitial = () => {
+  let dobavljac = newDobavljacCDTO();
+  return { ...dobavljac };
 };
