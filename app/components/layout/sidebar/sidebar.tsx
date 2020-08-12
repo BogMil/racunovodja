@@ -61,7 +61,13 @@ export default function SideBar() {
         <MenuItem
           iconClassName="fa fa-cogs"
           navigateTo={routes.OTHER_SETTINGS}
-          text="Ostalo"
+          text="Opšti podaci"
+        />
+        <Divider />
+        <MenuItem
+          iconClassName="fa fa-parachute-box"
+          navigateTo={routes.DOBAVLJACI}
+          text="Dobavljači"
         />
         <Divider />
         <StaticMenuItem

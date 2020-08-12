@@ -13,5 +13,6 @@
   "LOCATIONS": "/locations",
   "DOSTAVLJAC_MAILOVA": "/dostavljac_mailova",
   "DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH": "/dostavljac_mailova-izbor_zaposlenih",
-  "DOSTAVLJAC_MAILOVA_SLANJE": "/dostavljac_mailova-slanje"
+  "DOSTAVLJAC_MAILOVA_SLANJE": "/dostavljac_mailova-slanje",
+  "DOBAVLJACI": "/dobavljaci"
 }

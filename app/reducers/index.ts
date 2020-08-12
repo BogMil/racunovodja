@@ -19,6 +19,10 @@ import lokacijeCombined, {
   LokacijaCombinedReducer
 } from '../components/sifarnici/lokacije/lokacije.combinedReducer';
 
+import dobavljaciCombined, {
+  DobavljacCombinedReducer
+} from '../components/dobavljaci/dobavljaci.combinedReducer';
+
 export default function createRootReducer(history: History) {
   return combineReducers({
     router: connectRouter(history),
@@ -27,7 +31,8 @@ export default function createRootReducer(history: History) {
     relationsCombined: relationsCombineReducer(),
     travelingExpensesCombined: travelingExpensesCombineReducer(),
     userDetailsCombined: userDetailsCombined(),
-    lokacijeCombined: lokacijeCombined()
+    lokacijeCombined: lokacijeCombined(),
+    dobavljaciCombined: dobavljaciCombined()
   });
 }
 
@@ -39,4 +44,5 @@ export type AppStore = {
   travelingExpensesCombined: TravelingExpenseCombinedReducer;
   userDetailsCombined: UserDetailsCombinedReducer;
   lokacijeCombined: LokacijaCombinedReducer;
+  dobavljaciCombined: DobavljacCombinedReducer;
 };
