@@ -1,4 +1,4 @@
-import { DbEmployeeWithPages, RezultatSlanja } from './dostavljacMailova.types';
+import { DbEmployeeWithPages } from './dostavljacMailova.types';
 import { PDFDocument } from 'pdf-lib';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { MailSender } from '../../services/mailSender/mailSender';

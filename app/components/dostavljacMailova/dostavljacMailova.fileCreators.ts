@@ -39,12 +39,13 @@ export async function createPdfFile(
       }
     };
 
+    let currentDate = new Date();
     var docDefinition = {
       pageSize: 'A4',
       pageMargins: [10, 20, 10, 20],
       header: function() {
         return {
-          text: `${subject}`,
+          text: `Rezultat slanja : ${subject} `,
           style: 'header',
           alignment: 'center',
           fontSize: 10
@@ -54,6 +55,14 @@ export async function createPdfFile(
         return {
           width: '*',
           columns: [
+            {
+              width: '*',
+              text: `datum : ${currentDate.getDate()}.${currentDate.getMonth() +
+                1}.${currentDate.getFullYear()}`,
+              fontSize: 10,
+              alignment: 'left',
+              margin: [10, 0, 0, 0]
+            },
             {
               width: '*',
               text: `${currentPage}/${pageCount}`,
