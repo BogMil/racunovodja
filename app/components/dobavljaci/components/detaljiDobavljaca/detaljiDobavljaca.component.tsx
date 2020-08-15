@@ -28,7 +28,9 @@ export default function DobavljacDetaljiComponent() {
 
   return (
     <Container fluid className={`${styles['details-container']}  noselect`}>
-      <h4>{detalji.naziv}</h4>
+      <div style={{ textAlign: 'center' }}>
+        <h4>{detalji.naziv}</h4>
+      </div>
       <Tabs defaultActiveKey="osnovniPodaci" id="detalji">
         <Tab eventKey="osnovniPodaci" title="Osnovni podaci">
           <Row>
@@ -56,9 +58,6 @@ export default function DobavljacDetaljiComponent() {
               email : <b>{detalji.email}</b>
             </Col>
           </Row>
-        </Tab>
-        <Tab eventKey="nabavke" title="Nabavke">
-          asd
         </Tab>
       </Tabs>
     </Container>
