@@ -19,19 +19,11 @@ export default function Layout(props: { children: ReactNode }) {
 
   useEffect(() => {
     async function refreshToken() {
-      handleResponse(
-        await Service.refresh(),
-        (res: any) => {
-          dispatch(setUser(res.data.user, res.data.jwt));
-          setIsRefreshed(true);
-        },
-        () => {
-          setIsRefreshed(true);
-        },
-        () => {
-          setIsRefreshed(true);
-        }
-      );
+      await handleResponse(await Service.refresh(), (data: any) => {
+        dispatch(setUser(data.user, data.jwt));
+      });
+
+      setIsRefreshed(true);
     }
 
     refreshToken();

@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../auth.actions';
 import { useHistory } from 'react-router-dom';
 import * as Service from '../auth.service';
-import { handleResponse } from '../../../utils/responseHandler';
+import { handleResponse, onFailDefault } from '../../../utils/responseHandler';
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -17,10 +17,19 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   const onLogin = async () => {
-    handleResponse(await Service.login(email, password), (response: any) => {
-      dispatch(setUser(response.data.user, response.data.jwt));
-      history.push(routes.HOME);
-    });
+    handleResponse(
+      await Service.login(email, password),
+      (response: any) => {
+        dispatch(setUser(response.data.user, response.data.jwt));
+        history.push(routes.HOME);
+      },
+      onFailDefault,
+      (response: any) => {
+        let { data } = response;
+        console.log(data.errors);
+        setErrors(data.errors);
+      }
+    );
   };
 
   return (

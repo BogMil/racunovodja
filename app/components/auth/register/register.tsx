@@ -6,39 +6,26 @@ import AuthenticationCard from '../components/authenticationCard';
 import { useHistory } from 'react-router-dom';
 import * as Service from '../auth.service';
 import ErrorsBase from '../../../utils/errors';
-import { handleResponse } from '../../../utils/responseHandler';
+import { handleResponse, onFailDefault } from '../../../utils/responseHandler';
 
 class Errors extends ErrorsBase {
   email: any = null;
   password: any = null;
-  name: any = null;
-  city: any = null;
-  street: any = null;
+  naziv: any = null;
+  grad: any = null;
+  ulica_i_broj: any = null;
+  telefon: any = null;
 }
 
-export class NewUser {
-  constructor(
-    email: string,
-    password: string,
-    passwordConfirm: string,
-    name: string,
-    city: string,
-    street: string
-  ) {
-    this.email = email;
-    this.password = password;
-    this.passwordConfirm = passwordConfirm;
-    this.name = name;
-    this.city = city;
-    this.street = street;
-  }
+export type NoviKorisnik = {
   email: string;
   password: string;
-  name: string;
-  city: string;
-  street: string;
-  passwordConfirm: string;
-}
+  naziv: string;
+  grad: string;
+  ulica_i_broj: string;
+  password_confirmation: string;
+  telefon: string;
+};
 
 export default function Register() {
   let history = useHistory();
@@ -46,48 +33,41 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [name, setName] = useState('');
-  const [city, setCity] = useState('');
-  const [street, setStreet] = useState('');
+  const [naziv, setName] = useState('');
+  const [grad, setCity] = useState('');
+  const [ulica_i_broj, setStreet] = useState('');
+  const [telefon, setTelefon] = useState('');
 
   const [errors, setErrors] = useState<Errors>(new Errors());
 
   const register = async () => {
-    if (!isValid()) return;
+    // if (!isValid()) return;
 
-    let newUser = new NewUser(
+    let newUser: NoviKorisnik = {
       email,
       password,
-      passwordConfirm,
-      name,
-      city,
-      street
+      password_confirmation: passwordConfirm,
+      naziv,
+      grad,
+      ulica_i_broj,
+      telefon
+    };
+
+    handleResponse(
+      await Service.register(newUser),
+      () => {
+        history.push({
+          pathname: routes.SUCCESS_REGISTRATION,
+          state: { trialPeriod: response.data }
+        });
+      },
+      onFailDefault,
+      (response: any) => {
+        let { data } = response;
+        console.log(data.errors);
+        setErrors(data.errors);
+      }
     );
-
-    let response = await Service.register(newUser);
-    handleResponse(response, () => {
-      history.push({
-        pathname: routes.SUCCESS_REGISTRATION,
-        state: { trialPeriod: response.data }
-      });
-    });
-  };
-
-  const isValid = () => {
-    let errors = new Errors();
-
-    if (password == '') errors.password = '*Lozinka je obavezno polje';
-    else if (passwordConfirm !== password)
-      errors.password = '*Lozinke se ne poklapaju';
-    else if (password.length < 8)
-      errors.password = '*Lozinka mora imati najmanje 8 karaktera';
-    if (name == '') errors.name = '*Naziv ustanove je obavezno polje';
-    if (city == '') errors.city = '*Naziv grada je obavezno polje';
-    if (street == '') errors.street = '*Naziv ulice je obavezno polje';
-    if (email == '') errors.email = '*Email je obavezno polje';
-
-    setErrors(errors);
-    return !errors.hasAny();
   };
 
   return (
@@ -97,34 +77,45 @@ export default function Register() {
           <Form.Label>Naziv ustanove</Form.Label>
           <Form.Control
             placeholder="Unesite naziv ustanove"
-            value={name}
+            value={naziv}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setName(e.currentTarget.value);
             }}
           />
-          <ErrorText text={errors.name} />
+          <ErrorText text={errors.naziv} />
         </Form.Group>
         <Form.Group>
           <Form.Label>Grad</Form.Label>
           <Form.Control
             placeholder="Unesite naziv grada"
-            value={city}
+            value={grad}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setCity(e.currentTarget.value);
             }}
           />
-          <ErrorText text={errors.city} />
+          <ErrorText text={errors.grad} />
         </Form.Group>
         <Form.Group>
           <Form.Label>Ulica i broj</Form.Label>
           <Form.Control
             placeholder="Unesite naziv ulice i broj"
-            value={street}
+            value={ulica_i_broj}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setStreet(e.currentTarget.value);
             }}
           />
-          {<ErrorText text={errors.street} />}
+          {<ErrorText text={errors.ulica_i_broj} />}
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Telefon</Form.Label>
+          <Form.Control
+            placeholder="Unesite kontakt telefon"
+            value={telefon}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setTelefon(e.currentTarget.value);
+            }}
+          />
+          {<ErrorText text={errors.telefon} />}
         </Form.Group>
         <Form.Group>
           <Form.Label>Email</Form.Label>

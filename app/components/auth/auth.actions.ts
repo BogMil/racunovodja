@@ -21,38 +21,3 @@ export function unsetUser(): Action {
     type: UNSET_AUTHENTICATED
   };
 }
-
-// export function login(email: string, password: string) {
-//   return (dispatch: Dispatch) => {
-//     let response = await Service.login(email, password);
-//     dispatch(_login(email, relations));
-//   };
-
-//   function _login(user: User): Action {
-//     return {
-//       namespace: NAMESPACE,
-//       type: OPEN,
-//       payload: { employee, availableRelations }
-//     };
-//   }
-// }
-
-// export function logout() {
-//   return async () => {
-//     var res = await Service.logout();
-//     handleResponse(
-//       res,
-//       () => {
-//         let history = useHistory();
-//         history.push({
-//           pathname: 'SUCCESS_REGISTRATION',
-//           state: { trialPeriod: 'asd' }
-//         });
-//       },
-//       onFailDefault,
-//       (res: any) => {
-//         console.log(res);
-//       }
-//     );
-//   };
-// }

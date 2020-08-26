@@ -1,18 +1,15 @@
 import axios from 'axios';
-import { NewUser } from './register/register';
+import { NoviKorisnik } from './register/register';
 import { BASE_URL } from '../../config';
 import { ERROR } from '../../constants/responseStatuses';
 import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
 
 export async function login(email: string, password: string) {
-  let res = await axios
-    .post(`${BASE_URL}/api/auth/login`, { email, password })
-    .then(res => res.data)
+  return await axios
+    .post(`${BASE_URL}/api/auth/prijava`, { email, password })
     .catch(function(error) {
-      console.log(error);
-      return { status: ERROR, message: error.response.data };
+      return error.response;
     });
-  return res;
 }
 
 export async function logout() {
@@ -25,12 +22,11 @@ export async function logout() {
   return res;
 }
 
-export async function register(newUser: NewUser) {
+export async function register(newUser: NoviKorisnik) {
   let res = await axios
-    .post(`${BASE_URL}/api/auth/register`, { ...newUser })
-    .then(res => res.data)
+    .post(`${BASE_URL}/api/auth/registracija`, { ...newUser })
     .catch(function(error) {
-      return { status: ERROR, message: error.response.data };
+      return error.response;
     });
   return res;
 }
@@ -49,6 +45,8 @@ export async function refresh() {
   let res = await axios
     .post(`${BASE_URL}/api/auth/refresh`)
     .then(res => res.data)
-    .catch(axiosErrorHandler);
+    .catch(function(error) {
+      return error.response;
+    });
   return res;
 }
