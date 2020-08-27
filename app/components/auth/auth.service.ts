@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NoviKorisnik } from './register/register';
+import { NoviKorisnik } from './register';
 import { BASE_URL } from '../../config';
 import { ERROR } from '../../constants/responseStatuses';
 import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
@@ -13,13 +13,9 @@ export async function login(email: string, password: string) {
 }
 
 export async function logout() {
-  let res = await axios
-    .post(`${BASE_URL}/api/auth/logout`)
-    .then(res => res.data)
-    .catch(function(error) {
-      return { status: ERROR, message: error.response.data };
-    });
-  return res;
+  return await axios.post(`${BASE_URL}/api/auth/logout`).catch(function(error) {
+    return error.response;
+  });
 }
 
 export async function register(newUser: NoviKorisnik) {
@@ -32,21 +28,15 @@ export async function register(newUser: NoviKorisnik) {
 }
 
 export async function me() {
-  let res = await axios
-    .post(`${BASE_URL}/api/auth/me`)
-    .then(res => res.data)
-    .catch(function(error) {
-      return { status: ERROR, message: error.response.data };
-    });
-  return res;
+  return await axios.post(`${BASE_URL}/api/auth/me`).catch(function(error) {
+    return error.response;
+  });
 }
 
 export async function refresh() {
-  let res = await axios
+  return await axios
     .post(`${BASE_URL}/api/auth/refresh`)
-    .then(res => res.data)
     .catch(function(error) {
       return error.response;
     });
-  return res;
 }

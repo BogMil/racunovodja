@@ -1,12 +1,12 @@
 import React, { ChangeEvent, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import routes from '../../../constants/routes.json';
-import AuthenticationCard from '../components/authenticationCard';
+import routes from '../../constants/routes.json';
+import AuthenticationCard from './components/authenticationCard';
 import { useHistory } from 'react-router-dom';
-import * as Service from '../auth.service';
-import ErrorsBase from '../../../utils/errors';
-import { handleResponse, onFailDefault } from '../../../utils/responseHandler';
+import * as Service from './auth.service';
+import ErrorsBase from '../../utils/errors';
+import { handleResponse, onFailDefault } from '../../utils/responseHandler';
 
 class Errors extends ErrorsBase {
   email: any = null;
@@ -41,8 +41,6 @@ export default function Register() {
   const [errors, setErrors] = useState<Errors>(new Errors());
 
   const register = async () => {
-    // if (!isValid()) return;
-
     let newUser: NoviKorisnik = {
       email,
       password,
@@ -55,10 +53,11 @@ export default function Register() {
 
     handleResponse(
       await Service.register(newUser),
-      () => {
+      (response: any) => {
+        const { data } = response;
         history.push({
           pathname: routes.SUCCESS_REGISTRATION,
-          state: { trialPeriod: response.data }
+          state: { trialPeriod: data.probni_period }
         });
       },
       onFailDefault,

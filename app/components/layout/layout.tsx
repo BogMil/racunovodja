@@ -6,6 +6,7 @@ import { Container } from 'react-bootstrap';
 import * as Service from '../auth/auth.service';
 import { handleResponse } from '../../utils/responseHandler';
 import { setUser } from '../auth/auth.actions';
+import { setToken } from '../../utils/tokenService';
 
 export default function Layout(props: { children: ReactNode }) {
   const [isRefreshed, setIsRefreshed] = useState(false);
@@ -18,19 +19,29 @@ export default function Layout(props: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    async function refreshToken() {
-      await handleResponse(await Service.refresh(), (data: any) => {
-        dispatch(setUser(data.user, data.jwt));
-      });
-
-      setIsRefreshed(true);
-    }
-
-    refreshToken();
+    refreshAuthState();
   }, []);
 
+  async function refreshAuthState() {
+    await refreshJwt();
+    await refreshKorisnika();
+    setIsRefreshed(true);
+  }
+
+  const refreshJwt = async () => {
+    handleResponse(await Service.refresh(), (response: any) => {
+      setToken(response.data.jwt);
+    });
+  };
+
+  const refreshKorisnika = async () => {
+    handleResponse(await Service.me(), (response: any) => {
+      dispatch(setUser(response.data.korisnik));
+    });
+  };
+
   if (!isRefreshed) {
-    return null;
+    return <div>Loading...</div>;
   } else {
     if (auth.isAuthenticated) {
       return (

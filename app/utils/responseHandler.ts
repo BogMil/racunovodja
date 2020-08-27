@@ -1,6 +1,6 @@
 import { SUCCESS, FAIL, ERROR } from '../constants/responseStatuses';
 
-export const handleResponse = async (
+export const handleResponse = (
   response: any,
   onSuccess: Function,
   onFail: Function = onFailDefault,
