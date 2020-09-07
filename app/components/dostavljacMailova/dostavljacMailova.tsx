@@ -4,7 +4,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { InvalidFileException } from '../../services/pdfParser/exceptions/invalidFileException';
 import { handleResponse } from '../../utils/responseHandler';
-import * as service from '../../components/employees/employee.service';
+import * as service from '../zaposleni/zaposleni.service';
 import { ExtractedEmployeeWithPageNumbers } from '../../services/pdfParser/pdfParser.types';
 import { FileChecker } from '../../services/FileChecker';
 import PlatniListicTemplate from './components/platniListicMissingEmployeesTemplate';

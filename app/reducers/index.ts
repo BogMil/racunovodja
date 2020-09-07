@@ -3,8 +3,8 @@ import { connectRouter, RouterState } from 'connected-react-router';
 import { History } from 'history';
 import auth from '../components/auth/auth.reducer';
 import employeesCombinedReducer, {
-  EmployeeCombinedReducer
-} from '../components/employees/combinedReducer';
+  ZaposleniPageReducer
+} from '../components/zaposleni/combinedReducer';
 import relationsCombineReducer, {
   RelationCombinedReducer
 } from '../components/sifarnici/relations/combinedReducer';
@@ -27,7 +27,7 @@ export default function createRootReducer(history: History) {
   return combineReducers({
     router: connectRouter(history),
     auth,
-    employeesCombined: employeesCombinedReducer(),
+    zaposleniPage: employeesCombinedReducer(),
     relationsCombined: relationsCombineReducer(),
     travelingExpensesCombined: travelingExpensesCombineReducer(),
     userDetailsCombined: userDetailsCombined(),
@@ -39,7 +39,7 @@ export default function createRootReducer(history: History) {
 export type AppStore = {
   router: Reducer<RouterState<History.PoorMansUnknown>>;
   auth: any;
-  employeesCombined: EmployeeCombinedReducer;
+  zaposleniPage: ZaposleniPageReducer;
   relationsCombined: RelationCombinedReducer;
   travelingExpensesCombined: TravelingExpenseCombinedReducer;
   userDetailsCombined: UserDetailsCombinedReducer;

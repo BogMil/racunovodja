@@ -1,4 +1,4 @@
-import { Employee } from '../../types';
+import { Zaposleni } from '../../zaposleni.types';
 
 export type EmployeeFromDPL = {
   JMBG: string;
@@ -8,5 +8,5 @@ export type EmployeeFromDPL = {
 
 export type EmployeeToSyncEmail = {
   dplEmployee: EmployeeFromDPL;
-  dbEmployee: Employee;
+  dbEmployee: Zaposleni;
 };

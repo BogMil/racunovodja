@@ -123,7 +123,7 @@ export async function createPdfFile(
     let row: any[] = [];
 
     row[0] = {
-      text: `${employeeWithRelations.employee.last_name} ${employeeWithRelations.employee.first_name}`
+      text: `${employeeWithRelations.employee.prezime} ${employeeWithRelations.employee.ime}`
     };
 
     row[1] = {
@@ -214,7 +214,7 @@ export async function createPdfFile(
     let row: any[] = [];
 
     row[0] = {
-      text: `${employeeWithRelations.employee.last_name} ${employeeWithRelations.employee.first_name}`
+      text: `${employeeWithRelations.employee.prezime} ${employeeWithRelations.employee.ime}`
     };
 
     row[1] = {
@@ -550,7 +550,7 @@ function createXmlContent(
   PodaciOIsplatiocu.ele('tns:NazivPrezimeIme', userDetails.naziv_skole);
   PodaciOIsplatiocu.ele(
     'tns:SedistePrebivaliste',
-    userDetails.municipality.code
+    userDetails.municipality.sifra
   );
   PodaciOIsplatiocu.ele('tns:Telefon', userDetails.telefon);
   PodaciOIsplatiocu.ele('tns:UlicaIBroj', userDetails.ulica_i_broj);
@@ -580,14 +580,11 @@ function createXmlContent(
       'tns:IdentifikatorPrimaoca',
       employeeWithRelations.employee.jmbg
     );
-    PodaciOPrihodima.ele(
-      'tns:Prezime',
-      employeeWithRelations.employee.last_name
-    );
-    PodaciOPrihodima.ele('tns:Ime', employeeWithRelations.employee.first_name);
+    PodaciOPrihodima.ele('tns:Prezime', employeeWithRelations.employee.prezime);
+    PodaciOPrihodima.ele('tns:Ime', employeeWithRelations.employee.ime);
     PodaciOPrihodima.ele(
       'tns:OznakaPrebivalista',
-      employeeWithRelations.employee.municipality.code
+      employeeWithRelations.employee.opstina.sifra
     );
     PodaciOPrihodima.ele('tns:SVP', 101110000);
     PodaciOPrihodima.ele(
@@ -1071,11 +1068,11 @@ export async function createVirmaniPdfFile(
         {
           platilac: userDetails.naziv_skole,
           primalac:
-            employeeWithRelation.employee.last_name +
+            employeeWithRelation.employee.prezime +
             ' ' +
-            employeeWithRelation.employee.first_name,
+            employeeWithRelation.employee.ime,
           iznos: numberWithThousandSeparator(calculation.neto),
-          racunPrimaoca: employeeWithRelation.employee.banc_account
+          racunPrimaoca: employeeWithRelation.employee.bankovni_racun
         },
         i + 1
       );

@@ -5,8 +5,8 @@ import {
   PodaciOSlanjuZaSlanje,
   DbEmployeeWithPages
 } from './dostavljacMailova.types';
-import { get as getAllEmployees } from '../employees/employee.service';
-import { Employee } from '../employees/types';
+import { get as getAllEmployees } from '../zaposleni/zaposleni.service';
+import { Zaposleni } from '../zaposleni/zaposleni.types';
 import { handleResponse } from '../../utils/responseHandler';
 import { Row, Col, Table, Button, Container, Form } from 'react-bootstrap';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
@@ -22,7 +22,7 @@ export default function IzborZaposlenihZaSlanje() {
   try {
     const state = useLocation().state as PodaciOSlanjuZaIzborZaposlenih;
 
-    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [employees, setEmployees] = useState<Zaposleni[]>([]);
     const [
       brojeviCekiranihZaposlenih,
       setBrojeviCekiranihZaposlenih
@@ -35,18 +35,18 @@ export default function IzborZaposlenihZaSlanje() {
     useEffect(() => {
       async function getUserEmployees() {
         handleResponse(await getAllEmployees(), (res: any) => {
-          let zaposleniSaValidnimEmailom = res.data.filter((x: Employee) =>
+          let zaposleniSaValidnimEmailom = res.data.filter((x: Zaposleni) =>
             isValidEmail(x.email)
           );
 
           let zaposleniSaValidnimEmailomKojiPostojeUFajlu = zaposleniSaValidnimEmailom.filter(
-            (x: Employee) =>
-              state.zaposleniUFajlu.filter(z => z.number == x.number).length > 0
+            (x: Zaposleni) =>
+              state.zaposleniUFajlu.filter(z => z.number == x.sifra).length > 0
           );
           setEmployees(zaposleniSaValidnimEmailomKojiPostojeUFajlu);
           setBrojeviCekiranihZaposlenih(
             zaposleniSaValidnimEmailomKojiPostojeUFajlu.map(
-              (x: Employee) => x.number
+              (x: Zaposleni) => x.sifra
             )
           );
         });
@@ -100,18 +100,18 @@ export default function IzborZaposlenihZaSlanje() {
       setIzaberiSve(newVal);
       if (newVal == false) setBrojeviCekiranihZaposlenih([]);
       else {
-        setBrojeviCekiranihZaposlenih(employees.map(x => x.number));
+        setBrojeviCekiranihZaposlenih(employees.map(x => x.sifra));
       }
     };
 
     const onNastavi = () => {
       let odabraniZaposleni = employees.filter(x =>
-        brojeviCekiranihZaposlenih.includes(x.number)
+        brojeviCekiranihZaposlenih.includes(x.sifra)
       );
 
       let zaposleniSaStranicama = odabraniZaposleni.map(zaposleni => {
         let pageNumbers = state.zaposleniUFajlu.filter(
-          x => x.number == zaposleni.number
+          x => x.number == zaposleni.sifra
         )[0].pageNumbers;
 
         return {
@@ -179,20 +179,19 @@ export default function IzborZaposlenihZaSlanje() {
                     return (
                       <tr
                         key={e.jmbg}
-                        onClick={() => cekirajZaposlenog(e.number)}
+                        onClick={() => cekirajZaposlenog(e.sifra)}
                         style={{
                           backgroundColor:
-                            brojeviCekiranihZaposlenih.filter(
-                              x => x == e.number
-                            ).length > 0
+                            brojeviCekiranihZaposlenih.filter(x => x == e.sifra)
+                              .length > 0
                               ? '#e26d5a'
                               : ''
                         }}
                       >
                         <td>{e.jmbg}</td>
-                        <td>{e.number}</td>
-                        <td>{e.last_name}</td>
-                        <td>{e.first_name}</td>
+                        <td>{e.sifra}</td>
+                        <td>{e.prezime}</td>
+                        <td>{e.ime}</td>
                         <td>{e.email}</td>
                       </tr>
                     );

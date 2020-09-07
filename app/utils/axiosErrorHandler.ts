@@ -11,3 +11,7 @@ export const axiosErrorHandler = (error: any) => {
     message: 'Greška! Server je vratio grešku koju nije moguće obraditi!'
   };
 };
+
+export const axiosCatchHandler = (error: any) => {
+  return error.response;
+};

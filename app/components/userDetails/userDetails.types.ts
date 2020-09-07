@@ -1,11 +1,11 @@
-import { Municipality } from '../employees/types';
+import { Opstina } from '../zaposleni/zaposleni.types';
 
 export type UserDetails = {
   id: number;
   poreski_identifikacioni_broj: string;
   maticni_broj: string;
   opstina_id: number;
-  municipality: Municipality;
+  municipality: Opstina;
   telefon: string;
   ulica_i_broj: string;
   email: string;

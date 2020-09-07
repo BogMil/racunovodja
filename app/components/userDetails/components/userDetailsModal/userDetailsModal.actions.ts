@@ -2,8 +2,8 @@ import { Action } from '../../../../reducers/types';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { UserDetails } from '../../userDetails.types';
-import { getMunicipalityOptions } from '../../../employees/employee.service';
-import { Municipality } from '../../../employees/types';
+import { getMunicipalityOptions } from '../../../zaposleni/zaposleni.service';
+import { Opstina } from '../../../zaposleni/zaposleni.types';
 
 export const OPEN = 'OPEN';
 export const CLOSE = 'CLOSE';
@@ -21,7 +21,7 @@ export function open(userDetails: UserDetails) {
 
 function _open(
   userDetails: UserDetails,
-  municipalityOptions: Municipality[]
+  municipalityOptions: Opstina[]
 ): Action {
   return {
     namespace: NAMESPACE,

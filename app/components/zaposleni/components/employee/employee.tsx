@@ -1,31 +1,31 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
-import { Employee, EmployeeCDTO } from '../../types';
+import { Zaposleni, ZaposleniCDTO } from '../../zaposleni.types';
 import { useDispatch } from 'react-redux';
 import * as AddDefaultRelationModalActions from '../addDefaultRelationModal/addDefaultRelationModal.actions';
 import {
   removeRelationFromEmployee,
   reloadEmployees
-} from '../../employees.actions';
+} from '../../zaposleni.actions';
 import styles from './employee.css';
-import * as Service from '../../employee.service';
+import * as Service from '../../zaposleni.service';
 import { handleResponse } from '../../../../utils/responseHandler';
-import { openEdit } from '../employeeModal/employeeModal.actions';
+import { openEdit } from '../zaposleniModal/zaposleniModal.actions';
 import DeleteRowButton from '../../../common/rowButtons/deleteRowButton';
 import EditRowButton from '../../../common/rowButtons/editRowButton';
 import { areYouSure } from '../../../../utils/yesNoModal';
-import { columnWidths } from '../../employees.columnStyle';
+import { columnWidths } from '../../zaposleni.columnStyle';
 
 type Props = {
-  employee: Employee;
+  zaposleni: Zaposleni;
 };
 
 export default function EmployeeComponent(props: Props) {
   const dispatch = useDispatch();
-  let employee = props.employee;
+  let zaposleni = props.zaposleni;
 
   const onAddDefaultRelationClick = () => {
-    dispatch(AddDefaultRelationModalActions.open(employee));
+    dispatch(AddDefaultRelationModalActions.open(zaposleni));
   };
 
   const removeRelation = (defaultRelationId: number) => {
@@ -33,10 +33,10 @@ export default function EmployeeComponent(props: Props) {
       title: 'Brisanje zaposlenog',
       onYes: async () => {
         handleResponse(
-          await Service.removeDefaultRelation(employee.id, defaultRelationId),
+          await Service.removeDefaultRelation(zaposleni.id, defaultRelationId),
           () => {
             dispatch(
-              removeRelationFromEmployee(employee.id, defaultRelationId)
+              removeRelationFromEmployee(zaposleni.id, defaultRelationId)
             );
           }
         );
@@ -48,7 +48,7 @@ export default function EmployeeComponent(props: Props) {
     areYouSure({
       title: 'Brisanje zaposlenog',
       onYes: async () => {
-        handleResponse(await Service.removeEmployee(employee.id), () => {
+        handleResponse(await Service.removeEmployee(zaposleni.id), () => {
           dispatch(reloadEmployees());
         });
       }
@@ -56,41 +56,39 @@ export default function EmployeeComponent(props: Props) {
   };
 
   const editEmployee = () => {
-    let cdto = (employee as unknown) as EmployeeCDTO;
-    cdto.municipality_id = employee.municipality
-      ? employee.municipality.id
-      : -1;
+    let cdto = (zaposleni as unknown) as ZaposleniCDTO;
+    cdto.id_opstine = zaposleni.opstina ? zaposleni.opstina.id : -1;
     dispatch(openEdit(cdto));
   };
 
   return (
-    <tr style={{ backgroundColor: !employee.active ? '#FFD7D7' : '' }}>
+    <tr style={{ backgroundColor: !zaposleni.aktivan ? '#FFD7D7' : '' }}>
       <td style={{ width: columnWidths.jmbg }} className={styles.employeeCell}>
-        {employee.jmbg}
+        {zaposleni.jmbg}
       </td>
       <td style={{ width: columnWidths.broj }} className={styles.employeeCell}>
-        {employee.number}
+        {zaposleni.sifra}
       </td>
       <td
         style={{ width: columnWidths.prezime }}
         className={styles.employeeCell}
       >
-        {employee.last_name}
+        {zaposleni.prezime}
       </td>
       <td style={{ width: columnWidths.ime }} className={styles.employeeCell}>
-        {employee.first_name}
+        {zaposleni.ime}
       </td>
       <td
         style={{ width: columnWidths.brojRacuna }}
         className={styles.employeeCell}
       >
-        {employee.banc_account}
+        {zaposleni.bankovni_racun}
       </td>
       <td
         style={{ width: columnWidths.opstina }}
         className={styles.employeeCell}
       >
-        {employee.municipality ? employee.municipality.name : '---'}
+        {zaposleni.opstina ? zaposleni.opstina.naziv : '---'}
       </td>
       <td
         className={styles.employeeCell}
@@ -98,7 +96,7 @@ export default function EmployeeComponent(props: Props) {
       >
         <Table bordered hover size="sm" style={{ marginBottom: 0 }}>
           <tbody>
-            {employee.default_relations.map((defaultRelation, i) => (
+            {zaposleni.default_relations?.map((defaultRelation, i) => (
               <tr key={i}>
                 <td style={{ padding: 0 }}>
                   <div style={{ float: 'left' }}>
@@ -129,7 +127,7 @@ export default function EmployeeComponent(props: Props) {
         </Table>
       </td>
       <td style={{ width: columnWidths.email }} className={styles.employeeCell}>
-        {employee.email}
+        {zaposleni.email}
       </td>
 
       <td style={{ textAlign: 'center', width: columnWidths.email }}>

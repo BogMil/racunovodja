@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col, Table, Button, ProgressBar } from 'react-bootstrap';
 import { ExtractedEmployeeWithPageNumbers } from '../../../services/pdfParser/pdfParser.types';
-import { createEmployee as insertEmployee } from '../../employees/employee.service';
+import { createEmployee as insertEmployee } from '../../zaposleni/zaposleni.service';
 import { handleResponse } from '../../../utils/responseHandler';
 import { SUCCESS } from '../../../constants/responseStatuses';
 import { useHistory } from 'react-router';
@@ -34,8 +34,8 @@ export default function PlatniListicTemplate(props: Props) {
         handleResponse(
           await insertEmployee({
             ...missingEmployee,
-            municipality_id: -1,
-            active: true,
+            id_opstine: -1,
+            aktivan: true,
             id: -1,
             email: ''
           }),

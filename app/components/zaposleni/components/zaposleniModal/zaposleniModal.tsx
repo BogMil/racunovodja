@@ -1,18 +1,27 @@
 import React from 'react';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { close, updateEmployeeState } from './employeeModal.actions';
+import {
+  close,
+  updateZaposleniState,
+  setErrors
+} from './zaposleniModal.actions';
 import { AppStore } from '../../../../reducers';
-import { reloadEmployees } from '../../employees.actions';
-import * as Service from '../../employee.service';
+import { reloadEmployees } from '../../zaposleni.actions';
+import * as Service from '../../zaposleni.service';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
+import { ErrorText } from '../../../common/errorText';
 
-export default function CreateEmployeeModal() {
+export default function ZaposleniModalComponent() {
   const dispatch = useDispatch();
-  const store = useSelector((state: AppStore) => {
-    return state.employeesCombined.employeeModal;
-  });
+
+  const { zaposleni, mode, show, title, opstine, errors } = useSelector(
+    (state: AppStore) => {
+      console.log(state);
+      return state.zaposleniPage.zaposleniModal;
+    }
+  );
 
   const handleClose = () => {
     dispatch(close());
@@ -24,31 +33,45 @@ export default function CreateEmployeeModal() {
 
     if (name == 'active') value = e.target.checked;
 
-    dispatch(updateEmployeeState(name, value));
+    dispatch(updateZaposleniState(name, value));
   };
 
   const handleSave = async () => {
-    if (store.mode == CREATE_MODE)
-      handleResponse(await Service.createEmployee(store.employee), () => {
-        dispatch(reloadEmployees());
-        dispatch(close());
-      });
-    else if (store.mode == EDIT_MODE)
-      handleResponse(await Service.updateEmployee(store.employee), () => {
-        dispatch(reloadEmployees());
-        dispatch(close());
-      });
+    if (mode == CREATE_MODE)
+      handleResponse(
+        await Service.createEmployee(zaposleni),
+        () => {
+          dispatch(reloadEmployees());
+          dispatch(close());
+        },
+        () => {},
+        (response: any) => {
+          dispatch(setErrors(response.data.errors));
+        }
+      );
+    else if (mode == EDIT_MODE)
+      handleResponse(
+        await Service.updateEmployee(zaposleni),
+        () => {
+          dispatch(reloadEmployees());
+          dispatch(close());
+        },
+        () => {},
+        (response: any) => {
+          dispatch(setErrors(response.data.errors));
+        }
+      );
   };
   return (
     <Modal
       backdrop="static"
       centered
-      show={store.show}
+      show={show}
       onHide={handleClose}
       className="noselect"
     >
       <Modal.Header closeButton style={{}}>
-        <Modal.Title as="h5">{store.title}</Modal.Title>
+        <Modal.Title as="h5">{title}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -60,20 +83,22 @@ export default function CreateEmployeeModal() {
                 <Form.Control
                   name="jmbg"
                   placeholder="Unesite JMBG"
-                  value={store.employee.jmbg}
+                  value={zaposleni.jmbg}
                   onChange={handleChange}
                 />
+                <ErrorText text={errors?.jmbg} />
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group>
                 <Form.Label>Broj zaposlenog</Form.Label>
                 <Form.Control
-                  name="number"
+                  name="sifra"
                   onChange={handleChange}
                   placeholder="Unesite broj zaposlenog"
-                  value={store.employee.number}
+                  value={zaposleni.sifra}
                 />
+                <ErrorText text={errors?.sifra} />
               </Form.Group>
             </Col>
           </Row>
@@ -82,22 +107,24 @@ export default function CreateEmployeeModal() {
               <Form.Group>
                 <Form.Label>Prezime</Form.Label>
                 <Form.Control
-                  name="last_name"
+                  name="prezime"
                   onChange={handleChange}
                   placeholder="Unesite prezime"
-                  value={store.employee.last_name}
+                  value={zaposleni.prezime}
                 />
+                <ErrorText text={errors?.prezime} />
               </Form.Group>
             </Col>
             <Col md={5}>
               <Form.Group>
                 <Form.Label>Ime</Form.Label>
                 <Form.Control
-                  name="first_name"
+                  name="ime"
                   onChange={handleChange}
                   placeholder="Unesite ime"
-                  value={store.employee.first_name}
+                  value={zaposleni.ime}
                 />
+                <ErrorText text={errors?.ime} />
               </Form.Group>
             </Col>
           </Row>
@@ -106,11 +133,12 @@ export default function CreateEmployeeModal() {
               <Form.Group>
                 <Form.Label>Broj računa</Form.Label>
                 <Form.Control
-                  name="banc_account"
+                  name="bankovni_racun"
                   onChange={handleChange}
                   placeholder="Unesite broj računa"
-                  value={store.employee.banc_account}
+                  value={zaposleni.bankovni_racun}
                 />
+                <ErrorText text={errors?.bankovni_racun} />
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -119,18 +147,22 @@ export default function CreateEmployeeModal() {
                 <Form.Control
                   as="select"
                   custom
-                  name="municipality_id"
+                  name="id_opstine"
                   onChange={handleChange}
-                  value={store.employee.municipality_id}
+                  value={zaposleni.id_opstine}
                 >
-                  {store.municipalityOptions.map(municipality => {
-                    return (
-                      <option key={municipality.id} value={municipality.id}>
-                        {municipality.name}
-                      </option>
-                    );
-                  })}
+                  <>
+                    <option value="">---</option>
+                    {opstine.map(opstina => {
+                      return (
+                        <option key={opstina.id} value={opstina.id}>
+                          {opstina.naziv}
+                        </option>
+                      );
+                    })}
+                  </>
                 </Form.Control>
+                <ErrorText text={errors?.opstina_id} />
               </Form.Group>
             </Col>
           </Row>
@@ -142,8 +174,9 @@ export default function CreateEmployeeModal() {
                   name="email"
                   onChange={handleChange}
                   placeholder="Unesite Email adresu"
-                  value={store.employee.email}
+                  value={zaposleni.email}
                 />
+                <ErrorText text={errors?.email} />
               </Form.Group>
             </Col>
             <Col md={3}>
@@ -153,12 +186,13 @@ export default function CreateEmployeeModal() {
               >
                 <Form.Check
                   custom
-                  name="active"
+                  name="aktivan"
                   type="checkbox"
                   label="Aktivan?"
-                  checked={store.employee.active}
+                  checked={zaposleni.aktivan}
                   onChange={handleChange}
                 />
+                <ErrorText text={errors?.aktivan} />
               </Form.Group>
             </Col>
           </Row>

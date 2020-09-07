@@ -29,7 +29,7 @@ export function _loadTravelingExpenseDetails(travelingExpense: any): Action {
 }
 
 function compareLastName(a: EmployeeWithRelations, b: EmployeeWithRelations) {
-  return a.employee.last_name.localeCompare(b.employee.last_name, 'sr');
+  return a.employee.prezime.localeCompare(b.employee.prezime, 'sr');
 }
 
 export function reloadTravelingExpenseDetails(id: number) {

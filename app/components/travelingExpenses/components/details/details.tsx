@@ -57,7 +57,7 @@ export default function Details() {
 
   let hasEmployeesWithoutMunicipality =
     store.employees_with_relation.filter(employeeWithRelation => {
-      return employeeWithRelation.employee.municipality == null;
+      return employeeWithRelation.employee.opstina == null;
     }).length > 0;
 
   let netoTotal = 0;

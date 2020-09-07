@@ -1,6 +1,6 @@
 import { Action } from '../../../../../../reducers/types';
 import { NAMESPACE, CLOSE, OPEN } from './editDaysModal.actions';
-import { Employee } from '../../../../../employees/types';
+import { Zaposleni } from '../../../../../zaposleni/zaposleni.types';
 import { RelationWithDays } from '../../../../travelingExpenses.types';
 
 const initialState: EditDaysModalStore = {
@@ -11,7 +11,7 @@ const initialState: EditDaysModalStore = {
 
 export type EditDaysModalStore = {
   show: boolean;
-  employee: Employee;
+  employee: Zaposleni;
   relationWithDays: RelationWithDays;
 };
 

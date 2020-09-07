@@ -1,16 +1,15 @@
-import { EmployeeCDTO } from './types';
+import { ZaposleniCDTO } from './zaposleni.types';
 import axios from 'axios';
 import { BASE_URL } from '../../config';
-import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
+import {
+  axiosErrorHandler,
+  axiosCatchHandler
+} from '../../utils/axiosErrorHandler';
 
-const API_URL = `${BASE_URL}/api/employee`;
+const API_URL = `${BASE_URL}/api/zaposleni`;
 
 export async function get() {
-  let res = await axios
-    .get(`${API_URL}`)
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+  return await axios.get(`${API_URL}`).catch(axiosCatchHandler);
 }
 
 export async function getActiveOnes() {
@@ -52,35 +51,25 @@ export async function removeDefaultRelation(
 }
 
 export async function getMunicipalityOptions() {
-  let res = await axios
-    .get(`${BASE_URL}/api/municipality`)
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+  return await axios.get(`${BASE_URL}/api/opstina`).catch(axiosCatchHandler);
 }
 
-export async function createEmployee(employee: EmployeeCDTO) {
-  let res = await axios
+export async function createEmployee(employee: ZaposleniCDTO) {
+  return await axios
     .post(`${API_URL}`, { ...employee })
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+    .catch(axiosCatchHandler);
 }
 
 export async function removeEmployee(employeeId: number) {
-  let res = await axios
+  return await axios
     .delete(`${API_URL}/${employeeId}`)
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+    .catch(axiosCatchHandler);
 }
 
-export async function updateEmployee(employee: EmployeeCDTO) {
-  let res = await axios
+export async function updateEmployee(employee: ZaposleniCDTO) {
+  return await axios
     .put(`${API_URL}/${employee.id}`, { ...employee })
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+    .catch(axiosCatchHandler);
 }
 
 export async function getMissingJmbgs(jmbgs: string[]) {

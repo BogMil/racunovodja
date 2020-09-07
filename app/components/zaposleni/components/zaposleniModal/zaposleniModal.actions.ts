@@ -1,6 +1,10 @@
 import { Action } from '../../../../reducers/types';
-import { Municipality, newEmployeeCDTO, EmployeeCDTO } from '../../types';
-import * as service from '../../employee.service';
+import {
+  Opstina,
+  newZaposleniCDTO,
+  ZaposleniCDTO
+} from '../../zaposleni.types';
+import * as service from '../../zaposleni.service';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
@@ -8,6 +12,7 @@ import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
 export const OPEN = 'OPEN';
 export const CLOSE = 'CLOSE';
 export const HANDLE_CHANGE = 'HANDLE_CHANGE';
+export const SET_ERRORS = 'SET_ERRORS';
 
 export const NAMESPACE = 'EMPLOYEE_MODAL';
 
@@ -16,7 +21,7 @@ export function openCreate() {
     handleResponse(await service.getMunicipalityOptions(), (res: any) => {
       dispatch(
         _open(
-          newEmployeeCDTO(),
+          newZaposleniCDTO(),
           res.data,
           'Kreiranje novog zaposlenog',
           CREATE_MODE
@@ -26,26 +31,45 @@ export function openCreate() {
   };
 }
 
-export function openEdit(employee: EmployeeCDTO) {
+export function openEdit(zaposleni: ZaposleniCDTO) {
   return async (dispatch: Dispatch) => {
     handleResponse(await service.getMunicipalityOptions(), (res: any) => {
-      dispatch(_open(employee, res.data, 'Ažuriranje zaposlenog', EDIT_MODE));
+      dispatch(_open(zaposleni, res.data, 'Ažuriranje zaposlenog', EDIT_MODE));
     });
   };
 }
 
 function _open(
-  employee: EmployeeCDTO,
-  municipalityOptions: Municipality,
+  zaposleni: ZaposleniCDTO,
+  opstine: Opstina[],
   title: string,
   mode: string
 ): Action {
   return {
     namespace: NAMESPACE,
     type: OPEN,
-    payload: { municipalityOptions, employee, title, mode }
+    payload: { opstine, zaposleni, title, mode } as OpenPayload
   };
 }
+
+export function setErrors(errors: any) {
+  return {
+    namespace: NAMESPACE,
+    type: SET_ERRORS,
+    payload: { errors } as SetErrorsPayload
+  };
+}
+
+export type OpenPayload = {
+  opstine: Opstina[];
+  zaposleni: ZaposleniCDTO;
+  title: string;
+  mode: string;
+};
+
+export type SetErrorsPayload = {
+  errors: any;
+};
 
 export function close(): Action {
   return {
@@ -54,7 +78,7 @@ export function close(): Action {
   };
 }
 
-export function updateEmployeeState(name: string, value: any): Action {
+export function updateZaposleniState(name: string, value: any): Action {
   return {
     namespace: NAMESPACE,
     type: HANDLE_CHANGE,

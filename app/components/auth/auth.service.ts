@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { NoviKorisnik } from './register';
 import { BASE_URL } from '../../config';
-import { ERROR } from '../../constants/responseStatuses';
-import { axiosErrorHandler } from '../../utils/axiosErrorHandler';
 
 export async function login(email: string, password: string) {
   return await axios

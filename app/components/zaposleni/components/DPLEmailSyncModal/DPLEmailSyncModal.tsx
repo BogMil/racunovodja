@@ -3,17 +3,17 @@ import { Button, Modal, Form, Table } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { close } from './DPLEmailSyncModal.actions';
 import { AppStore } from '../../../../reducers';
-import * as service from '../../employee.service';
+import * as service from '../../zaposleni.service';
 import {
   handleResponse,
   onFailDefault
 } from '../../../../utils/responseHandler';
-import { reloadEmployees } from '../../employees.actions';
+import { reloadEmployees } from '../../zaposleni.actions';
 const { dialog, getCurrentWindow } = require('electron').remote;
 export default function DPLEmailSyncModal() {
   const dispatch = useDispatch();
   const { show, employeeToSyncEmail } = useSelector((state: AppStore) => {
-    return state.employeesCombined.DPLEmailSyncModal;
+    return state.zaposleniPage.DPLEmailSyncModal;
   });
 
   const handleClose = () => {
@@ -70,7 +70,7 @@ export default function DPLEmailSyncModal() {
                 <tr key={i}>
                   <td>{dbEmployee.jmbg}</td>
                   <td>
-                    {dbEmployee.last_name} {dbEmployee.first_name}
+                    {dbEmployee.prezime} {dbEmployee.ime}
                   </td>
                   <td>{dplEmployee.Email}</td>
                 </tr>

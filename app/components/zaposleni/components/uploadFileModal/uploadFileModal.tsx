@@ -12,15 +12,15 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../reducers';
 import { close } from './uploadFileModal.actions';
-import { reloadEmployees } from '../../employees.actions';
+import { reloadEmployees } from '../../zaposleni.actions';
 
 import { handleResponse } from '../../../../utils/responseHandler';
 import { PdfDataExtractor } from '../../../../services/pdfParser/PdfDataExtractor';
 import { InvalidFileException } from '../../../../services/pdfParser/exceptions/invalidFileException';
 import { ExtractedEmployeeWithPageNumbers } from '../../../../services/pdfParser/pdfParser.types';
 import ClipLoader from 'react-spinners/ClipLoader';
-import * as service from '../../employee.service';
-import { EmployeeCDTO } from '../../types';
+import * as service from '../../zaposleni.service';
+import { ZaposleniCDTO } from '../../zaposleni.types';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 const employeeExtractor = new PdfDataExtractor();
@@ -28,7 +28,7 @@ const employeeExtractor = new PdfDataExtractor();
 export default function UploadFileModal() {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
-    return state.employeesCombined.uploadModal;
+    return state.zaposleniPage.uploadModal;
   });
 
   const handleClose = () => {
@@ -94,8 +94,8 @@ export default function UploadFileModal() {
     let progressStep = 100 / missingEmployees.length;
 
     missingEmployees.forEach(async (employee, i) => {
-      let e = employee as EmployeeCDTO;
-      e.active = true;
+      let e = employee as ZaposleniCDTO;
+      e.aktivan = true;
       handleResponse(await service.createEmployee(e), () => {
         setInsertingProgress(progressStep * (i + 1));
       });

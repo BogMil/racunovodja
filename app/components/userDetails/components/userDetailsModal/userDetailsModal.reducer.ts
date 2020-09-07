@@ -6,7 +6,7 @@ import {
   HANDLE_CHANGE
 } from './userDetailsModal.actions';
 import { UserDetails, getInitialUserDetails } from '../../userDetails.types';
-import { Municipality } from '../../../employees/types';
+import { Opstina } from '../../../zaposleni/zaposleni.types';
 
 const initialState: UserDetailsModalStore = {
   show: false,
@@ -16,7 +16,7 @@ const initialState: UserDetailsModalStore = {
 
 export type UserDetailsModalStore = {
   show: boolean;
-  municipalityOptions: Municipality[];
+  municipalityOptions: Opstina[];
   userDetails: UserDetails;
 };
 

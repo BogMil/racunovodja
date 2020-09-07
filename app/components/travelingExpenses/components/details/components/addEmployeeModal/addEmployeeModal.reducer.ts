@@ -5,7 +5,7 @@ import {
   OPEN,
   SET_SELECTED_EMPLOYEE_ID
 } from './addEmployeeModal.actions';
-import { Employee } from '../../../../../employees/types';
+import { Zaposleni } from '../../../../../zaposleni/zaposleni.types';
 
 const initialState: AddEmployeeModalStore = {
   show: false,
@@ -16,7 +16,7 @@ const initialState: AddEmployeeModalStore = {
 
 export type AddEmployeeModalStore = {
   show: boolean;
-  employees: Employee[];
+  employees: Zaposleni[];
   selectedEmployeeId: number;
   travelingExpenseId: number;
 };

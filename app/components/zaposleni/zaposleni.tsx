@@ -2,16 +2,16 @@ import React, { useEffect } from 'react';
 import { Table, Button, Container, Row, Col } from 'react-bootstrap';
 import EmployeeComponent from './components/employee/employee';
 import AddDefaultRealtionModal from './components/addDefaultRelationModal/addDefaultRelationModal';
-import EmployeeModal from './components/employeeModal/employeeModal';
+import EmployeeModal from './components/zaposleniModal/zaposleniModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadEmployees } from './employees.actions';
+import { ucitajZaposlene } from './zaposleni.actions';
 import { AppStore } from '../../reducers';
-import { openCreate } from './components/employeeModal/employeeModal.actions';
+import { openCreate } from './components/zaposleniModal/zaposleniModal.actions';
 import { open as openDPLEmailSyncModal } from './components/DPLEmailSyncModal/DPLEmailSyncModal.actions';
 
 import UploadFileModal from './components/uploadFileModal/uploadFileModal';
 import { open } from './components/uploadFileModal/uploadFileModal.actions';
-import { columnWidths } from './employees.columnStyle';
+import { columnWidths } from './zaposleni.columnStyle';
 import DPLEmailSyncModal from './components/DPLEmailSyncModal/DPLEmailSyncModal';
 import { DPL_DB_FILE } from '../../constants/files';
 const fs = require('fs');
@@ -19,13 +19,13 @@ const fs = require('fs');
 export default function Employees() {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
-    return state.employeesCombined.employees;
+    return state.zaposleniPage.employees;
   });
 
   const postojiDostavljacPlatnihListica = fs.existsSync(DPL_DB_FILE());
 
   useEffect(() => {
-    dispatch(loadEmployees());
+    dispatch(ucitajZaposlene());
   }, []);
 
   const openCreateDialog = () => {
@@ -95,6 +95,7 @@ export default function Employees() {
                     style={{
                       paddingLeft: 5,
                       paddingRight: 5,
+                      marginRight: 5,
                       paddingTop: 0,
                       paddingBottom: 0
                     }}
@@ -123,7 +124,7 @@ export default function Employees() {
             <tbody>
               {store.employees &&
                 store.employees.map((employee, index) => (
-                  <EmployeeComponent key={index} employee={employee} />
+                  <EmployeeComponent key={index} zaposleni={employee} />
                 ))}
             </tbody>
           </Table>

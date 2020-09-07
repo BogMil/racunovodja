@@ -3,13 +3,13 @@ import { Button, Modal, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { close, handleChange } from './addDefaultRelationModal.actions';
 import { AppStore } from '../../../../reducers';
-import { reloadEmployees } from '../../employees.actions';
-import * as service from '../../employee.service';
+import { reloadEmployees } from '../../zaposleni.actions';
+import * as service from '../../zaposleni.service';
 
 export default function AddDefaultRealtionModal() {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
-    return state.employeesCombined.addDefaultRelationModal;
+    return state.zaposleniPage.addDefaultRelationModal;
   });
 
   const handleClose = () => {
@@ -53,7 +53,7 @@ export default function AddDefaultRealtionModal() {
         <div style={{ paddingBottom: 10 }}>
           zaposlenom:{' '}
           <b>
-            {store.employee?.last_name} {store.employee?.first_name}
+            {store.employee?.prezime} {store.employee?.ime}
           </b>
         </div>
         <Form>

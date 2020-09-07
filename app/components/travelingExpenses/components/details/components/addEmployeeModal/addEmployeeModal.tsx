@@ -66,7 +66,7 @@ export default function AddEmployeeModal() {
             {store.employees.map(employee => {
               return (
                 <option key={employee.id} value={employee.id}>
-                  {employee.jmbg} : {employee.last_name} {employee.first_name}
+                  {employee.jmbg} : {employee.prezime} {employee.ime}
                 </option>
               );
             })}

@@ -1,5 +1,5 @@
 import { ExtractedEmployeeWithPageNumbers } from '../../services/pdfParser/pdfParser.types';
-import { Employee as DbEmployee } from '../employees/types';
+import { Zaposleni as DbEmployee } from '../zaposleni/zaposleni.types';
 
 export type PodaciOSlanjuZaIzborZaposlenih = {
   filePath: string;

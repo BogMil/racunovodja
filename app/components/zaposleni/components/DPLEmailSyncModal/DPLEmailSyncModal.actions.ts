@@ -1,6 +1,6 @@
 import { Action } from '../../../../reducers/types';
-import { Employee } from '../../types';
-import * as service from '../../employee.service';
+import { Zaposleni } from '../../zaposleni.types';
+import * as service from '../../zaposleni.service';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { DPL_DB_FILE } from '../../../../constants/files';
@@ -41,7 +41,7 @@ export function open() {
           employeesFromDPL.push(row);
         });
 
-        let dbEmployees: Employee[] = res.data;
+        let dbEmployees: Zaposleni[] = res.data;
         console.log(employeesFromDPL);
         let employeeToSyncEmail: EmployeeToSyncEmail[] = [];
 

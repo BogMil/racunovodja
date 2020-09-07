@@ -106,8 +106,8 @@ export default function OneRelationTemplate(props: Props) {
       </td>
       <td style={{ verticalAlign: 'middle' }}>
         <div style={{ display: 'inline-block' }}>
-          {props.employeeWithRelation.employee.last_name}{' '}
-          {props.employeeWithRelation.employee.first_name}
+          {props.employeeWithRelation.employee.prezime}{' '}
+          {props.employeeWithRelation.employee.ime}
         </div>
         {status == U_RADU.value ? (
           <div style={{ display: 'inline-block', float: 'right' }}>

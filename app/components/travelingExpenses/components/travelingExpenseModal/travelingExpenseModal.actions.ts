@@ -5,7 +5,7 @@ import {
 } from '../../travelingExpenses.types';
 import { Dispatch } from 'redux';
 import { CREATE_MODE } from '../../../../constants/modalModes';
-import * as employeeService from '../../../employees/employee.service';
+import * as employeeService from '../../../zaposleni/zaposleni.service';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { Employee } from './travelingExpenseModal.types';
 

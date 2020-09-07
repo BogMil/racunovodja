@@ -80,7 +80,7 @@ export default function EditDaysModal(props: Props) {
       </Modal.Header>
       <Modal.Body>
         <div>
-          {store.employee.last_name} {store.employee.first_name}
+          {store.employee.prezime} {store.employee.ime}
         </div>
         <div>
           relacija :{' '}

@@ -59,7 +59,7 @@ export default function UserDetailsComponent() {
           </tr>
           <tr>
             <td>Opstina</td>
-            <td>{store.userDetails.municipality?.name}</td>
+            <td>{store.userDetails.municipality?.naziv}</td>
           </tr>
           <tr>
             <td>Mesto</td>

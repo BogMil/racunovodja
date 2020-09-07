@@ -1,6 +1,6 @@
 import { Action } from '../../../../reducers/types';
-import { Employee, DefaultRelation } from '../../types';
-import * as service from '../../employee.service';
+import { Zaposleni, DefaultRelation } from '../../zaposleni.types';
+import * as service from '../../zaposleni.service';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
 
@@ -10,7 +10,7 @@ export const HANDLE_CHANGE = 'HANDLE_CHANGE';
 
 export const NAMESPACE = 'ADD_DEFAULT_RELATION_MODAL';
 
-export function open(employee: Employee) {
+export function open(employee: Zaposleni) {
   return async (dispatch: Dispatch) => {
     handleResponse(
       await service.getAvailableDefaultRelationsForEmployee(employee.id),
@@ -21,7 +21,7 @@ export function open(employee: Employee) {
   };
 
   function _open(
-    employee: Employee,
+    employee: Zaposleni,
     availableRelations: DefaultRelation[]
   ): Action {
     return {

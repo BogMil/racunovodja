@@ -145,7 +145,7 @@ export default function UserDetailsModalComponent() {
                   {municipalityOptions.map(municipality => {
                     return (
                       <option key={municipality.id} value={municipality.id}>
-                        {municipality.name}
+                        {municipality.naziv}
                       </option>
                     );
                   })}

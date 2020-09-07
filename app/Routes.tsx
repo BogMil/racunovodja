@@ -7,7 +7,7 @@ import LoginComponent from './components/auth/login';
 import RegisterComponent from './components/auth/register';
 import SuccessfulRegistrationComponent from './components/auth/success';
 import { useSelector } from 'react-redux';
-import Employees from './components/employees/employees';
+import Employees from './components/zaposleni/zaposleni';
 import Relations from './components/sifarnici/relations/relations';
 import TravelExpenses from './components/travelingExpenses/travelingExpenses';
 import TravelExpensesDetails from './components/travelingExpenses/components/details/details';

@@ -1,4 +1,4 @@
-import { Employee } from '../employees/types';
+import { Zaposleni } from '../zaposleni/zaposleni.types';
 import { Relation } from '../sifarnici/relations/relations.types';
 import { getBusinesDaysInMonth } from '../../utils/getBusinessDaysInMonth';
 
@@ -49,7 +49,7 @@ export type EmployeeWithRelations = {
   id: number;
   employee_id: number;
   traveling_expense_id: number;
-  employee: Employee;
+  employee: Zaposleni;
   relations_with_days: RelationWithDays[];
 };
 

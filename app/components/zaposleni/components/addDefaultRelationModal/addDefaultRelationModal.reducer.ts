@@ -5,19 +5,19 @@ import {
   OPEN,
   HANDLE_CHANGE
 } from './addDefaultRelationModal.actions';
-import { Employee, DefaultRelation } from '../../types';
+import { Zaposleni, DefaultRelation } from '../../zaposleni.types';
 import { Relation } from '../../../sifarnici/relations/relations.types';
 
 const initialState: AddDefaultRelationModalStore = {
   show: false,
-  employee: {} as Employee,
+  employee: {} as Zaposleni,
   availableRelations: [],
   selectedRelation: -1
 };
 
 export type AddDefaultRelationModalStore = {
   show: boolean;
-  employee: Employee;
+  employee: Zaposleni;
   availableRelations: Relation[];
   selectedRelation: number;
 };

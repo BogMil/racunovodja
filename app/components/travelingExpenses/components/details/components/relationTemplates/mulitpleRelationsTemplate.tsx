@@ -121,8 +121,8 @@ export default function MultipleRelationsTemplate(props: Props) {
           }}
         >
           <div style={{ display: 'inline-block' }}>
-            {props.employeeWithRelations.employee.last_name}{' '}
-            {props.employeeWithRelations.employee.first_name}
+            {props.employeeWithRelations.employee.prezime}{' '}
+            {props.employeeWithRelations.employee.ime}
           </div>
           {status == U_RADU.value ? (
             <div style={{ display: 'inline-block', float: 'right' }}>

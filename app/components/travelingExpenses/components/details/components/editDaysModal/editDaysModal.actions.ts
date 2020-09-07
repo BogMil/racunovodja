@@ -1,5 +1,5 @@
 import { RelationWithDays } from '../../../../travelingExpenses.types';
-import { Employee } from '../../../../../employees/types';
+import { Zaposleni } from '../../../../../zaposleni/zaposleni.types';
 import { Action } from '../../../../../../reducers/types';
 
 export const OPEN = 'OPEN';
@@ -9,7 +9,7 @@ export const NAMESPACE = 'EDIT_DAYS_MODAL';
 
 export function open(
   relationWithDays: RelationWithDays,
-  employee: Employee
+  employee: Zaposleni
 ): Action {
   return {
     namespace: NAMESPACE,

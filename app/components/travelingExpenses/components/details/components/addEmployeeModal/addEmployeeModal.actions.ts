@@ -1,7 +1,7 @@
 import { Action } from '../../../../../../reducers/types';
 import { Dispatch } from 'redux';
 import * as service from '../../../../travelingExpenses.service';
-import { Employee } from '../../../../../employees/types';
+import { Zaposleni } from '../../../../../zaposleni/zaposleni.types';
 import { handleResponse } from '../../../../../../utils/responseHandler';
 export const OPEN = 'OPEN';
 export const CLOSE = 'CLOSE';
@@ -18,7 +18,7 @@ export function open(travelingExpenseId: number) {
     );
   };
 
-  function _open(employees: Employee[], travelingExpenseId: number): Action {
+  function _open(employees: Zaposleni[], travelingExpenseId: number): Action {
     return {
       namespace: NAMESPACE,
       type: OPEN,

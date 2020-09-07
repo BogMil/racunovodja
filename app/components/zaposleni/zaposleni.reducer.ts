@@ -3,15 +3,15 @@ import {
   NAMESPACE,
   LOAD_EMPLOYEES,
   RELOAD_EMPLOYEE
-} from './employees.actions';
-import { Employee } from './types';
+} from './zaposleni.actions';
+import { Zaposleni } from './zaposleni.types';
 
 const initialState: EmployeesStore = {
   employees: []
 };
 
 export type EmployeesStore = {
-  employees: Employee[];
+  employees: Zaposleni[];
 };
 
 export default function employeesReducer(
