@@ -41,7 +41,7 @@ export default function IzborZaposlenihZaSlanje() {
 
           let zaposleniSaValidnimEmailomKojiPostojeUFajlu = zaposleniSaValidnimEmailom.filter(
             (x: Zaposleni) =>
-              state.zaposleniUFajlu.filter(z => z.number == x.sifra).length > 0
+              state.zaposleniUFajlu.filter(z => z.sifra == x.sifra).length > 0
           );
           setEmployees(zaposleniSaValidnimEmailomKojiPostojeUFajlu);
           setBrojeviCekiranihZaposlenih(
@@ -111,7 +111,7 @@ export default function IzborZaposlenihZaSlanje() {
 
       let zaposleniSaStranicama = odabraniZaposleni.map(zaposleni => {
         let pageNumbers = state.zaposleniUFajlu.filter(
-          x => x.number == zaposleni.sifra
+          x => x.sifra == zaposleni.sifra
         )[0].pageNumbers;
 
         return {

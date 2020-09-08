@@ -35,12 +35,12 @@ export class PLv1PdfParser implements IPdfParser {
     let lines = await getLinesFromPage(page);
     let setFullName = (line: string) => {
       let separator = line.lastIndexOf(' ');
-      this._employee.last_name = line.substr(0, separator);
-      this._employee.first_name = line.substr(separator + 1);
+      this._employee.prezime = line.substr(0, separator);
+      this._employee.ime = line.substr(separator + 1);
     };
 
     let setNumber = (line: string) => {
-      this._employee.number = line.trim();
+      this._employee.sifra = line.trim();
     };
 
     let setJmbg = (line: string) => {
@@ -48,7 +48,7 @@ export class PLv1PdfParser implements IPdfParser {
     };
 
     let setBancAccount = (line: string) => {
-      this._employee.banc_account = line;
+      this._employee.bankovni_racun = line;
     };
 
     this._employee = new ExtractedEmployeeWithPageNumbers();

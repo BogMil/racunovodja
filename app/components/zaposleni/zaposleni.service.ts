@@ -73,11 +73,9 @@ export async function updateEmployee(employee: ZaposleniCDTO) {
 }
 
 export async function getMissingJmbgs(jmbgs: string[]) {
-  let res = await axios
-    .post(`${BASE_URL}/api/user/getMissingJmbgs`, { jmbgs })
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+  return await axios
+    .post(`${BASE_URL}/api/zaposleni/izdvojNedostajuceJmbgove`, { jmbgs })
+    .catch(axiosCatchHandler);
 }
 
 export async function getMissingEmployeeNumbers(numbers: string[]) {

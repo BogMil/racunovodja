@@ -1,9 +1,9 @@
 export class ExtractedEmployeeWithPageNumbers {
-  public first_name: string = '';
-  public last_name: string = '';
-  public banc_account: string = '';
+  public ime: string = '';
+  public prezime: string = '';
+  public bankovni_racun: string = '';
   public jmbg: string = '';
-  public number: string = '';
+  public sifra: string = '';
   public pageNumbers: number[] = [];
 }
 

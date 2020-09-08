@@ -36,7 +36,7 @@ export default function ObustavaTemplate(props: Props) {
                   return (
                     <tr key={i}>
                       <td>
-                        {e.last_name} {e.first_name}
+                        {e.prezime} {e.ime}
                       </td>
                     </tr>
                   );

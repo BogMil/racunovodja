@@ -41,20 +41,20 @@ export class ObustavaPdfParser implements IPdfParser {
       let firstSpacePos = line.indexOf(' ');
       let fullName = line.substr(firstSpacePos + 1);
       let separator = fullName.lastIndexOf(' ');
-      this._employee.last_name = fullName.substr(0, separator);
-      this._employee.first_name = fullName.substr(separator + 1);
+      this._employee.prezime = fullName.substr(0, separator);
+      this._employee.ime = fullName.substr(separator + 1);
     };
 
     let setNumber = (line: string) => {
       line = line.trim();
       let firstSpacePos = line.indexOf(' ');
-      this._employee.number = line.substr(0, firstSpacePos);
+      this._employee.sifra = line.substr(0, firstSpacePos);
     };
 
     this._employee = new ExtractedEmployeeWithPageNumbers();
     setFullName(lines[8]);
     setNumber(lines[8]);
-    this._employee.banc_account = '';
+    this._employee.bankovni_racun = '';
     this._employee.jmbg = '';
 
     return this._employee;

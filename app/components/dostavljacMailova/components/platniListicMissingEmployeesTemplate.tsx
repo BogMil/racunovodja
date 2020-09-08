@@ -87,10 +87,10 @@ export default function PlatniListicTemplate(props: Props) {
                   return (
                     <tr key={e.jmbg}>
                       <td>{e.jmbg}</td>
-                      <td>{e.number}</td>
-                      <td>{e.last_name}</td>
-                      <td>{e.first_name}</td>
-                      <td>{e.banc_account}</td>
+                      <td>{e.sifra}</td>
+                      <td>{e.prezime}</td>
+                      <td>{e.ime}</td>
+                      <td>{e.bankovni_racun}</td>
                     </tr>
                   );
                 })}

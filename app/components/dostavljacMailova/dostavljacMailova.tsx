@@ -69,7 +69,7 @@ export default function DostavljacMailovaComponent() {
   const fetchMissingEmployees = async (
     extractedEmployees: ExtractedEmployeeWithPageNumbers[]
   ) => {
-    let numbers = extractedEmployees.map(e => e.number);
+    let numbers = extractedEmployees.map(e => e.sifra);
     handleResponse(
       await service.getMissingEmployeeNumbers(numbers),
       (res: any) => {
@@ -78,7 +78,7 @@ export default function DostavljacMailovaComponent() {
           let missingEmps: any[] = [];
           missingEmployeesNumbers.forEach((number: string) => {
             let employeeToInsert = extractedEmployees.find(
-              x => x.number == number
+              x => x.sifra == number
             );
             missingEmps.push(employeeToInsert);
           });

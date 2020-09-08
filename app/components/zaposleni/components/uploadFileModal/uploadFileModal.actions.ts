@@ -1,6 +1,4 @@
 import { Action } from '../../../../reducers/types';
-import { Dispatch } from 'redux';
-import { handleResponse } from '../../../../utils/responseHandler';
 
 export const OPEN = 'OPEN';
 export const CLOSE = 'CLOSE';

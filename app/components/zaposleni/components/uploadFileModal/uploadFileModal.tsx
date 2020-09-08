@@ -21,6 +21,7 @@ import { ExtractedEmployeeWithPageNumbers } from '../../../../services/pdfParser
 import ClipLoader from 'react-spinners/ClipLoader';
 import * as service from '../../zaposleni.service';
 import { ZaposleniCDTO } from '../../zaposleni.types';
+import { FileChecker } from '../../../../services/FileChecker';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 const employeeExtractor = new PdfDataExtractor();
@@ -50,7 +51,6 @@ export default function UploadFileModal() {
   const [missingEmployees, setMissingEmployees] = React.useState<
     ExtractedEmployeeWithPageNumbers[]
   >([]);
-
   const [files, setFiles] = React.useState<string[]>([]);
 
   const openDialog = () => {
@@ -76,6 +76,7 @@ export default function UploadFileModal() {
     handleResponse(await service.getMissingJmbgs(jmbgs), (res: any) => {
       if (res.data.length > 0) {
         let missingEmployeesJmbg = res.data;
+        console.log(missingEmployees);
         let missingEmps: any[] = [];
         missingEmployeesJmbg.forEach((jmbg: string) => {
           let employeeToInsert = extractedEmployees.find(x => x.jmbg == jmbg);
@@ -83,6 +84,12 @@ export default function UploadFileModal() {
         });
 
         setMissingEmployees(missingEmps);
+      } else {
+        dialog.showMessageBox(getCurrentWindow(), {
+          message:
+            'Svi zaposleni koji se nalaze na platnom listiću su već upisani u bazu.',
+          title: 'Računovođa'
+        });
       }
     });
   };
@@ -94,7 +101,7 @@ export default function UploadFileModal() {
     let progressStep = 100 / missingEmployees.length;
 
     missingEmployees.forEach(async (employee, i) => {
-      let e = employee as ZaposleniCDTO;
+      let e = (employee as unknown) as ZaposleniCDTO;
       e.aktivan = true;
       handleResponse(await service.createEmployee(e), () => {
         setInsertingProgress(progressStep * (i + 1));
@@ -114,6 +121,8 @@ export default function UploadFileModal() {
 
     async function loadEmployees(path: string) {
       try {
+        if (!(await FileChecker.isPlatniListic(path)))
+          throw new InvalidFileException();
         await setFetchingMissingEmployees(true);
         let extractedEmployees = await employeeExtractor.employees(path);
         await fetchMissingEmployees(extractedEmployees);
@@ -194,10 +203,10 @@ export default function UploadFileModal() {
                       {missingEmployees.map(e => (
                         <tr key={e.jmbg}>
                           <td>{e.jmbg}</td>
-                          <td>{e.number}</td>
-                          <td>{e.last_name}</td>
-                          <td>{e.first_name}</td>
-                          <td>{e.banc_account}</td>
+                          <td>{e.sifra}</td>
+                          <td>{e.prezime}</td>
+                          <td>{e.ime}</td>
+                          <td>{e.bankovni_racun}</td>
                         </tr>
                       ))}
                     </tbody>

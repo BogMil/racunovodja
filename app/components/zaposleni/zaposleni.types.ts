@@ -21,7 +21,7 @@ export type ZaposleniCDTO = {
   prezime: string;
   ime: string;
   bankovni_racun: string;
-  id_opstine: number;
+  id_opstine: number | '';
   email: string;
 };
 
@@ -32,7 +32,7 @@ export const newZaposleniCDTO = () => {
     prezime: '',
     ime: '',
     bankovni_racun: '',
-    id_opstine: 1,
+    id_opstine: '',
     email: '',
     aktivan: true
   } as ZaposleniCDTO;
