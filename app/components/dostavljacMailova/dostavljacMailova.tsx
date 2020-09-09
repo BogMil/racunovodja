@@ -93,30 +93,31 @@ export default function DostavljacMailovaComponent() {
     if (filePath == '') return;
     setMissingEmployees([]);
     setAllExtractedEmployees([]);
-    async function checkFileValidity() {
-      try {
-        setError('');
-        setIsLoading(true);
-        setFetchedEmployees(false);
-        setIsPlatniListic(await FileChecker.isPlatniListic(filePath));
-        let extractedEmployees = await employeeExtractor.employees(filePath);
-        setAllExtractedEmployees(extractedEmployees);
-        await fetchMissingEmployees(extractedEmployees);
-        setIsLoading(false);
-        setFetchedEmployees(true);
-      } catch (e) {
-        setIsLoading(false);
-        setMissingEmployees([]);
-        setAllExtractedEmployees([]);
-        setFetchedEmployees(false);
-        if (e instanceof InvalidFileException) {
-          setError(e.message);
-          return;
-        }
+    checkFileValidityAsync();
+  }, [filePath]);
+
+  async function checkFileValidityAsync() {
+    try {
+      setError('');
+      setIsLoading(true);
+      setFetchedEmployees(false);
+      setIsPlatniListic(await FileChecker.isPlatniListic(filePath));
+      let extractedEmployees = await employeeExtractor.employees(filePath);
+      setAllExtractedEmployees(extractedEmployees);
+      await fetchMissingEmployees(extractedEmployees);
+      setIsLoading(false);
+      setFetchedEmployees(true);
+    } catch (e) {
+      setIsLoading(false);
+      setMissingEmployees([]);
+      setAllExtractedEmployees([]);
+      setFetchedEmployees(false);
+      if (e instanceof InvalidFileException) {
+        setError(e.message);
+        return;
       }
     }
-    checkFileValidity();
-  }, [filePath]);
+  }
 
   useEffect(() => {
     if (missingEmployees.length > 0 && isPlatniListic != true)

@@ -19,7 +19,6 @@ import { MailAuthException } from '../../services/mailSender/exceptions/mailAuth
 import { NepredvidjenException } from '../../services/mailSender/exceptions/nepredvidjenException';
 import { createPdfFile } from './dostavljacMailova.fileCreators';
 import { get as getUserDetails } from '../userDetails/userDetails.service';
-import { SUCCESS } from '../../constants/responseStatuses';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 export default function SlanjeMailovaComponent() {
@@ -46,7 +45,7 @@ export default function SlanjeMailovaComponent() {
 
       try {
         var userDetailsRes = await getUserDetails();
-        if (userDetailsRes.status != SUCCESS)
+        if (userDetailsRes.status != 200)
           throw new Error('Greška prilikom učitavanja korisničkih podataka');
 
         let userDetails = userDetailsRes.data;
@@ -77,9 +76,9 @@ export default function SlanjeMailovaComponent() {
         });
 
         logSendingMail({
-          success: true,
+          uspesno: true,
           subject: fileSubject,
-          type: fileType,
+          vrsta: fileType,
           naziv_skole_iz_fajla: nazivSkoleIzFajla
         });
 
@@ -102,10 +101,10 @@ export default function SlanjeMailovaComponent() {
         }
 
         logSendingMail({
-          success: false,
+          uspesno: false,
           subject: fileSubject,
-          type: fileType,
-          error_message: e.message,
+          vrsta: fileType,
+          greska: e.message,
           naziv_skole_iz_fajla: nazivSkoleIzFajla
         });
       } finally {

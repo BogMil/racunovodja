@@ -78,12 +78,10 @@ export async function getMissingJmbgs(jmbgs: string[]) {
     .catch(axiosCatchHandler);
 }
 
-export async function getMissingEmployeeNumbers(numbers: string[]) {
-  let res = await axios
-    .post(`${BASE_URL}/api/user/getMissingEmployeeNumbers`, { numbers })
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+export async function getMissingEmployeeNumbers(sifre: string[]) {
+  return await axios
+    .post(`${BASE_URL}/api/zaposleni/izdvojNedostajuceSifre`, { sifre })
+    .catch(axiosCatchHandler);
 }
 
 export async function updateEmail(jmbg: string, email: string) {

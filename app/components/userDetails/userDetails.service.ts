@@ -6,8 +6,7 @@ import { DetaljiKorisnika } from './userDetails.types';
 const API_URL = `${BASE_URL}/api/korisnik/detalji`;
 
 export async function get() {
-  let res = await axios.get(`${API_URL}`).catch(axiosCatchHandler);
-  return res;
+  return await axios.get(`${API_URL}`).catch(axiosCatchHandler);
 }
 
 export async function update(userDetails: DetaljiKorisnika) {

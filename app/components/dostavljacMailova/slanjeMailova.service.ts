@@ -99,11 +99,11 @@ export class SlanjeMailovaService {
 const API_URL = `${BASE_URL}/api/slanjeMailova`;
 
 export async function logSendingMail(props: {
-  success: boolean;
+  uspesno: boolean;
   subject: string;
-  type: string;
+  vrsta: string;
   naziv_skole_iz_fajla: string;
-  error_message?: string;
+  greska?: string;
 }) {
   await axios.post(`${API_URL}/log`, { ...props });
 }
