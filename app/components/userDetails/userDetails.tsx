@@ -71,7 +71,7 @@ export default function UserDetailsComponent() {
           </tr>
           <tr>
             <td>Email</td>
-            <td>{store.userDetails.email}</td>
+            <td>{store.userDetails.email_za_slanje}</td>
           </tr>
           <tr>
             <td>Telefon</td>

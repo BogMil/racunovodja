@@ -14,6 +14,7 @@ export default function UserDetailsModalComponent() {
       return state.userDetailsCombined.userDetailsModalStore;
     }
   );
+  console.log(userDetails);
 
   const handleClose = () => {
     dispatch(close());
@@ -26,7 +27,6 @@ export default function UserDetailsModalComponent() {
   };
 
   const handleSave = async () => {
-    console.log(userDetails);
     handleResponse(await service.update(userDetails), () => {
       dispatch(reloadUserDetails());
       dispatch(close());
@@ -138,17 +138,20 @@ export default function UserDetailsModalComponent() {
                 <Form.Control
                   as="select"
                   custom
-                  name="opstina_id"
+                  name="id_opstine"
                   onChange={onHandleChange}
-                  value={userDetails.opstina_id}
+                  value={userDetails.id_opstine ?? ''}
                 >
-                  {municipalityOptions.map(municipality => {
-                    return (
-                      <option key={municipality.id} value={municipality.id}>
-                        {municipality.naziv}
-                      </option>
-                    );
-                  })}
+                  <>
+                    <option value="">---</option>
+                    {municipalityOptions.map(municipality => {
+                      return (
+                        <option key={municipality.id} value={municipality.id}>
+                          {municipality.naziv}
+                        </option>
+                      );
+                    })}
+                  </>
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -159,7 +162,7 @@ export default function UserDetailsModalComponent() {
                 <Form.Label>Mesto</Form.Label>
                 <Form.Control
                   name="mesto"
-                  placeholder="Mesto raćun"
+                  placeholder="Mesto"
                   value={userDetails.mesto}
                   onChange={onHandleChange}
                 />
@@ -174,19 +177,6 @@ export default function UserDetailsModalComponent() {
                   name="ulica_i_broj"
                   placeholder="Ulica i broj"
                   value={userDetails.ulica_i_broj}
-                  onChange={onHandleChange}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Form.Group>
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  name="email"
-                  placeholder="Email"
-                  value={userDetails.email}
                   onChange={onHandleChange}
                 />
               </Form.Group>

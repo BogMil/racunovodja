@@ -554,7 +554,7 @@ function createXmlContent(
   );
   PodaciOIsplatiocu.ele('tns:Telefon', userDetails.telefon);
   PodaciOIsplatiocu.ele('tns:UlicaIBroj', userDetails.ulica_i_broj);
-  PodaciOIsplatiocu.ele('tns:eMail', userDetails.email);
+  PodaciOIsplatiocu.ele('tns:eMail', userDetails.email_za_slanje);
 
   let DeklarisaniPrihodi = xml.ele('tns:DeklarisaniPrihodi');
   let redniBroj = 1;
