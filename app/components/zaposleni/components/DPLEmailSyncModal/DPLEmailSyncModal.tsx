@@ -26,12 +26,11 @@ export default function DPLEmailSyncModal() {
         handleResponse(
           await service.updateEmail(dbEmployee.jmbg, dplEmployee.Email),
           () => {},
-          onFailDefault,
-          (response: any) => {
-            if (response.message)
-              if (typeof response.message == 'string')
-                throw new Error(response.message);
-              else throw new Error('Nepredviđena greška');
+          () => {
+            throw new Error('Nepredviđena greška');
+          },
+          () => {
+            throw new Error('Nepredviđena greška');
           }
         );
       }
@@ -42,6 +41,7 @@ export default function DPLEmailSyncModal() {
         message: 'Uspešno upisane email adrese'
       });
     } catch (e) {
+      console.log(e);
       dispatch(reloadEmployees());
       dispatch(close());
       dialog.showErrorBox('Računovođa', 'Nepredviđena greška');
