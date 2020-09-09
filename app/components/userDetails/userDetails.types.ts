@@ -1,11 +1,11 @@
 import { Opstina } from '../zaposleni/zaposleni.types';
 
-export type UserDetails = {
+export type DetaljiKorisnika = {
   id: number;
   poreski_identifikacioni_broj: string;
   maticni_broj: string;
   id_opstine: number | '';
-  municipality: Opstina;
+  opstina: Opstina;
   telefon: string;
   ulica_i_broj: string;
   email_za_slanje: string;
@@ -17,13 +17,13 @@ export type UserDetails = {
   sifra_skole: string;
 };
 
-export const getInitialUserDetails = () => {
+export const getInitDetaljiKorisnika = () => {
   return {
     id: 0,
     poreski_identifikacioni_broj: '',
     maticni_broj: '',
     id_opstine: '',
-    municipality: {},
+    opstina: {},
     telefon: '',
     ulica_i_broj: '',
     email_za_slanje: '',
@@ -33,5 +33,5 @@ export const getInitialUserDetails = () => {
     mesto: '',
     tip_skole: '',
     sifra_skole: ''
-  } as UserDetails;
+  } as DetaljiKorisnika;
 };

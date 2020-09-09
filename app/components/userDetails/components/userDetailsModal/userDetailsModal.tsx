@@ -14,7 +14,6 @@ export default function UserDetailsModalComponent() {
       return state.userDetailsCombined.userDetailsModalStore;
     }
   );
-  console.log(userDetails);
 
   const handleClose = () => {
     dispatch(close());

@@ -62,6 +62,8 @@ export default function ZaposleniModalComponent() {
         }
       );
   };
+
+  console.log(zaposleni);
   return (
     <Modal
       backdrop="static"
@@ -174,7 +176,7 @@ export default function ZaposleniModalComponent() {
                   name="email"
                   onChange={handleChange}
                   placeholder="Unesite Email adresu"
-                  value={zaposleni.email}
+                  value={zaposleni.email ?? ''}
                 />
                 <ErrorText text={errors?.email} />
               </Form.Group>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BASE_URL } from '../../config';
 import { axiosCatchHandler } from '../../utils/axiosErrorHandler';
-import { UserDetails } from './userDetails.types';
+import { DetaljiKorisnika } from './userDetails.types';
 
 const API_URL = `${BASE_URL}/api/korisnik/detalji`;
 
@@ -10,7 +10,7 @@ export async function get() {
   return res;
 }
 
-export async function update(userDetails: UserDetails) {
+export async function update(userDetails: DetaljiKorisnika) {
   let res = await axios
     .put(`${API_URL}`, { ...userDetails })
     .catch(axiosCatchHandler);

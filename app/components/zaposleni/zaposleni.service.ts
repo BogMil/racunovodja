@@ -87,9 +87,7 @@ export async function getMissingEmployeeNumbers(numbers: string[]) {
 }
 
 export async function updateEmail(jmbg: string, email: string) {
-  let res = await axios
-    .post(`${API_URL}/${jmbg}/updateEmail`, { email })
-    .then(res => res.data)
-    .catch(axiosErrorHandler);
-  return res;
+  return await axios
+    .post(`${API_URL}/${jmbg}/azurirajEmail`, { email })
+    .catch(axiosCatchHandler);
 }

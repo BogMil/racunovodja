@@ -7,7 +7,7 @@ export const handleResponse = (
   onError: Function = onErrorDefault
 ) => {
   if (response.status == 200) onSuccess(response);
-  else if (response.status == FAIL) onFail(response);
+  else if (response.status == 500) onFail(response);
   else if (response.status == 400) onError(response);
 };
 

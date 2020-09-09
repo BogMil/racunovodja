@@ -2,7 +2,7 @@ import { Dispatch } from 'redux';
 import { handleResponse } from '../../utils/responseHandler';
 import * as service from './userDetails.service';
 import { Action } from '../../reducers/types';
-import { UserDetails } from './userDetails.types';
+import { DetaljiKorisnika } from './userDetails.types';
 
 export const LOAD_USER_DETAILS = 'LOAD_USER_DETAILS';
 export const NAMESPACE = 'OTHER_SETTINGS';
@@ -14,7 +14,7 @@ export function loadUserDetails() {
     });
   };
 
-  function _loadUserDetails(userDetails: UserDetails[]): Action {
+  function _loadUserDetails(userDetails: DetaljiKorisnika[]): Action {
     return {
       namespace: NAMESPACE,
       type: LOAD_USER_DETAILS,

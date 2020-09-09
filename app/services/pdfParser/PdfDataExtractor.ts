@@ -24,7 +24,7 @@ export class PdfDataExtractor {
         return employees;
       }
 
-      while (!(await isPageForNewEmployee(nextPageNum))) {
+      while (!(await isPageForNewEmployeeAsync(nextPageNum))) {
         employee.pageNumbers.push(nextPageNum);
         nextPageNum++;
         if (nextPageNum > doc.numPages) {
@@ -36,7 +36,7 @@ export class PdfDataExtractor {
     }
     return employees;
 
-    async function isPageForNewEmployee(pageNum: number) {
+    async function isPageForNewEmployeeAsync(pageNum: number) {
       return await pdfParser.isPageForNewEmployeeAsync(
         await doc.getPage(pageNum)
       );

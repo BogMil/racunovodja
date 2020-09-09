@@ -57,7 +57,7 @@ export default function EmployeeComponent(props: Props) {
 
   const editEmployee = () => {
     let cdto = (zaposleni as unknown) as ZaposleniCDTO;
-    cdto.id_opstine = zaposleni.opstina ? zaposleni.opstina.id : -1;
+    cdto.id_opstine = zaposleni.opstina ? zaposleni.opstina.id : '';
     dispatch(openEdit(cdto));
   };
 

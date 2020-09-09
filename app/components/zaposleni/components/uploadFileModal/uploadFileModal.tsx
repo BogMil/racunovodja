@@ -118,27 +118,27 @@ export default function UploadFileModal() {
     loadEmployees(file);
     setMissingEmployees([]);
     setInsertingEmployees(false);
-
-    async function loadEmployees(path: string) {
-      try {
-        if (!(await FileChecker.isPlatniListic(path)))
-          throw new InvalidFileException();
-        await setFetchingMissingEmployees(true);
-        let extractedEmployees = await employeeExtractor.employees(path);
-        await fetchMissingEmployees(extractedEmployees);
-
-        await setFetchingMissingEmployees(false);
-      } catch (e) {
-        if (e instanceof InvalidFileException) {
-          setError(e.message);
-          setFetchingMissingEmployees(false);
-          setMissingEmployees([]);
-          return;
-        }
-        dialog.showErrorBox('q', e);
-      }
-    }
   }, [files]);
+
+  async function loadEmployees(path: string) {
+    try {
+      if (!(await FileChecker.isPlatniListic(path)))
+        throw new InvalidFileException();
+      await setFetchingMissingEmployees(true);
+      let extractedEmployees = await employeeExtractor.employees(path);
+      await fetchMissingEmployees(extractedEmployees);
+
+      await setFetchingMissingEmployees(false);
+    } catch (e) {
+      if (e instanceof InvalidFileException) {
+        setError(e.message);
+        setFetchingMissingEmployees(false);
+        setMissingEmployees([]);
+        return;
+      }
+      dialog.showErrorBox('q', e);
+    }
+  }
 
   return (
     <Modal

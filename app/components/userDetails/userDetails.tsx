@@ -16,7 +16,7 @@ export default function UserDetailsComponent() {
     dispatch(loadUserDetails());
   }, []);
 
-  let getNazivTipaSkole = (id: number | null) => {
+  let getNazivTipaSkole = (id: number | '') => {
     switch (id) {
       case 0:
         return 'Osnovna';
@@ -59,7 +59,7 @@ export default function UserDetailsComponent() {
           </tr>
           <tr>
             <td>Opstina</td>
-            <td>{store.userDetails.municipality?.naziv}</td>
+            <td>{store.userDetails.opstina?.naziv}</td>
           </tr>
           <tr>
             <td>Mesto</td>
@@ -70,7 +70,7 @@ export default function UserDetailsComponent() {
             <td>{store.userDetails.ulica_i_broj}</td>
           </tr>
           <tr>
-            <td>Email</td>
+            <td>Email za slanje</td>
             <td>{store.userDetails.email_za_slanje}</td>
           </tr>
           <tr>

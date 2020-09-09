@@ -8,13 +8,17 @@ import {
   SET_ERRORS,
   SetErrorsPayload
 } from './zaposleniModal.actions';
-import { Opstina, ZaposleniCDTO } from '../../zaposleni.types';
+import {
+  Opstina,
+  ZaposleniCDTO,
+  newZaposleniCDTO
+} from '../../zaposleni.types';
 
 const initialState: ZaposleniModalStore = {
   show: false,
   opstine: [],
   title: '',
-  zaposleni: {} as ZaposleniCDTO,
+  zaposleni: newZaposleniCDTO(),
   mode: '',
   errors: {}
 };

@@ -1,13 +1,13 @@
 import { Action } from '../../reducers/types';
 import { NAMESPACE, LOAD_USER_DETAILS } from './userDetails.actions';
-import { UserDetails } from './userDetails.types';
+import { DetaljiKorisnika } from './userDetails.types';
 
 const initialState: UserDetailsStore = {
-  userDetails: {} as UserDetails
+  userDetails: {} as DetaljiKorisnika
 };
 
 export type UserDetailsStore = {
-  userDetails: UserDetails;
+  userDetails: DetaljiKorisnika;
 };
 
 export default function userDetails(
