@@ -1,7 +1,7 @@
 import { Action } from '../../../../reducers/types';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
-import { UserDetails } from '../../userDetails.types';
+import { DetaljiKorisnika } from '../../userDetails.types';
 import { getMunicipalityOptions } from '../../../zaposleni/zaposleni.service';
 import { Opstina } from '../../../zaposleni/zaposleni.types';
 
@@ -11,7 +11,7 @@ export const HANDLE_CHANGE = 'HANDLE_CHANGE';
 
 export const NAMESPACE = 'USER_DETAILS_MODAL';
 
-export function open(userDetails: UserDetails) {
+export function open(userDetails: DetaljiKorisnika) {
   return async (dispatch: Dispatch) => {
     handleResponse(await getMunicipalityOptions(), (res: any) => {
       dispatch(_open(userDetails, res.data));
@@ -20,7 +20,7 @@ export function open(userDetails: UserDetails) {
 }
 
 function _open(
-  userDetails: UserDetails,
+  userDetails: DetaljiKorisnika,
   municipalityOptions: Opstina[]
 ): Action {
   return {

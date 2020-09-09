@@ -5,19 +5,22 @@ import {
   OPEN,
   HANDLE_CHANGE
 } from './userDetailsModal.actions';
-import { UserDetails, getInitialUserDetails } from '../../userDetails.types';
+import {
+  DetaljiKorisnika,
+  getInitDetaljiKorisnika
+} from '../../userDetails.types';
 import { Opstina } from '../../../zaposleni/zaposleni.types';
 
 const initialState: UserDetailsModalStore = {
   show: false,
   municipalityOptions: [],
-  userDetails: {} as UserDetails
+  userDetails: {} as DetaljiKorisnika
 };
 
 export type UserDetailsModalStore = {
   show: boolean;
   municipalityOptions: Opstina[];
-  userDetails: UserDetails;
+  userDetails: DetaljiKorisnika;
 };
 
 export default function userDetailsModal(
@@ -39,14 +42,14 @@ export default function userDetailsModal(
       return {
         ...state,
         show: false,
-        userDetails: getInitialUserDetails(),
+        userDetails: getInitDetaljiKorisnika(),
         municipalityOptions: []
       };
 
     case HANDLE_CHANGE:
       let { name, value } = action.payload;
       let newUserDetailsState = { ...state.userDetails };
-      newUserDetailsState[name] = value;
+      (newUserDetailsState as any)[name] = value;
       return { ...state, userDetails: newUserDetailsState };
 
     default:

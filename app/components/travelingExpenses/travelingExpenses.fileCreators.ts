@@ -14,7 +14,7 @@ import {
 } from './travelingExpenses.types';
 import { numberWithThousandSeparator } from '../../utils/numberWithThousandSeparator';
 import getMonthName from '../../utils/getMonthName';
-import { UserDetails } from '../userDetails/userDetails.types';
+import { DetaljiKorisnika } from '../userDetails/userDetails.types';
 import {
   daysInMonth,
   isWeekday,
@@ -31,7 +31,7 @@ export function create_PPP_PD_XML_File(
   year: number,
   month: number,
   travelingExpense: TravelingExpenseWithDetails,
-  userDetails: UserDetails
+  userDetails: DetaljiKorisnika
 ) {
   let filePath = _create_PPP_PD_xmlFile(year, month);
   let xmlContent = createXmlContent(year, month, travelingExpense, userDetails);
@@ -50,7 +50,7 @@ export async function createPdfFile(
   year: number,
   month: number,
   travelingExpense: TravelingExpenseWithDetails,
-  userDetails: UserDetails
+  userDetails: DetaljiKorisnika
 ) {
   let filePath = _createPdfFile(year, month);
   const fs = require('fs');
@@ -495,7 +495,7 @@ function createXmlContent(
   year: number,
   month: number,
   travelingExpense: TravelingExpenseWithDetails,
-  userDetails: UserDetails
+  userDetails: DetaljiKorisnika
 ) {
   let monthZaDatumPlacanja = month - 1 == 0 ? 12 : month + 1;
   let monthZaDatumPlacanjaStr = monthZaDatumPlacanja.toString();
@@ -548,10 +548,7 @@ function createXmlContent(
   );
   PodaciOIsplatiocu.ele('tns:MaticniBrojisplatioca', userDetails.maticni_broj);
   PodaciOIsplatiocu.ele('tns:NazivPrezimeIme', userDetails.naziv_skole);
-  PodaciOIsplatiocu.ele(
-    'tns:SedistePrebivaliste',
-    userDetails.municipality.sifra
-  );
+  PodaciOIsplatiocu.ele('tns:SedistePrebivaliste', userDetails.opstina.sifra);
   PodaciOIsplatiocu.ele('tns:Telefon', userDetails.telefon);
   PodaciOIsplatiocu.ele('tns:UlicaIBroj', userDetails.ulica_i_broj);
   PodaciOIsplatiocu.ele('tns:eMail', userDetails.email_za_slanje);
@@ -638,7 +635,7 @@ function _createVirmaniPdfFile(year: number, month: number) {
   return filePath;
 }
 
-function getTipSkole(userDetails: UserDetails) {
+function getTipSkole(userDetails: DetaljiKorisnika) {
   switch (userDetails.tip_skole) {
     case 0:
       return '921';
@@ -651,7 +648,7 @@ function getTipSkole(userDetails: UserDetails) {
   }
 }
 
-function getSifraSkole(userDetails: UserDetails) {
+function getSifraSkole(userDetails: DetaljiKorisnika) {
   if (userDetails.sifra_skole != '' && userDetails.sifra_skole != null)
     return userDetails.sifra_skole;
   else
@@ -680,7 +677,7 @@ export async function createVirmaniPdfFile(
   year: number,
   month: number,
   travelingExpense: TravelingExpenseWithDetails,
-  userDetails: UserDetails,
+  userDetails: DetaljiKorisnika,
   podaciONalogu: PodaciONalogu
 ) {
   let konto = '415112';
