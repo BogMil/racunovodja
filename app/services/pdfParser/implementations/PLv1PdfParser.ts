@@ -54,7 +54,7 @@ export class PLv1PdfParser implements IPdfParser {
     this._employee = new ExtractedEmployeeWithPageNumbers();
     setFullName(lines[1]);
     setNumber(lines[5]);
-    setJmbg(lines[20]);
+    lines[20] == 'УПРАВА ЗА ТРЕЗОР' ? setJmbg(lines[21]) : setJmbg(lines[20]);
     setBancAccount(lines[7]);
 
     return this._employee;
