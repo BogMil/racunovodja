@@ -34,7 +34,7 @@ export default function PlatniListicTemplate(props: Props) {
         handleResponse(
           await insertEmployee({
             ...missingEmployee,
-            id_opstine: -1,
+            id_opstine: '',
             aktivan: true,
             id: -1,
             email: ''
