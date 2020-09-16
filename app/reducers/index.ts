@@ -1,7 +1,7 @@
 import { combineReducers, Reducer } from 'redux';
 import { connectRouter, RouterState } from 'connected-react-router';
 import { History } from 'history';
-import auth from '../components/auth/auth.reducer';
+import auth, { AuthStore } from '../components/auth/auth.reducer';
 import employeesCombinedReducer, {
   ZaposleniPageReducer
 } from '../components/zaposleni/combinedReducer';
@@ -38,7 +38,7 @@ export default function createRootReducer(history: History) {
 
 export type AppStore = {
   router: Reducer<RouterState<History.PoorMansUnknown>>;
-  auth: any;
+  auth: AuthStore;
   zaposleniPage: ZaposleniPageReducer;
   relationsCombined: RelationCombinedReducer;
   travelingExpensesCombined: TravelingExpenseCombinedReducer;

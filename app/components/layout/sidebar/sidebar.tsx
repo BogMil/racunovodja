@@ -5,16 +5,20 @@ import routes from '../../../constants/routes.json';
 import styles from './sidebar.css';
 import Divider from './components/divider/divider';
 import StaticMenuItem from './components/staticMenuItem/staticMenuItem';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Service from '../../auth/auth.service';
 import { handleResponse } from '../../../utils/responseHandler';
 import { useHistory } from 'react-router-dom';
 import paths from '../../../constants/routes.json';
 import { unsetUser } from '../../auth/auth.actions';
+import { AppStore } from '../../../reducers';
 
 export default function SideBar() {
   const history = useHistory();
   const dispatch = useDispatch();
+  const { user } = useSelector((state: AppStore) => {
+    return state.auth;
+  });
 
   const onLogout = async () => {
     handleResponse(await Service.logout(), () => {
@@ -33,43 +37,56 @@ export default function SideBar() {
           navigateTo={routes.HOME}
           text="Početna"
         />
-        <SubMenu text="Dodatni prihodi">
-          <MenuItem navigateTo={routes.TRAVEL_EXPENSES} text="Putni troškovi" />
-        </SubMenu>
+        {user?.prava_pristupa.opiro && (
+          <SubMenu text="Dodatni prihodi">
+            <MenuItem
+              navigateTo={routes.TRAVEL_EXPENSES}
+              text="Putni troškovi"
+            />
+          </SubMenu>
+        )}
         <MenuItem
           iconClassName="fa fa-users"
           navigateTo={routes.EMPLOYEES}
           text="Zaposleni"
         />
-        <MenuItem
-          iconClassName="fa fa-paper-plane"
-          navigateTo={routes.DOSTAVLJAC_MAILOVA}
-          text="Mail dostavljač"
-        />
-        <SubMenu text="Šifarnici">
+        {user?.prava_pristupa.dpl && (
           <MenuItem
-            iconClassName="fa fa-map-marker"
-            navigateTo={routes.LOCATIONS}
-            text="Lokacije"
+            iconClassName="fa fa-paper-plane"
+            navigateTo={routes.DOSTAVLJAC_MAILOVA}
+            text="Mail dostavljač"
           />
-          <MenuItem
-            iconClassName="fa fa-route"
-            navigateTo={routes.RELATIONS}
-            text="Relacije"
-          />
-        </SubMenu>
+        )}
+        {user?.prava_pristupa.opiro && (
+          <SubMenu text="Šifarnici">
+            <MenuItem
+              iconClassName="fa fa-map-marker"
+              navigateTo={routes.LOCATIONS}
+              text="Lokacije"
+            />
+            <MenuItem
+              iconClassName="fa fa-route"
+              navigateTo={routes.RELATIONS}
+              text="Relacije"
+            />
+          </SubMenu>
+        )}
         <MenuItem
           iconClassName="fa fa-cogs"
           navigateTo={routes.OTHER_SETTINGS}
           text="Opšti podaci"
         />
         <Divider />
-        <MenuItem
-          iconClassName="fa fa-parachute-box"
-          navigateTo={routes.DOBAVLJACI}
-          text="Dobavljači"
-        />
-        <Divider />
+        {false && (
+          <>
+            <MenuItem
+              iconClassName="fa fa-parachute-box"
+              navigateTo={routes.DOBAVLJACI}
+              text="Dobavljači"
+            />
+            <Divider />
+          </>
+        )}
         <StaticMenuItem
           iconClassName="fa fa-sign-out-alt"
           text="Odjavi se"

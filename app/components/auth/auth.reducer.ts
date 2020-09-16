@@ -5,20 +5,28 @@ import {
   UNSET_AUTHENTICATED
 } from './auth.actions';
 import { Action } from '../../reducers/types';
+import { User } from './auth.store.types';
 
-const initialState = {
-  isAuthenticated: false,
-  user: null
+const getInitialState = (): AuthStore => {
+  return {
+    isAuthenticated: false,
+    user: null
+  };
 };
 
-export default function auth(state = initialState, action: Action) {
+export type AuthStore = {
+  isAuthenticated: boolean;
+  user: User | null;
+};
+
+export default function auth(state = getInitialState(), action: Action) {
   if (action.namespace != NAMESPACE) return state;
 
   switch (action.type) {
     case SET_AUTHENTICATED:
       return { ...state, isAuthenticated: true, user: action.payload.user };
     case UNSET_AUTHENTICATED:
-      return { ...state, isAuthenticated: false, user: null };
+      return getInitialState();
     default:
       return state;
   }
