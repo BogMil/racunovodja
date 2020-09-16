@@ -5,7 +5,7 @@ import { close, handleChange } from './kreirajNalogeZaPrenosModal.actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStore } from '../../../../../../reducers';
 import DatePicker from 'react-datepicker';
-import { get as getUserDetails } from '../../../../../userDetails/userDetails.service';
+import { get as getUserDetails } from '../../../../../detaljiKorisnika/detaljiKorisnika.service';
 
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import { handleResponse } from '../../../../../../utils/responseHandler';

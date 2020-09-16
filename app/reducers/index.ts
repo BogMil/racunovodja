@@ -14,7 +14,7 @@ import travelingExpensesCombineReducer, {
 
 import userDetailsCombined, {
   UserDetailsCombinedReducer
-} from '../components/userDetails/userDetails.combinedReducer';
+} from '../components/detaljiKorisnika/detaljiKorisnika.combinedReducer';
 import lokacijeCombined, {
   LokacijaCombinedReducer
 } from '../components/sifarnici/lokacije/lokacije.combinedReducer';

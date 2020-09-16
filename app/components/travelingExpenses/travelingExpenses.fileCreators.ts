@@ -14,7 +14,7 @@ import {
 } from './travelingExpenses.types';
 import { numberWithThousandSeparator } from '../../utils/numberWithThousandSeparator';
 import getMonthName from '../../utils/getMonthName';
-import { DetaljiKorisnika } from '../userDetails/userDetails.types';
+import { DetaljiKorisnika } from '../detaljiKorisnika/detaljiKorisnika.types';
 import {
   daysInMonth,
   isWeekday,

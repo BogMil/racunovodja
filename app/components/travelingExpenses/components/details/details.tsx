@@ -34,7 +34,7 @@ import { areYouSure } from '../../../../utils/yesNoModal';
 import { handleResponse } from '../../../../utils/responseHandler';
 import * as service from '../../travelingExpenses.service';
 import styles from './details.css';
-import { get as getUserDetails } from '../../../userDetails/userDetails.service';
+import { get as getUserDetails } from '../../../detaljiKorisnika/detaljiKorisnika.service';
 import KreirajNalogeZaPrenosModalComponent from './components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal';
 import { open as openKreirajNalogeZaPrenosModal } from './components/kreirajNalogeZaPrenosModal/kreirajNalogeZaPrenosModal.actions';
 var remote = require('electron').remote;

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BASE_URL } from '../../config';
 import { axiosCatchHandler } from '../../utils/axiosErrorHandler';
-import { DetaljiKorisnika } from './userDetails.types';
+import { DetaljiKorisnika } from './detaljiKorisnika.types';
 
 const API_URL = `${BASE_URL}/api/korisnik/detalji`;
 

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../reducers';
-import { loadUserDetails } from './userDetails.actions';
+import { loadUserDetails } from './detaljiKorisnika.actions';
 import { open } from './components/userDetailsModal/userDetailsModal.actions';
 import UserDetailsModalComponent from './components/userDetailsModal/userDetailsModal';
 

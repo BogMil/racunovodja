@@ -18,7 +18,7 @@ import { SlanjeMailovaService, logSendingMail } from './slanjeMailova.service';
 import { MailAuthException } from '../../services/mailSender/exceptions/mailAuthException';
 import { NepredvidjenException } from '../../services/mailSender/exceptions/nepredvidjenException';
 import { createPdfFile } from './dostavljacMailova.fileCreators';
-import { get as getUserDetails } from '../userDetails/userDetails.service';
+import { get as getUserDetails } from '../detaljiKorisnika/detaljiKorisnika.service';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
 export default function SlanjeMailovaComponent() {

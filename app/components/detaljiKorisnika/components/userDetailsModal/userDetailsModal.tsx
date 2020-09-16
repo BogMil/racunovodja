@@ -3,9 +3,9 @@ import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { close, handleChange } from './userDetailsModal.actions';
 import { AppStore } from '../../../../reducers';
-import * as service from '../../userDetails.service';
+import * as service from '../../detaljiKorisnika.service';
 import { handleResponse } from '../../../../utils/responseHandler';
-import { reloadUserDetails } from '../../userDetails.actions';
+import { reloadUserDetails } from '../../detaljiKorisnika.actions';
 
 export default function UserDetailsModalComponent() {
   const dispatch = useDispatch();

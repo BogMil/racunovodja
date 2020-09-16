@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import userDetails, { UserDetailsStore } from './userDetails.reducer';
+import userDetails, { UserDetailsStore } from './detaljiKorisnika.reducer';
 import userDetailsModalStore, {
   UserDetailsModalStore
 } from './components/userDetailsModal/userDetailsModal.reducer';

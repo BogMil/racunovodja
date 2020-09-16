@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../utils/responseHandler';
-import * as service from './userDetails.service';
+import * as service from './detaljiKorisnika.service';
 import { Action } from '../../reducers/types';
-import { DetaljiKorisnika } from './userDetails.types';
+import { DetaljiKorisnika } from './detaljiKorisnika.types';
 
 export const LOAD_USER_DETAILS = 'LOAD_USER_DETAILS';
 export const NAMESPACE = 'OTHER_SETTINGS';

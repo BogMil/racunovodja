@@ -11,7 +11,7 @@ import Employees from './components/zaposleni/zaposleni';
 import Relations from './components/sifarnici/relations/relations';
 import TravelExpenses from './components/travelingExpenses/travelingExpenses';
 import TravelExpensesDetails from './components/travelingExpenses/components/details/details';
-import UserDetailsComponent from './components/userDetails/userDetails';
+import UserDetailsComponent from './components/detaljiKorisnika/detaljiKorisnika';
 import LokacijeComponent from './components/sifarnici/lokacije/lokacije';
 import DostavljacMailovaComponent from './components/dostavljacMailova/dostavljacMailova';
 import IzborZaposlenihZaSlanje from './components/dostavljacMailova/izborZaposlenihZaSlanje';

@@ -1,7 +1,7 @@
 import { Action } from '../../../../reducers/types';
 import { Dispatch } from 'redux';
 import { handleResponse } from '../../../../utils/responseHandler';
-import { DetaljiKorisnika } from '../../userDetails.types';
+import { DetaljiKorisnika } from '../../detaljiKorisnika.types';
 import { getMunicipalityOptions } from '../../../zaposleni/zaposleni.service';
 import { Opstina } from '../../../zaposleni/zaposleni.types';
 

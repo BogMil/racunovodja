@@ -1,6 +1,6 @@
 import { Action } from '../../reducers/types';
-import { NAMESPACE, LOAD_USER_DETAILS } from './userDetails.actions';
-import { DetaljiKorisnika } from './userDetails.types';
+import { NAMESPACE, LOAD_USER_DETAILS } from './detaljiKorisnika.actions';
+import { DetaljiKorisnika } from './detaljiKorisnika.types';
 
 const initialState: UserDetailsStore = {
   userDetails: {} as DetaljiKorisnika

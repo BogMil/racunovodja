@@ -8,7 +8,7 @@ import {
 import {
   DetaljiKorisnika,
   getInitDetaljiKorisnika
-} from '../../userDetails.types';
+} from '../../detaljiKorisnika.types';
 import { Opstina } from '../../../zaposleni/zaposleni.types';
 
 const initialState: UserDetailsModalStore = {
