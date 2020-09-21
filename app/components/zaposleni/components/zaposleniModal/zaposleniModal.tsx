@@ -12,16 +12,20 @@ import * as Service from '../../zaposleni.service';
 import { handleResponse } from '../../../../utils/responseHandler';
 import { CREATE_MODE, EDIT_MODE } from '../../../../constants/modalModes';
 import { ErrorText } from '../../../common/errorText';
+import { User } from '../../../auth/auth.store.types';
 
 export default function ZaposleniModalComponent() {
   const dispatch = useDispatch();
 
   const { zaposleni, mode, show, title, opstine, errors } = useSelector(
     (state: AppStore) => {
-      console.log(state);
       return state.zaposleniPage.zaposleniModal;
     }
   );
+
+  const { prava_pristupa } = useSelector((state: AppStore) => {
+    return state.auth.user as User;
+  });
 
   const handleClose = () => {
     dispatch(close());
@@ -63,7 +67,6 @@ export default function ZaposleniModalComponent() {
       );
   };
 
-  console.log(zaposleni);
   return (
     <Modal
       backdrop="static"
@@ -144,28 +147,30 @@ export default function ZaposleniModalComponent() {
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group>
-                <Form.Label>Opština stanovanja</Form.Label>
-                <Form.Control
-                  as="select"
-                  custom
-                  name="id_opstine"
-                  onChange={handleChange}
-                  value={zaposleni.id_opstine}
-                >
-                  <>
-                    <option value="">---</option>
-                    {opstine.map(opstina => {
-                      return (
-                        <option key={opstina.id} value={opstina.id}>
-                          {opstina.naziv}
-                        </option>
-                      );
-                    })}
-                  </>
-                </Form.Control>
-                <ErrorText text={errors?.opstina_id} />
-              </Form.Group>
+              {prava_pristupa.opiro && (
+                <Form.Group>
+                  <Form.Label>Opština stanovanja</Form.Label>
+                  <Form.Control
+                    as="select"
+                    custom
+                    name="id_opstine"
+                    onChange={handleChange}
+                    value={zaposleni.id_opstine}
+                  >
+                    <>
+                      <option value="">---</option>
+                      {opstine.map(opstina => {
+                        return (
+                          <option key={opstina.id} value={opstina.id}>
+                            {opstina.naziv}
+                          </option>
+                        );
+                      })}
+                    </>
+                  </Form.Control>
+                  <ErrorText text={errors?.opstina_id} />
+                </Form.Group>
+              )}
             </Col>
           </Row>
           <Row>

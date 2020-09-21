@@ -14,6 +14,8 @@ import routes from '../../constants/routes.json';
 import { PodaciOSlanjuZaIzborZaposlenih } from './dostavljacMailova.types';
 import { get_IZVESTAJI_SLANJA_MAILOVA_DIR } from '../../constants/files';
 import { shell } from 'electron';
+import * as DetaljiKorisnikaService from '../detaljiKorisnika/detaljiKorisnika.service';
+import { DetaljiKorisnika } from '../detaljiKorisnika/detaljiKorisnika.types';
 const { dialog, getCurrentWindow } = require('electron').remote;
 const fs = require('fs');
 const employeeExtractor = new PdfDataExtractor();
@@ -30,6 +32,9 @@ export default function DostavljacMailovaComponent() {
   const [allExtractedEmployees, setAllExtractedEmployees] = React.useState<
     ExtractedEmployeeWithPageNumbers[]
   >([]);
+
+  const [uTokuProveraPrava, setUTokuProveraPrava] = React.useState(true);
+  const [imaPravaPristupa, setImaPravaPristupa] = React.useState(false);
 
   const setInitialState = () => {
     setFilePath('');
@@ -73,22 +78,42 @@ export default function DostavljacMailovaComponent() {
     handleResponse(
       await service.getMissingEmployeeNumbers(numbers),
       (res: any) => {
-        if (res.data.length > 0) {
-          let missingEmployeesNumbers = res.data;
-          let missingEmps: any[] = [];
-          missingEmployeesNumbers.forEach((number: string) => {
-            let employeeToInsert = extractedEmployees.find(
-              x => x.sifra == number
-            );
-            missingEmps.push(employeeToInsert);
-          });
+        if (res.data.length <= 0) return;
+        let missingEmployeesNumbers = res.data;
+        let missingEmps: any[] = [];
+        missingEmployeesNumbers.forEach((number: string) => {
+          let employeeToInsert = extractedEmployees.find(
+            x => x.sifra == number
+          );
+          missingEmps.push(employeeToInsert);
+        });
 
-          setMissingEmployees(missingEmps);
-        }
+        setMissingEmployees(missingEmps);
       }
     );
   };
 
+  useEffect(() => {
+    proveriPravaPristupaAsync();
+  }, []);
+
+  const proveriPravaPristupaAsync = async () => {
+    handleResponse(await DetaljiKorisnikaService.get(), (res: any) => {
+      const {
+        email_za_slanje,
+        password_email_za_slanje
+      } = res.data as DetaljiKorisnika;
+
+      if (
+        email_za_slanje != null &&
+        email_za_slanje != '' &&
+        password_email_za_slanje != null &&
+        password_email_za_slanje != ''
+      )
+        setImaPravaPristupa(true);
+      setUTokuProveraPrava(false);
+    });
+  };
   useEffect(() => {
     if (filePath == '') return;
     setMissingEmployees([]);
@@ -119,15 +144,34 @@ export default function DostavljacMailovaComponent() {
     }
   }
 
-  useEffect(() => {
-    if (missingEmployees.length > 0 && isPlatniListic != true)
-      console.log('fale');
-  }, [missingEmployees]);
-
   const currentYear = new Date().getFullYear();
   const folderSaIzvestajimaPostoji = fs.existsSync(
     get_IZVESTAJI_SLANJA_MAILOVA_DIR(currentYear.toString())
   );
+
+  if (uTokuProveraPrava) return null;
+
+  if (!imaPravaPristupa) {
+    return (
+      <div
+        className="noselect"
+        style={{
+          paddingLeft: 20,
+          position: 'relative',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '100%'
+        }}
+      >
+        <h3>Još uvek Vam nije dodeljena email adresa za slanje.</h3>
+        <h3>
+          Email nalog će biti otvoren u najkraćem roku i bićete obavešteni o
+          tome!
+        </h3>
+      </div>
+    );
+  }
 
   return (
     <Container style={{ marginTop: 10 }} className="noselect">

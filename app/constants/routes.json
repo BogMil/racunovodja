@@ -15,5 +15,6 @@
   "DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH": "/dostavljac_mailova-izbor_zaposlenih",
   "DOSTAVLJAC_MAILOVA_SLANJE": "/dostavljac_mailova-slanje",
   "DOBAVLJACI": "/dobavljaci",
-  "DETALJI_DOBAVLJACA": "/detalji_dobavljaca"
+  "DETALJI_DOBAVLJACA": "/detalji_dobavljaca",
+  "NOTIFIKACIJE": "/notifikacije"
 }

@@ -14,12 +14,18 @@ import { open } from './components/uploadFileModal/uploadFileModal.actions';
 import { columnWidths } from './zaposleni.columnStyle';
 import DPLEmailSyncModal from './components/DPLEmailSyncModal/DPLEmailSyncModal';
 import { DPL_DB_FILE } from '../../constants/files';
+import { AuthStore } from '../auth/auth.reducer';
+import { User } from '../auth/auth.store.types';
 const fs = require('fs');
 
 export default function Employees() {
   const dispatch = useDispatch();
   const store = useSelector((state: AppStore) => {
     return state.zaposleniPage.employees;
+  });
+
+  const { prava_pristupa } = useSelector((state: AppStore) => {
+    return state.auth.user as User;
   });
 
   const postojiDostavljacPlatnihListica = fs.existsSync(DPL_DB_FILE());
@@ -68,10 +74,14 @@ export default function Employees() {
                 <th style={{ width: columnWidths.prezime }}>Prezime</th>
                 <th style={{ width: columnWidths.ime }}>Ime</th>
                 <th style={{ width: columnWidths.brojRacuna }}>Broj računa</th>
-                <th style={{ width: columnWidths.opstina }}>Opština</th>
-                <th style={{ width: columnWidths.relacije }}>
-                  Podrazumevana relacija
-                </th>
+                {prava_pristupa.opiro && (
+                  <>
+                    <th style={{ width: columnWidths.opstina }}>Opština</th>
+                    <th style={{ width: columnWidths.relacije }}>
+                      Podrazumevana relacija
+                    </th>
+                  </>
+                )}
                 <th style={{ width: columnWidths.email }}>Email</th>
                 <th
                   style={{ textAlign: 'center', width: columnWidths.actions }}

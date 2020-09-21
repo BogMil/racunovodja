@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { Zaposleni, ZaposleniCDTO } from '../../zaposleni.types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as AddDefaultRelationModalActions from '../addDefaultRelationModal/addDefaultRelationModal.actions';
 import {
   removeRelationFromEmployee,
@@ -15,6 +15,8 @@ import DeleteRowButton from '../../../common/rowButtons/deleteRowButton';
 import EditRowButton from '../../../common/rowButtons/editRowButton';
 import { areYouSure } from '../../../../utils/yesNoModal';
 import { columnWidths } from '../../zaposleni.columnStyle';
+import { AppStore } from '../../../../reducers';
+import { User } from '../../../auth/auth.store.types';
 
 type Props = {
   zaposleni: Zaposleni;
@@ -23,6 +25,10 @@ type Props = {
 export default function EmployeeComponent(props: Props) {
   const dispatch = useDispatch();
   let zaposleni = props.zaposleni;
+
+  const { prava_pristupa } = useSelector((state: AppStore) => {
+    return state.auth.user as User;
+  });
 
   const onAddDefaultRelationClick = () => {
     dispatch(AddDefaultRelationModalActions.open(zaposleni));
@@ -84,48 +90,53 @@ export default function EmployeeComponent(props: Props) {
       >
         {zaposleni.bankovni_racun}
       </td>
-      <td
-        style={{ width: columnWidths.opstina }}
-        className={styles.employeeCell}
-      >
-        {zaposleni.opstina ? zaposleni.opstina.naziv : '---'}
-      </td>
-      <td
-        className={styles.employeeCell}
-        style={{ width: columnWidths.relacije }}
-      >
-        <Table bordered hover size="sm" style={{ marginBottom: 0 }}>
-          <tbody>
-            {zaposleni.default_relations?.map((defaultRelation, i) => (
-              <tr key={i}>
-                <td style={{ padding: 0 }}>
-                  <div style={{ float: 'left' }}>
-                    {defaultRelation.name} - {defaultRelation.lokacija?.naziv}
-                  </div>
-                  <div style={{ float: 'right' }}>
-                    <DeleteRowButton
-                      title="Ukloni podrazumevanu relaciju"
-                      onClick={() => removeRelation(defaultRelation.id)}
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td style={{ padding: 0 }}>
-                <Button
-                  variant="success"
-                  onClick={() => onAddDefaultRelationClick()}
-                  style={{ width: '100%', padding: 0, height: 20 }}
-                  title="Dodaj podrazumevanu relaciju"
-                >
-                  +
-                </Button>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      </td>
+      {prava_pristupa.opiro && (
+        <>
+          <td
+            style={{ width: columnWidths.opstina }}
+            className={styles.employeeCell}
+          >
+            {zaposleni.opstina ? zaposleni.opstina.naziv : '---'}
+          </td>
+          <td
+            className={styles.employeeCell}
+            style={{ width: columnWidths.relacije }}
+          >
+            <Table bordered hover size="sm" style={{ marginBottom: 0 }}>
+              <tbody>
+                {zaposleni.default_relations?.map((defaultRelation, i) => (
+                  <tr key={i}>
+                    <td style={{ padding: 0 }}>
+                      <div style={{ float: 'left' }}>
+                        {defaultRelation.name} -{' '}
+                        {defaultRelation.lokacija?.naziv}
+                      </div>
+                      <div style={{ float: 'right' }}>
+                        <DeleteRowButton
+                          title="Ukloni podrazumevanu relaciju"
+                          onClick={() => removeRelation(defaultRelation.id)}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                <tr>
+                  <td style={{ padding: 0 }}>
+                    <Button
+                      variant="success"
+                      onClick={() => onAddDefaultRelationClick()}
+                      style={{ width: '100%', padding: 0, height: 20 }}
+                      title="Dodaj podrazumevanu relaciju"
+                    >
+                      +
+                    </Button>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </td>
+        </>
+      )}
       <td style={{ width: columnWidths.email }} className={styles.employeeCell}>
         {zaposleni.email}
       </td>
