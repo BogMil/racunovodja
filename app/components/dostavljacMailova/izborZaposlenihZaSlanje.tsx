@@ -35,8 +35,8 @@ export default function IzborZaposlenihZaSlanje() {
     useEffect(() => {
       async function getUserEmployees() {
         handleResponse(await getAllEmployees(), (res: any) => {
-          let zaposleniSaValidnimEmailom = res.data.filter((x: Zaposleni) =>
-            isValidEmail(x.email)
+          let zaposleniSaValidnimEmailom = res.data.filter(
+            (x: Zaposleni) => isValidEmail(x.email1) || isValidEmail(x.email2)
           );
 
           let zaposleniSaValidnimEmailomKojiPostojeUFajlu = zaposleniSaValidnimEmailom.filter(
@@ -192,7 +192,10 @@ export default function IzborZaposlenihZaSlanje() {
                         <td>{e.sifra}</td>
                         <td>{e.prezime}</td>
                         <td>{e.ime}</td>
-                        <td>{e.email}</td>
+                        <td>
+                          <div>{e.email1}</div>
+                          <div>{e.email2}</div>
+                        </td>
                       </tr>
                     );
                   })}

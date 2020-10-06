@@ -82,7 +82,8 @@ export class SlanjeMailovaService {
     );
     return {
       from: 'test@bogmilko.rs',
-      to: zaposleni.dbEmployee.email,
+      to: `${zaposleni.dbEmployee.email1 ?? ''},${zaposleni.dbEmployee.email2 ??
+        ''}`,
       subject: this._subject,
       text: '',
       html:

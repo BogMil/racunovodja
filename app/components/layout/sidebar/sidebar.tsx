@@ -37,7 +37,7 @@ export default function SideBar() {
           navigateTo={routes.HOME}
           text="Početna"
         />
-        {user?.prava_pristupa.opiro && (
+        {user?.prava_pristupa?.opiro && (
           <SubMenu text="Dodatni prihodi">
             <MenuItem
               navigateTo={routes.TRAVEL_EXPENSES}
@@ -50,14 +50,14 @@ export default function SideBar() {
           navigateTo={routes.EMPLOYEES}
           text="Zaposleni"
         />
-        {user?.prava_pristupa.dpl && (
+        {user?.prava_pristupa?.dpl && (
           <MenuItem
             iconClassName="fa fa-paper-plane"
             navigateTo={routes.DOSTAVLJAC_MAILOVA}
             text="Mail dostavljač"
           />
         )}
-        {user?.prava_pristupa.opiro && (
+        {user?.prava_pristupa?.opiro && (
           <SubMenu text="Šifarnici">
             <MenuItem
               iconClassName="fa fa-map-marker"

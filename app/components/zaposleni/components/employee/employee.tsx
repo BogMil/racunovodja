@@ -138,7 +138,8 @@ export default function EmployeeComponent(props: Props) {
         </>
       )}
       <td style={{ width: columnWidths.email }} className={styles.employeeCell}>
-        {zaposleni.email}
+        <div>{zaposleni.email1}</div>
+        <div> {zaposleni.email2}</div>
       </td>
 
       <td style={{ textAlign: 'center', width: columnWidths.email }}>

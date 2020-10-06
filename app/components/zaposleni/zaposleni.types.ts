@@ -10,7 +10,8 @@ export type Zaposleni = {
   bankovni_racun: string;
   opstina: Opstina;
   default_relations: Relation[];
-  email: string;
+  email1: string;
+  email2: string;
 };
 
 export type ZaposleniCDTO = {
@@ -22,7 +23,8 @@ export type ZaposleniCDTO = {
   ime: string;
   bankovni_racun: string;
   id_opstine: number | '';
-  email: string;
+  email1: string;
+  email2: string;
 };
 
 export const newZaposleniCDTO = () => {
@@ -33,7 +35,7 @@ export const newZaposleniCDTO = () => {
     ime: '',
     bankovni_racun: '',
     id_opstine: '',
-    email: '',
+    email1: '',
     aktivan: true
   } as ZaposleniCDTO;
 };

@@ -37,7 +37,8 @@ export default function PlatniListicTemplate(props: Props) {
             id_opstine: '',
             aktivan: true,
             id: -1,
-            email: ''
+            email1: '',
+            email2: ''
           }),
           (res: any) => {
             if (res.status == SUCCESS) {

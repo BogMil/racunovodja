@@ -178,12 +178,12 @@ export default function ZaposleniModalComponent() {
               <Form.Group>
                 <Form.Label>Email</Form.Label>
                 <Form.Control
-                  name="email"
+                  name="email1"
                   onChange={handleChange}
                   placeholder="Unesite Email adresu"
-                  value={zaposleni.email ?? ''}
+                  value={zaposleni.email1 ?? ''}
                 />
-                <ErrorText text={errors?.email} />
+                <ErrorText text={errors?.email1} />
               </Form.Group>
             </Col>
             <Col md={3}>
@@ -200,6 +200,20 @@ export default function ZaposleniModalComponent() {
                   onChange={handleChange}
                 />
                 <ErrorText text={errors?.aktivan} />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={9}>
+              <Form.Group>
+                <Form.Label>Email 2 (opciono)</Form.Label>
+                <Form.Control
+                  name="email2"
+                  onChange={handleChange}
+                  placeholder="Unesite Email adresu"
+                  value={zaposleni.email2 ?? ''}
+                />
+                <ErrorText text={errors?.email2} />
               </Form.Group>
             </Col>
           </Row>
