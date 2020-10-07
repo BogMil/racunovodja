@@ -6,7 +6,7 @@ const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 export class PdfDataExtractor {
-  public async employees(path: string) {
+  public async getEmployeesAsync(path: string) {
     let doc = await pdfjs.getDocument(path).promise;
     let pdfParser = await PdfParserFactory.ForFile(path);
 

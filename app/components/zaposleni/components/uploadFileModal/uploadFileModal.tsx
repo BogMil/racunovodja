@@ -115,17 +115,17 @@ export default function UploadFileModal() {
     if (!file) return;
     setError('');
     setFilePath(file);
-    loadEmployees(file);
+    loadEmployeesAsync(file);
     setMissingEmployees([]);
     setInsertingEmployees(false);
   }, [files]);
 
-  async function loadEmployees(path: string) {
+  async function loadEmployeesAsync(path: string) {
     try {
       if (!(await FileChecker.isPlatniListic(path)))
         throw new InvalidFileException();
       await setFetchingMissingEmployees(true);
-      let extractedEmployees = await employeeExtractor.employees(path);
+      let extractedEmployees = await employeeExtractor.getEmployeesAsync(path);
       await fetchMissingEmployees(extractedEmployees);
 
       await setFetchingMissingEmployees(false);

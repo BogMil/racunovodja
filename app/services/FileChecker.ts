@@ -1,7 +1,8 @@
 import { getLinesFromPage } from '../utils/pdfFileManipulations/getLinesFromPage';
 import {
   PLATNI_LISTIC,
-  OBUSTAVA
+  OBUSTAVA,
+  PPP_PO_OBRAZAC
 } from '../constants/indikatoriFajlovaZaSlanje';
 
 const pdfjs = require('pdfjs-dist');
@@ -23,5 +24,10 @@ export class FileChecker {
   public static async isObustava(path: string) {
     let lines = await FileChecker.getFirstPageLines(path);
     return lines[4] == OBUSTAVA;
+  }
+
+  public static async isPppPoObrazac(path: string) {
+    let lines = await FileChecker.getFirstPageLines(path);
+    return lines[13].includes(PPP_PO_OBRAZAC);
   }
 }

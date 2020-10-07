@@ -22,8 +22,11 @@ const employeeExtractor = new PdfDataExtractor();
 
 export default function DostavljacMailovaComponent() {
   const [filePath, setFilePath] = React.useState('');
+
   const [isPlatniListic, setIsPlatniListic] = React.useState(false);
   const [isObustava, setIsObustava] = React.useState(false);
+  const [isPppPoObrazac, setIsPppPoObrazac] = React.useState(false);
+
   const [isLoading, setIsLoading] = React.useState(false);
   const [fetchedEmployees, setFetchedEmployees] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -39,9 +42,12 @@ export default function DostavljacMailovaComponent() {
 
   const setInitialState = () => {
     setFilePath('');
+    setIsLoading(false);
+
     setIsPlatniListic(false);
     setIsObustava(false);
-    setIsLoading(false);
+    setIsPppPoObrazac(false);
+
     setFetchedEmployees(false);
     setError('');
     setMissingEmployees([]);
@@ -128,9 +134,14 @@ export default function DostavljacMailovaComponent() {
       setError('');
       setIsLoading(true);
       setFetchedEmployees(false);
+
       setIsPlatniListic(await FileChecker.isPlatniListic(filePath));
       setIsObustava(await FileChecker.isObustava(filePath));
-      let extractedEmployees = await employeeExtractor.employees(filePath);
+      setIsPppPoObrazac(await FileChecker.isPppPoObrazac(filePath));
+
+      let extractedEmployees = await employeeExtractor.getEmployeesAsync(
+        filePath
+      );
       setAllExtractedEmployees(extractedEmployees);
       await fetchMissingEmployees(extractedEmployees);
       setIsLoading(false);
@@ -234,6 +245,10 @@ export default function DostavljacMailovaComponent() {
           filePath={filePath}
           zaposleniUFajlu={allExtractedEmployees}
         />
+      )}
+
+      {missingEmployees.length > 0 && isPppPoObrazac && fetchedEmployees && (
+        <div>PPP-potvrda</div>
       )}
 
       {missingEmployees.length == 0 && fetchedEmployees && (
