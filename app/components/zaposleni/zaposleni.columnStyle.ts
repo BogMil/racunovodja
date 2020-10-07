@@ -15,14 +15,25 @@ export const columnWidths = {
   email: 300,
   actions: postojiDostavljacPlatnihListica ? 110 : 70,
 
-  sum(): number {
+  sum(pravaPristupa: { dpl: boolean; opiro: boolean }): number {
     let props = Object.getOwnPropertyNames(this).filter(prop => prop != 'sum');
     let sum = 0;
     for (let prop of props) {
       let value = (this as any)[prop];
       sum += value;
     }
-    console.log(sum);
+
+    if (pravaPristupa.dpl == true && pravaPristupa.opiro == false)
+      return (
+        this.jmbg +
+        this.broj +
+        this.prezime +
+        this.ime +
+        this.email +
+        this.actions +
+        this.brojRacuna
+      );
+
     return sum;
   }
 };

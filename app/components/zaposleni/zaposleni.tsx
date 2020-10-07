@@ -65,14 +65,18 @@ export default function Employees() {
             bordered
             hover
             size="sm"
-            style={{ width: columnWidths.sum(), tableLayout: 'fixed' }}
+            style={{
+              width: columnWidths.sum(prava_pristupa),
+              tableLayout: 'fixed'
+            }}
           >
             <thead>
               <tr>
-                <th style={{ width: columnWidths.jmbg }}>JMBG</th>
-                <th style={{ width: columnWidths.broj }}>Broj</th>
                 <th style={{ width: columnWidths.prezime }}>Prezime</th>
                 <th style={{ width: columnWidths.ime }}>Ime</th>
+                <th style={{ width: columnWidths.email }}>Email</th>
+                <th style={{ width: columnWidths.jmbg }}>JMBG</th>
+                <th style={{ width: columnWidths.broj }}>Broj</th>
                 <th style={{ width: columnWidths.brojRacuna }}>Broj računa</th>
                 {prava_pristupa.opiro && (
                   <>
@@ -82,7 +86,6 @@ export default function Employees() {
                     </th>
                   </>
                 )}
-                <th style={{ width: columnWidths.email }}>Email</th>
                 <th
                   style={{ textAlign: 'center', width: columnWidths.actions }}
                 >

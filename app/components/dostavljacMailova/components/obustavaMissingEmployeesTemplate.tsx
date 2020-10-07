@@ -31,13 +31,20 @@ export default function ObustavaTemplate(props: Props) {
             }}
           >
             <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Prezime</th>
+                  <th>Ime</th>
+                  <th>Broj</th>
+                </tr>
+              </thead>
               <tbody>
                 {missingEmployees.map((e, i) => {
                   return (
                     <tr key={i}>
-                      <td>
-                        {e.prezime} {e.ime}
-                      </td>
+                      <td>{e.prezime}</td>
+                      <td>{e.ime}</td>
+                      <td>{e.sifra}</td>
                     </tr>
                   );
                 })}
@@ -66,7 +73,6 @@ export default function ObustavaTemplate(props: Props) {
             <Button style={{ marginRight: 5 }} onClick={setInitialState}>
               Odustani
             </Button>
-            <Button>Nastavi</Button>
           </div>
         </Col>
       </Row>

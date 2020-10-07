@@ -86,6 +86,6 @@ export async function getMissingEmployeeNumbers(sifre: string[]) {
 
 export async function updateEmail(jmbg: string, email: string) {
   return await axios
-    .post(`${API_URL}/${jmbg}/azurirajEmail`, { email })
+    .post(`${API_URL}/${jmbg}/azurirajEmail`, { email1: email })
     .catch(axiosCatchHandler);
 }

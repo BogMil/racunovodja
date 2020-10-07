@@ -23,6 +23,7 @@ const employeeExtractor = new PdfDataExtractor();
 export default function DostavljacMailovaComponent() {
   const [filePath, setFilePath] = React.useState('');
   const [isPlatniListic, setIsPlatniListic] = React.useState(false);
+  const [isObustava, setIsObustava] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [fetchedEmployees, setFetchedEmployees] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -39,6 +40,7 @@ export default function DostavljacMailovaComponent() {
   const setInitialState = () => {
     setFilePath('');
     setIsPlatniListic(false);
+    setIsObustava(false);
     setIsLoading(false);
     setFetchedEmployees(false);
     setError('');
@@ -127,6 +129,7 @@ export default function DostavljacMailovaComponent() {
       setIsLoading(true);
       setFetchedEmployees(false);
       setIsPlatniListic(await FileChecker.isPlatniListic(filePath));
+      setIsObustava(await FileChecker.isObustava(filePath));
       let extractedEmployees = await employeeExtractor.employees(filePath);
       setAllExtractedEmployees(extractedEmployees);
       await fetchMissingEmployees(extractedEmployees);
@@ -177,7 +180,11 @@ export default function DostavljacMailovaComponent() {
     <Container style={{ marginTop: 10 }} className="noselect">
       <Row>
         <Col>
-          <Button title="Otvori mail" onClick={otvoriMail}>
+          <Button
+            style={{ marginRight: 10 }}
+            title="Otvori mail"
+            onClick={otvoriMail}
+          >
             <i className="fa fa-envelope" />
           </Button>
           {folderSaIzvestajimaPostoji && (
@@ -220,7 +227,7 @@ export default function DostavljacMailovaComponent() {
         />
       )}
 
-      {missingEmployees.length > 0 && !isPlatniListic && fetchedEmployees && (
+      {missingEmployees.length > 0 && isObustava && fetchedEmployees && (
         <ObustavaTemplate
           missingEmployees={missingEmployees}
           setInitialState={setInitialState}
