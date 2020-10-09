@@ -1,4 +1,7 @@
-import { getLinesFromPage } from '../utils/pdfFileManipulations/getLinesFromPage';
+import {
+  getLinesFromPage,
+  getTextFromPage
+} from '../utils/pdfFileManipulations/getLinesFromPage';
 import {
   PLATNI_LISTIC,
   OBUSTAVA,
@@ -12,10 +15,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 export class FileChecker {
   private static async getFirstPageLines(path: string) {
     let doc = await pdfjs.getDocument(path).promise;
-
     let page = await doc.getPage(1);
     return await getLinesFromPage(page);
   }
+
+  private static async getPageText(path: string) {
+    let doc = await pdfjs.getDocument(path).promise;
+    let page = await doc.getPage(1);
+    return await getTextFromPage(page);
+  }
+
   public static async isPlatniListic(path: string) {
     let lines = await FileChecker.getFirstPageLines(path);
     return lines[15] == PLATNI_LISTIC;
@@ -27,7 +36,7 @@ export class FileChecker {
   }
 
   public static async isPppPoObrazac(path: string) {
-    let lines = await FileChecker.getFirstPageLines(path);
-    return lines[13].includes(PPP_PO_OBRAZAC);
+    let doc = await FileChecker.getPageText(path);
+    return doc.includes(PPP_PO_OBRAZAC);
   }
 }

@@ -14,3 +14,13 @@ export const getLinesFromPage = async (page: any) => {
 
   return lines;
 };
+
+export const getTextFromPage = async (page: any) => {
+  let textContent = await page.getTextContent();
+  var text = '';
+  textContent.items.forEach(function(i: any) {
+    text += i.str;
+  });
+
+  return text;
+};
