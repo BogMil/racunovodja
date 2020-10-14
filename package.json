@@ -280,7 +280,6 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.10",
     "@hot-loader/react-dom": "^16.13.0",
-    "@types/react-datepicker": "^3.0.2",
     "axios": "^0.19.2",
     "bootstrap": "4.0.0-beta",
     "connected-react-router": "^6.8.0",
