@@ -59,7 +59,10 @@ export default function SlanjeMailovaComponent() {
           listaZaposlenih: odabraniZaposleni,
           onSuccess: zaposleni => {
             rezultatiSlanjaTemp.push({
-              zaposleni: `${zaposleni.dbEmployee.jmbg} - ${zaposleni.dbEmployee.prezime} ${zaposleni.dbEmployee.ime} - ${zaposleni.dbEmployee.email1} ${zaposleni.dbEmployee.email2}`,
+              zaposleni: `${zaposleni.dbEmployee.jmbg} - ${
+                zaposleni.dbEmployee.prezime
+              } ${zaposleni.dbEmployee.ime} - ${zaposleni.dbEmployee.email1 ??
+                ''} ${zaposleni.dbEmployee.email2 ?? ''}`,
               message: '',
               uspesno: true
             });
@@ -67,7 +70,10 @@ export default function SlanjeMailovaComponent() {
           },
           onFail: (zaposleni, e) => {
             rezultatiSlanjaTemp.push({
-              zaposleni: `${zaposleni.dbEmployee.jmbg} - ${zaposleni.dbEmployee.prezime} ${zaposleni.dbEmployee.ime} - ${zaposleni.dbEmployee.email1} ${zaposleni.dbEmployee.email2}`,
+              zaposleni: `${zaposleni.dbEmployee.jmbg} - ${
+                zaposleni.dbEmployee.prezime
+              } ${zaposleni.dbEmployee.ime} - ${zaposleni.dbEmployee.email1 ??
+                ''} ${zaposleni.dbEmployee.email2 ?? ''}`,
               message: e.message,
               uspesno: false
             });

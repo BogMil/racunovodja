@@ -6,6 +6,20 @@ const pdfFonts = require('pdfmake/build/vfs_fonts');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const { dialog, getCurrentWindow } = require('electron').remote;
 
+function createFileSufix() {
+  let dateNow = new Date(Date.now());
+  let y = dateNow.getFullYear();
+  let d = dateNow.getDate();
+
+  let m = dateNow.getMonth() + 1;
+
+  let h = dateNow.getHours();
+  let min = dateNow.getMinutes();
+  let s = dateNow.getSeconds();
+
+  return `${d}-${m}-${y} ${h}-${min}-${s}`;
+}
+
 export async function createPdfFile(
   year: string,
   subject: string,
@@ -13,7 +27,10 @@ export async function createPdfFile(
 ) {
   try {
     let root = mk_IZVESTAJI_SLANJA_MAILOVA_DIR(year);
-    let filePath = `${root}\\${subject.replace('/', '-')}-${Date.now()}.pdf`;
+    let filePath = `${root}\\${subject.replace(
+      '/',
+      '-'
+    )} ${createFileSufix()}.pdf`;
     fs.writeFile(filePath, '', () => {});
 
     let tableBody = rezultatiSlanja.map(rezultatSlanja => {

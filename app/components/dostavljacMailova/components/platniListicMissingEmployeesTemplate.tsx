@@ -40,18 +40,16 @@ export default function PlatniListicTemplate(props: Props) {
             email1: '',
             email2: ''
           }),
-          (res: any) => {
-            if (res.status == SUCCESS) {
-              setProgressBarValue((i + 1) * progressBarStep);
-              if (i + 1 == missingEmployees.length)
-                history.push({
-                  pathname: routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH,
-                  state: {
-                    filePath,
-                    zaposleniUFajlu
-                  } as PodaciOSlanjuZaIzborZaposlenih
-                });
-            }
+          () => {
+            setProgressBarValue((i + 1) * progressBarStep);
+            if (i + 1 == missingEmployees.length)
+              history.push({
+                pathname: routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH,
+                state: {
+                  filePath,
+                  zaposleniUFajlu
+                } as PodaciOSlanjuZaIzborZaposlenih
+              });
           }
         );
       });
@@ -135,7 +133,16 @@ export default function PlatniListicTemplate(props: Props) {
               >
                 Odustani
               </Button>
-              <Button onClick={insertNewEmployees}>Nastavi</Button>
+              {missingEmployees.length == zaposleniUFajlu.length ? (
+                <>
+                  <div>
+                    Ne postoji nijedan zaposleni koji se istovremeno nalazi u
+                    fajlu i u bazi.
+                  </div>
+                </>
+              ) : (
+                <Button onClick={insertNewEmployees}>Nastavi</Button>
+              )}
             </div>
           </Col>
         </Row>

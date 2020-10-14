@@ -81,7 +81,7 @@ export class SlanjeMailovaService {
       this._izvorniPdfFajl
     );
     return {
-      from: 'test@bogmilko.rs',
+      from: this._user,
       to: `${zaposleni.dbEmployee.email1 ?? ''},${zaposleni.dbEmployee.email2 ??
         ''}`,
       subject: this._subject,

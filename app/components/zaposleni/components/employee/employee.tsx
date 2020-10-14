@@ -85,8 +85,10 @@ export default function EmployeeComponent(props: Props) {
       </td>
       <td style={{ width: columnWidths.email }} className={styles.employeeCell}>
         <ContextMenuTrigger id={zaposleni.jmbg}>
-          <div>{zaposleni.email1}</div>
-          <div> {zaposleni.email2}</div>
+          <div style={{ minHeight: 20 }}>
+            <div>{zaposleni.email1}</div>
+            <div> {zaposleni.email2}</div>
+          </div>
         </ContextMenuTrigger>
       </td>
       <td style={{ width: columnWidths.jmbg }} className={styles.employeeCell}>

@@ -12,7 +12,7 @@ type Props = {
   zaposleniUFajlu: ExtractedEmployeeWithPageNumbers[];
 };
 
-export default function ObustavaTemplate(props: Props) {
+export default function PppPoObrazacMissingEmployeesTemplate(props: Props) {
   const {
     missingEmployees,
     setInitialState,
@@ -31,15 +31,17 @@ export default function ObustavaTemplate(props: Props) {
       } as PodaciOSlanjuZaIzborZaposlenih
     });
   };
-
   return (
     <>
-      <h5>U bazi nedostaju sledeći zaposleni</h5>
+      <h5>
+        U bazi nedostaju zaposleni sa jmbg-ovima koji se nalaze na određenim
+        stranicama.
+      </h5>
       <Row>
         <Col>
           <div
             style={{
-              maxHeight: 500,
+              maxHeight: 400,
               border: '1px solid black',
               overflowY: 'auto',
               overflowX: 'auto'
@@ -48,18 +50,16 @@ export default function ObustavaTemplate(props: Props) {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Prezime</th>
-                  <th>Ime</th>
-                  <th>Broj</th>
+                  <th>JMBG</th>
+                  <th>Broj stranice</th>
                 </tr>
               </thead>
               <tbody>
                 {missingEmployees.map((e, i) => {
                   return (
                     <tr key={i}>
-                      <td>{e.prezime}</td>
-                      <td>{e.ime}</td>
-                      <td>{e.sifra}</td>
+                      <td>{e.jmbg}</td>
+                      <td>{e.pageNumbers[0]}</td>
                     </tr>
                   );
                 })}
@@ -76,8 +76,8 @@ export default function ObustavaTemplate(props: Props) {
           </span>
           Zaposleni - učitavanjem iz platnog listića ili ručnim unosom.
           <div style={{ color: 'red' }}>
-            Ukoliko nastavite sa slanjem, gore navedenenim zaposlenima obustave
-            neće biti poslate.
+            Ukoliko nastavite sa slanjem, gore navedene stranice neće biti
+            poslate.
           </div>
         </Col>
       </Row>

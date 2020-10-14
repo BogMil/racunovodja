@@ -12,6 +12,7 @@ import { Row, Col, Table, Button, Container, Form } from 'react-bootstrap';
 import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
 import { useHistory } from 'react-router-dom';
 import routes from '../../constants/routes.json';
+import { ExtractedEmployeeWithPageNumbers } from '../../services/pdfParser/pdfParser.types';
 function isValidEmail(email: string) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
@@ -27,28 +28,47 @@ export default function IzborZaposlenihZaSlanje() {
       brojeviCekiranihZaposlenih,
       setBrojeviCekiranihZaposlenih
     ] = useState<string[]>([]);
+    const [
+      jmbgoviCekiranihZaposlenih,
+      setJmbgoviCekiranihZaposlenih
+    ] = useState<string[]>([]);
     const [fileSubject, setFileSubject] = useState('');
     const [fileType, setFileType] = useState('');
     const [godina, setGodina] = useState('');
     const [nazivSkoleIzFajla, setNazivSkoleIzFajla] = useState('');
     const [izaberiSve, setIzaberiSve] = useState(true);
+
+    const zaposleniNemajuSifre = zapNemajuSifre(state.zaposleniUFajlu);
     useEffect(() => {
       async function getUserEmployees() {
         handleResponse(await getAllEmployees(), (res: any) => {
           let zaposleniSaValidnimEmailom = res.data.filter(
             (x: Zaposleni) => isValidEmail(x.email1) || isValidEmail(x.email2)
           );
-
-          let zaposleniSaValidnimEmailomKojiPostojeUFajlu = zaposleniSaValidnimEmailom.filter(
-            (x: Zaposleni) =>
-              state.zaposleniUFajlu.filter(z => z.sifra == x.sifra).length > 0
-          );
+          let zaposleniSaValidnimEmailomKojiPostojeUFajlu = zaposleniNemajuSifre
+            ? zaposleniSaValidnimEmailom.filter(
+                (x: Zaposleni) =>
+                  state.zaposleniUFajlu.filter(z => z.jmbg == x.jmbg).length > 0
+              )
+            : zaposleniSaValidnimEmailom.filter(
+                (x: Zaposleni) =>
+                  state.zaposleniUFajlu.filter(z => z.sifra == x.sifra).length >
+                  0
+              );
+          console.log(zaposleniSaValidnimEmailomKojiPostojeUFajlu);
           setEmployees(zaposleniSaValidnimEmailomKojiPostojeUFajlu);
-          setBrojeviCekiranihZaposlenih(
-            zaposleniSaValidnimEmailomKojiPostojeUFajlu.map(
-              (x: Zaposleni) => x.sifra
-            )
-          );
+          if (zaposleniNemajuSifre)
+            setJmbgoviCekiranihZaposlenih(
+              zaposleniSaValidnimEmailomKojiPostojeUFajlu.map(
+                (x: Zaposleni) => x.jmbg
+              )
+            );
+          else
+            setBrojeviCekiranihZaposlenih(
+              zaposleniSaValidnimEmailomKojiPostojeUFajlu.map(
+                (x: Zaposleni) => x.sifra
+              )
+            );
         });
       }
 
@@ -73,6 +93,7 @@ export default function IzborZaposlenihZaSlanje() {
           await pdfDataExtractor.nazivSkoleAsync(state.filePath)
         );
       }
+
       getNazivSkoleIzFajla();
       getYear();
       getUserEmployees();
@@ -80,7 +101,20 @@ export default function IzborZaposlenihZaSlanje() {
       getFileType();
     }, []);
 
-    const cekirajZaposlenog = (number: string) => {
+    function zapNemajuSifre(
+      extractedEmployees: ExtractedEmployeeWithPageNumbers[]
+    ) {
+      let numbers = extractedEmployees.map(e => e.sifra);
+      let jedinstveneSifre = numbers.filter(onlyUnique);
+
+      return jedinstveneSifre.length == 1 && jedinstveneSifre[0] == '';
+
+      function onlyUnique(value: any, index: any, self: any) {
+        return self.indexOf(value) === index;
+      }
+    }
+
+    const cekirajZaposlenogSaSifrom = (number: string) => {
       let _brojeviCekiranihZaposlenih = brojeviCekiranihZaposlenih.map(x => x);
       let cekiraniZaposleni = _brojeviCekiranihZaposlenih.filter(
         x => x == number
@@ -95,24 +129,45 @@ export default function IzborZaposlenihZaSlanje() {
       }
     };
 
+    const cekirajZaposlenogSaJmbgom = (jmbg: string) => {
+      let _jmbgoviCekiranihZaposlenih = jmbgoviCekiranihZaposlenih.map(x => x);
+      let cekiraniZaposleni = _jmbgoviCekiranihZaposlenih.filter(
+        x => x == jmbg
+      );
+      if (cekiraniZaposleni.length == 0)
+        setJmbgoviCekiranihZaposlenih([jmbg, ..._jmbgoviCekiranihZaposlenih]);
+      else {
+        _jmbgoviCekiranihZaposlenih = _jmbgoviCekiranihZaposlenih.filter(
+          x => x != jmbg
+        );
+        setJmbgoviCekiranihZaposlenih(_jmbgoviCekiranihZaposlenih);
+      }
+    };
+
     const onIzaberiSve = () => {
       let newVal = !izaberiSve;
       setIzaberiSve(newVal);
-      if (newVal == false) setBrojeviCekiranihZaposlenih([]);
-      else {
-        setBrojeviCekiranihZaposlenih(employees.map(x => x.sifra));
+      if (newVal == false) {
+        setBrojeviCekiranihZaposlenih([]);
+        setJmbgoviCekiranihZaposlenih([]);
+      } else {
+        if (zaposleniNemajuSifre)
+          setJmbgoviCekiranihZaposlenih(employees.map(x => x.jmbg));
+        else setBrojeviCekiranihZaposlenih(employees.map(x => x.sifra));
       }
     };
 
     const onNastavi = () => {
-      let odabraniZaposleni = employees.filter(x =>
-        brojeviCekiranihZaposlenih.includes(x.sifra)
-      );
-
+      let odabraniZaposleni = employees.filter(x => {
+        if (zaposleniNemajuSifre)
+          return jmbgoviCekiranihZaposlenih.includes(x.jmbg);
+        else return brojeviCekiranihZaposlenih.includes(x.sifra);
+      });
       let zaposleniSaStranicama = odabraniZaposleni.map(zaposleni => {
-        let pageNumbers = state.zaposleniUFajlu.filter(
-          x => x.sifra == zaposleni.sifra
-        )[0].pageNumbers;
+        let pageNumbers = state.zaposleniUFajlu.filter(x => {
+          if (zaposleniNemajuSifre) return x.jmbg == zaposleni.jmbg;
+          else return x.sifra == zaposleni.sifra;
+        })[0].pageNumbers;
 
         return {
           dbEmployee: zaposleni,
@@ -175,17 +230,27 @@ export default function IzborZaposlenihZaSlanje() {
                   </tr>
                 </thead>
                 <tbody>
-                  {employees.map(e => {
+                  {employees.map((e, i) => {
                     return (
                       <tr
-                        key={e.jmbg}
-                        onClick={() => cekirajZaposlenog(e.sifra)}
+                        key={i}
+                        onClick={() => {
+                          zaposleniNemajuSifre
+                            ? cekirajZaposlenogSaJmbgom(e.jmbg)
+                            : cekirajZaposlenogSaSifrom(e.sifra);
+                        }}
                         style={{
-                          backgroundColor:
-                            brojeviCekiranihZaposlenih.filter(x => x == e.sifra)
-                              .length > 0
-                              ? '#e26d5a'
+                          backgroundColor: zaposleniNemajuSifre
+                            ? jmbgoviCekiranihZaposlenih.filter(
+                                x => x == e.jmbg
+                              ).length > 0
+                              ? '#a8be8f'
                               : ''
+                            : brojeviCekiranihZaposlenih.filter(
+                                x => x == e.sifra
+                              ).length > 0
+                            ? '#a8be8f'
+                            : ''
                         }}
                       >
                         <td>{e.jmbg}</td>
@@ -205,7 +270,13 @@ export default function IzborZaposlenihZaSlanje() {
           </Col>
         </Row>
         <Row>
-          <Col>Izabrano {brojeviCekiranihZaposlenih.length} zaposlenih</Col>
+          <Col>
+            Izabrano{' '}
+            {zaposleniNemajuSifre
+              ? jmbgoviCekiranihZaposlenih.length
+              : brojeviCekiranihZaposlenih.length}{' '}
+            zaposlenih
+          </Col>
           <Col>
             <div style={{ float: 'right' }}>
               <Form.Group>
@@ -235,7 +306,11 @@ export default function IzborZaposlenihZaSlanje() {
                 Odustani
               </Button>
               <Button
-                disabled={brojeviCekiranihZaposlenih.length == 0}
+                disabled={
+                  zaposleniNemajuSifre
+                    ? jmbgoviCekiranihZaposlenih.length == 0
+                    : brojeviCekiranihZaposlenih.length == 0
+                }
                 onClick={onNastavi}
               >
                 Nastavi

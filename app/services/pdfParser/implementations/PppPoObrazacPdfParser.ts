@@ -2,11 +2,7 @@ import {
   ExtractedEmployeeWithPageNumbers,
   IPdfParser
 } from '../pdfParser.types';
-import { getMonthNameCyr } from '../../../utils/getMonthName';
-import {
-  PLATNI_LISTIC,
-  PPP_PO_OBRAZAC
-} from '../../../constants/indikatoriFajlovaZaSlanje';
+import { PLATNI_LISTIC } from '../../../constants/indikatoriFajlovaZaSlanje';
 import {
   getLinesFromPage,
   getTextFromPage
@@ -14,20 +10,17 @@ import {
 
 export class PppPoObrazacPdfParser implements IPdfParser {
   async extractNazivSkoleAsync(page: any): Promise<string> {
-    let lines = await getLinesFromPage(page);
-    return lines[4].trim();
+    return '---';
   }
   async extractMonthAsync(page: any): Promise<string> {
-    let lines = await getLinesFromPage(page);
-
-    return parseInt(lines[10].substr(0, 2)).toString();
+    return '';
   }
   async extractYearAsync(page: any): Promise<string> {
-    let lines = await getLinesFromPage(page);
-    let godinaLine = lines[3].trim();
-    let spacePos = godinaLine.indexOf(' ');
-
-    return godinaLine.substr(spacePos + 1);
+    let text = await getTextFromPage(page);
+    let startText = 'ПОТВРДА О ПЛАЋЕНИМ ПОРЕЗИМА И ДОПРИНОСИМА ПО ОДБИТКУ ЗА ';
+    let startIndex = text.indexOf(startText) + startText.length;
+    let y = text.substr(startIndex, 4);
+    return y;
   }
   private _employee: ExtractedEmployeeWithPageNumbers = new ExtractedEmployeeWithPageNumbers();
 
@@ -59,16 +52,7 @@ export class PppPoObrazacPdfParser implements IPdfParser {
   }
 
   public async extractSubjectAsync(page: any): Promise<string> {
-    let lines = await getLinesFromPage(page);
-    let godinaLine = lines[3].trim();
-    let spacePos = godinaLine.indexOf(' ');
-    let godina = godinaLine.substr(spacePos + 1);
-    let deoPlate = godinaLine.substr(0, spacePos);
-
-    let mesec = parseInt(lines[10].substr(0, 2));
-    return `Платни листић za ${getMonthNameCyr(
-      mesec
-    )}/${godina} - ${deoPlate}. део`;
+    return `PPP PO - ${await this.extractYearAsync(page)}`;
   }
 
   public async isPageForNewEmployeeAsync(page: any): Promise<boolean> {

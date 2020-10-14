@@ -16,6 +16,7 @@ import { get_IZVESTAJI_SLANJA_MAILOVA_DIR } from '../../constants/files';
 import { shell } from 'electron';
 import * as DetaljiKorisnikaService from '../detaljiKorisnika/detaljiKorisnika.service';
 import { DetaljiKorisnika } from '../detaljiKorisnika/detaljiKorisnika.types';
+import PppPoObrazacMissingEmployeesTemplate from './components/pppPoObrazacMissingEmployeesTemplate';
 const { dialog, getCurrentWindow } = require('electron').remote;
 const fs = require('fs');
 const employeeExtractor = new PdfDataExtractor();
@@ -82,24 +83,54 @@ export default function DostavljacMailovaComponent() {
   const fetchMissingEmployees = async (
     extractedEmployees: ExtractedEmployeeWithPageNumbers[]
   ) => {
-    let numbers = extractedEmployees.map(e => e.sifra);
-    handleResponse(
-      await service.getMissingEmployeeNumbers(numbers),
-      (res: any) => {
-        if (res.data.length <= 0) return;
-        let missingEmployeesNumbers = res.data;
-        let missingEmps: any[] = [];
-        missingEmployeesNumbers.forEach((number: string) => {
-          let employeeToInsert = extractedEmployees.find(
-            x => x.sifra == number
-          );
-          missingEmps.push(employeeToInsert);
-        });
+    if (zaposleniNemajuSifre(extractedEmployees)) {
+      let extractedJmbgs = extractedEmployees.map(e => e.jmbg);
+      handleResponse(
+        await service.getMissingJmbgs(extractedJmbgs),
+        (res: any) => {
+          if (res.data.length <= 0) return;
+          let missingJmbgs = res.data;
+          let missingEmps: any[] = [];
+          missingJmbgs.forEach((jmbg: string) => {
+            let employeeToInsert = extractedEmployees.find(x => x.jmbg == jmbg);
+            missingEmps.push(employeeToInsert);
+          });
+          setMissingEmployees(missingEmps);
+        }
+      );
+    } else {
+      let extractedSifre = extractedEmployees.map(e => e.sifra);
+      handleResponse(
+        await service.getMissingEmployeeNumbers(extractedSifre),
+        (res: any) => {
+          if (res.data.length <= 0) return;
+          let missingEmployeesNumbers = res.data;
+          let missingEmps: any[] = [];
+          missingEmployeesNumbers.forEach((number: string) => {
+            let employeeToInsert = extractedEmployees.find(
+              x => x.sifra == number
+            );
+            missingEmps.push(employeeToInsert);
+          });
 
-        setMissingEmployees(missingEmps);
-      }
-    );
+          setMissingEmployees(missingEmps);
+        }
+      );
+    }
   };
+
+  function zaposleniNemajuSifre(
+    extractedEmployees: ExtractedEmployeeWithPageNumbers[]
+  ) {
+    let numbers = extractedEmployees.map(e => e.sifra);
+    let jedinstveneSifre = numbers.filter(onlyUnique);
+
+    return jedinstveneSifre.length == 1 && jedinstveneSifre[0] == '';
+
+    function onlyUnique(value: any, index: any, self: any) {
+      return self.indexOf(value) === index;
+    }
+  }
 
   useEffect(() => {
     proveriPravaPristupaAsync();
@@ -213,7 +244,7 @@ export default function DostavljacMailovaComponent() {
           <div>
             <InputGroup className="mb-3">
               <Form.Control
-                placeholder="Izaberite .pdf fajl sa platnim listićima"
+                placeholder="Izaberite .pdf fajl (platni listići, obustave ili  PPP-PO obrazac)"
                 disabled
                 value={filePath}
                 as="textarea"
@@ -248,7 +279,12 @@ export default function DostavljacMailovaComponent() {
       )}
 
       {missingEmployees.length > 0 && isPppPoObrazac && fetchedEmployees && (
-        <div>PPP-potvrda</div>
+        <PppPoObrazacMissingEmployeesTemplate
+          missingEmployees={missingEmployees}
+          setInitialState={setInitialState}
+          filePath={filePath}
+          zaposleniUFajlu={allExtractedEmployees}
+        />
       )}
 
       {missingEmployees.length == 0 && fetchedEmployees && (
