@@ -30,17 +30,17 @@ export class SlanjeMailovaService {
 
   public async posaljiEmailoveZaposlenima(config: {
     listaZaposlenih: DbEmployeeWithPages[];
-    onSuccess: (zaposleni: DbEmployeeWithPages) => void;
-    onFail: (zaposleni: DbEmployeeWithPages, e: any) => void;
+    onSuccess: (zaposleni: DbEmployeeWithPages) => Promise<void>;
+    onFail: (zaposleni: DbEmployeeWithPages, e: any) => Promise<void>;
   }) {
     try {
       await this._initAsync();
       for (let zaposleni of config.listaZaposlenih) {
         try {
           await this._posaljiEmailZaposlenom(zaposleni);
-          config.onSuccess(zaposleni);
+          await config.onSuccess(zaposleni);
         } catch (e) {
-          config.onFail(zaposleni, e);
+          await config.onFail(zaposleni, e);
           throw e;
         }
       }
@@ -105,6 +105,7 @@ export async function logSendingMail(props: {
   vrsta: string;
   naziv_skole_iz_fajla: string;
   greska?: string;
+  rezultat_slanja: string;
 }) {
   await axios.post(`${API_URL}/log`, { ...props });
 }

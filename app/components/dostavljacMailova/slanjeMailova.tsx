@@ -35,10 +35,25 @@ export default function SlanjeMailovaComponent() {
 
     const [sendingResults, setSendingResults] = useState<RezultatSlanja[]>([]);
     const [slanjeUToku, setSlanjeUToku] = useState(true);
+    const [krajProcesa, setKrajProcesa] = useState<boolean>(false);
+    const [uspesno, setUspesno] = useState(false);
+    const [greska, setGreska] = useState('');
 
     useEffect(() => {
       posaljiMailoveAsync();
     }, []);
+
+    useEffect(() => {
+      if (krajProcesa)
+        logSendingMail({
+          uspesno: uspesno,
+          subject: fileSubject,
+          vrsta: fileType,
+          greska: greska,
+          naziv_skole_iz_fajla: nazivSkoleIzFajla,
+          rezultat_slanja: JSON.stringify(sendingResults)
+        });
+    }, [krajProcesa]);
 
     const posaljiMailoveAsync = async () => {
       let rezultatiSlanjaTemp: RezultatSlanja[] = [];
@@ -57,7 +72,7 @@ export default function SlanjeMailovaComponent() {
 
         await slanjeMailovaService.posaljiEmailoveZaposlenima({
           listaZaposlenih: odabraniZaposleni,
-          onSuccess: zaposleni => {
+          onSuccess: async zaposleni => {
             rezultatiSlanjaTemp.push({
               zaposleni: `${zaposleni.dbEmployee.jmbg} - ${
                 zaposleni.dbEmployee.prezime
@@ -68,7 +83,7 @@ export default function SlanjeMailovaComponent() {
             });
             setSendingResults([...rezultatiSlanjaTemp]);
           },
-          onFail: (zaposleni, e) => {
+          onFail: async (zaposleni, e) => {
             rezultatiSlanjaTemp.push({
               zaposleni: `${zaposleni.dbEmployee.jmbg} - ${
                 zaposleni.dbEmployee.prezime
@@ -81,12 +96,7 @@ export default function SlanjeMailovaComponent() {
           }
         });
 
-        logSendingMail({
-          uspesno: true,
-          subject: fileSubject,
-          vrsta: fileType,
-          naziv_skole_iz_fajla: nazivSkoleIzFajla
-        });
+        setUspesno(true);
 
         setSlanjeUToku(false);
       } catch (e) {
@@ -105,18 +115,13 @@ export default function SlanjeMailovaComponent() {
             type: 'error'
           });
         }
-
-        logSendingMail({
-          uspesno: false,
-          subject: fileSubject,
-          vrsta: fileType,
-          greska: e.message,
-          naziv_skole_iz_fajla: nazivSkoleIzFajla
-        });
+        setUspesno(false);
+        setGreska(e.message);
       } finally {
         if (rezultatiSlanjaTemp.length > 0)
           await createPdfFile(godina, fileSubject, rezultatiSlanjaTemp);
       }
+      setKrajProcesa(true);
     };
 
     return (

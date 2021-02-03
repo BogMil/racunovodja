@@ -76,6 +76,13 @@ export default function SideBar() {
           navigateTo={routes.OTHER_SETTINGS}
           text="Opšti podaci"
         />
+
+        <MenuItem
+          iconClassName="fa fa-file-alt"
+          navigateTo={routes.IZVESTAJI}
+          text="Izveštaji"
+        />
+
         <Divider />
         {false && (
           <>
@@ -87,6 +94,7 @@ export default function SideBar() {
             <Divider />
           </>
         )}
+
         <StaticMenuItem
           iconClassName="fa fa-sign-out-alt"
           text="Odjavi se"

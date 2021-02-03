@@ -16,5 +16,6 @@
   "DOSTAVLJAC_MAILOVA_SLANJE": "/dostavljac_mailova-slanje",
   "DOBAVLJACI": "/dobavljaci",
   "DETALJI_DOBAVLJACA": "/detalji_dobavljaca",
-  "NOTIFIKACIJE": "/notifikacije"
+  "NOTIFIKACIJE": "/notifikacije",
+  "IZVESTAJI": "/izvestaji"
 }
