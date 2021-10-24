@@ -14,6 +14,18 @@ export default function Home() {
 
       <Row style={{ marginTop: 50 }}>
         <Col className="d-flex justify-content-center">
+          <NavLink to={routes.DOSTAVLJAC_MAILOVA_V2}>
+            <div className="d-flex justify-content-center">
+              <Button>
+                <i className="fa fa-paper-plane" />
+              </Button>
+            </div>
+            <div className="d-flex justify-content-right">
+              <h3>Slanje platnih listića</h3>
+            </div>
+          </NavLink>
+        </Col>
+        <Col className="d-flex justify-content-center">
           <NavLink to={routes.DOSTAVLJAC_MAILOVA}>
             <div className="d-flex justify-content-center">
               <Button>
@@ -21,7 +33,7 @@ export default function Home() {
               </Button>
             </div>
             <div className="d-flex justify-content-center">
-              <h3>Mail Dostavljač</h3>
+              <h3>Slanje obustava</h3>
             </div>
           </NavLink>
         </Col>

@@ -19,6 +19,9 @@ import SlanjeMailovaComponent from './components/dostavljacMailova/slanjeMailova
 import DobavljaciComponent from './components/dobavljaci/dobavljaci.component';
 import DobavljacDetaljiComponent from './components/dobavljaci/components/detaljiDobavljaca/detaljiDobavljaca.component';
 import IzvestajiComponent from './components/izvestaji/izvestaji';
+import DostavljacMailovaV2Component from './components/dostavljacMailovaV2/dostavljacMailovaV2';
+import IzborZaposlenihZaSlanjeV2 from './components/dostavljacMailovaV2/izborZaposlenihZaSlanjeV2';
+import SlanjeMailovaComponentV2 from './components/dostavljacMailovaV2/slanjeMailovaV2';
 
 export default function Routes() {
   const auth = useSelector((state: any) => state.auth);
@@ -61,11 +64,20 @@ export default function Routes() {
         <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA}>
           <DostavljacMailovaComponent />
         </PrivateRoute>
+        <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA_V2}>
+          <DostavljacMailovaV2Component />
+        </PrivateRoute>
         <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH}>
           <IzborZaposlenihZaSlanje />
         </PrivateRoute>
+        <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH_V2}>
+          <IzborZaposlenihZaSlanjeV2 />
+        </PrivateRoute>
         <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA_SLANJE}>
           <SlanjeMailovaComponent />
+        </PrivateRoute>
+        <PrivateRoute path={routes.DOSTAVLJAC_MAILOVA_SLANJE_V2}>
+          <SlanjeMailovaComponentV2 />
         </PrivateRoute>
 
         {/* -------------------------DOBAVLJACI------------------------- */}

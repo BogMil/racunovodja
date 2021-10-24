@@ -51,11 +51,19 @@ export default function SideBar() {
           text="Zaposleni"
         />
         {user?.prava_pristupa?.dpl && (
-          <MenuItem
-            iconClassName="fa fa-paper-plane"
-            navigateTo={routes.DOSTAVLJAC_MAILOVA}
-            text="Mail dostavljač"
-          />
+          <>
+            <MenuItem
+              iconClassName="fa fa-paper-plane"
+              navigateTo={routes.DOSTAVLJAC_MAILOVA_V2}
+              text="Platni listići"
+            />
+
+            <MenuItem
+              iconClassName="fa fa-paper-plane"
+              navigateTo={routes.DOSTAVLJAC_MAILOVA}
+              text="Obustave"
+            />
+          </>
         )}
         {user?.prava_pristupa?.opiro && (
           <SubMenu text="Šifarnici">

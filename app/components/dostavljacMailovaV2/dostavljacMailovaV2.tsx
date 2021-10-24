@@ -1,72 +1,165 @@
 import React, { useEffect } from 'react';
 import { Container, Form, InputGroup, Button, Row, Col } from 'react-bootstrap';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { PdfDataExtractor } from '../../services/pdfParser/PdfDataExtractor';
-import { InvalidFileException } from '../../services/pdfParser/exceptions/invalidFileException';
 import { handleResponse } from '../../utils/responseHandler';
 import * as service from '../zaposleni/zaposleni.service';
-import { ExtractedEmployeeWithPageNumbers } from '../../services/pdfParser/pdfParser.types';
-import { FileChecker } from '../../services/FileChecker';
 import PlatniListicTemplate from './components/platniListicMissingEmployeesTemplate';
-import ObustavaTemplate from './components/obustavaMissingEmployeesTemplate';
 import { Redirect } from 'react-router';
 import routes from '../../constants/routes.json';
-import { PodaciOSlanjuZaIzborZaposlenih } from './dostavljacMailova.types';
+import {
+  DbEmployeeWithFile,
+  PodaciOSlanjuZaIzborZaposlenih,
+  ZaposleniSaSifromIFajlom
+} from './dostavljacMailova.types';
 import { get_IZVESTAJI_SLANJA_MAILOVA_DIR } from '../../constants/files';
 import { shell } from 'electron';
 import * as DetaljiKorisnikaService from '../detaljiKorisnika/detaljiKorisnika.service';
 import { DetaljiKorisnika } from '../detaljiKorisnika/detaljiKorisnika.types';
-import PppPoObrazacMissingEmployeesTemplate from './components/pppPoObrazacMissingEmployeesTemplate';
+import XLSX from 'xlsx';
+import { Zaposleni as DbEmployee } from '../zaposleni/zaposleni.types';
+
 const { dialog, getCurrentWindow } = require('electron').remote;
 const fs = require('fs');
-const employeeExtractor = new PdfDataExtractor();
 
-export default function DostavljacMailovaComponent() {
-  const [filePath, setFilePath] = React.useState('');
-
-  const [isPlatniListic, setIsPlatniListic] = React.useState(false);
-  const [isObustava, setIsObustava] = React.useState(false);
-  const [isPppPoObrazac, setIsPppPoObrazac] = React.useState(false);
+export default function DostavljacMailovaV2Component() {
+  const [folderPath, setFolderPath] = React.useState('');
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [fetchedEmployees, setFetchedEmployees] = React.useState(false);
   const [error, setError] = React.useState('');
-  const [missingEmployees, setMissingEmployees] = React.useState<
-    ExtractedEmployeeWithPageNumbers[]
-  >([]);
+  const [missingEmployees, setMissingEmployees] = React.useState<any[]>([]);
   const [allExtractedEmployees, setAllExtractedEmployees] = React.useState<
-    ExtractedEmployeeWithPageNumbers[]
+    ZaposleniSaSifromIFajlom[]
   >([]);
 
   const [uTokuProveraPrava, setUTokuProveraPrava] = React.useState(true);
   const [imaPravaPristupa, setImaPravaPristupa] = React.useState(false);
 
   const setInitialState = () => {
-    setFilePath('');
+    setFolderPath('');
     setIsLoading(false);
-
-    setIsPlatniListic(false);
-    setIsObustava(false);
-    setIsPppPoObrazac(false);
 
     setFetchedEmployees(false);
     setError('');
     setMissingEmployees([]);
   };
 
+  const getXslFileName = (files: string[]) => {
+    let file = null;
+    files.forEach((f: string) => {
+      if (isXlsFile(f)) {
+        file = f;
+        return;
+      }
+    });
+
+    return file;
+  };
+  const isXlsFile = (file: String) => {
+    let lastDot = file.lastIndexOf('.') + 1;
+    return file.toLowerCase().substr(lastDot) === 'xls';
+  };
+
+  const getZaposleniUFolderu = (
+    folderPath: string,
+    xlsFile: string
+  ): ZaposleniSaSifromIFajlom[] => {
+    const xslFilePath = `${folderPath}\\${xlsFile}`;
+    var xlsData = XLSX.readFile(xslFilePath);
+
+    let ref = xlsData.Sheets[xlsData.SheetNames[0]]['!ref'];
+    let eIndex = ref?.lastIndexOf('E') ?? -1;
+    let lastRowWithDataNum = (parseInt(ref?.substr(eIndex + 1) ?? '') ?? 0) - 1;
+    let cells = xlsData.Sheets[xlsData.SheetNames[0]];
+
+    let zaposleniUFolderu: ZaposleniSaSifromIFajlom[] = [];
+    for (let i = 7; i <= lastRowWithDataNum; i++) {
+      let obj = {
+        sifra: cells[`A${i}`].v,
+        fajl: `${folderPath}\\${cells[`E${i}`].v}`,
+        ime: cells[`C${i}`].v,
+        prezime: cells[`B${i}`].v
+      };
+      zaposleniUFolderu.push(obj);
+    }
+
+    return zaposleniUFolderu;
+  };
+
   const openDialog = () => {
     dialog
       .showOpenDialog(getCurrentWindow(), {
-        properties: ['openFile'],
-        filters: [{ name: 'Custom File Type', extensions: ['pdf'] }]
+        properties: ['openDirectory']
       })
       .then(result => {
-        if (!result.canceled) {
-          setFilePath(result.filePaths[0]);
-        }
+        if (result.canceled) return;
+
+        let fPath = result.filePaths[0];
+        setFolderPath(fPath);
+
+        fs.readdir(fPath, async (err: any, files: string[]) => {
+          setIsLoading(true);
+
+          let xlsFileName = getXslFileName(files);
+
+          if (xlsFileName === null) {
+            setError('Odabrani folder nije ispravan!');
+            setIsLoading(false);
+            setFetchedEmployees(false);
+            setMissingEmployees([]);
+            return;
+          }
+          setError('');
+
+          let zaposleniUFolderu = getZaposleniUFolderu(fPath, xlsFileName);
+
+          setMissingEmployees([]);
+          setAllExtractedEmployees([]);
+          setFetchedEmployees(false);
+
+          let zaposleniBezMaila: DbEmployee[] = [];
+          let zaposleniKojihNemaUBazi: ZaposleniSaSifromIFajlom[] = [];
+          let zaposleniKojiImaMail: DbEmployeeWithFile[] = [];
+
+          var dbZaposleniRes = await service.get();
+          zaposleniUFolderu.forEach(zuf => {
+            let zaposleniPronadjenUBazi = dbZaposleniRes.data.filter(
+              (dbz: DbEmployee) => {
+                return parseInt(dbz.sifra) === parseInt(zuf.sifra);
+              }
+            )[0];
+
+            if (zaposleniPronadjenUBazi === undefined) {
+              zaposleniKojihNemaUBazi.push(zuf);
+            } else if (
+              (zaposleniPronadjenUBazi.email1 === null ||
+                zaposleniPronadjenUBazi.email1 === '') &&
+              (zaposleniPronadjenUBazi.email2 === null ||
+                zaposleniPronadjenUBazi.email2 === '')
+            ) {
+              zaposleniBezMaila.push(zaposleniPronadjenUBazi);
+            } else {
+              zaposleniKojiImaMail.push({
+                ...zaposleniPronadjenUBazi,
+                fajl: zuf.fajl
+              });
+            }
+          });
+
+          setFolderPath(fPath);
+          setMissingEmployees(zaposleniKojihNemaUBazi);
+          setAllExtractedEmployees(zaposleniUFolderu);
+          setFetchedEmployees(true);
+
+          setIsLoading(false);
+        });
       })
       .catch(err => {
         dialog.showMessageBox({ message: err });
+        setIsLoading(false);
+        setFetchedEmployees(false);
+        setMissingEmployees([]);
+        setAllExtractedEmployees([]);
       });
   };
 
@@ -79,58 +172,6 @@ export default function DostavljacMailovaComponent() {
   const otvoriMail = () => {
     shell.openExternal('https://host105.dwhost.net:2096/');
   };
-
-  const fetchMissingEmployees = async (
-    extractedEmployees: ExtractedEmployeeWithPageNumbers[]
-  ) => {
-    if (zaposleniNemajuSifre(extractedEmployees)) {
-      let extractedJmbgs = extractedEmployees.map(e => e.jmbg);
-      handleResponse(
-        await service.getMissingJmbgs(extractedJmbgs),
-        (res: any) => {
-          if (res.data.length <= 0) return;
-          let missingJmbgs = res.data;
-          let missingEmps: any[] = [];
-          missingJmbgs.forEach((jmbg: string) => {
-            let employeeToInsert = extractedEmployees.find(x => x.jmbg == jmbg);
-            missingEmps.push(employeeToInsert);
-          });
-          setMissingEmployees(missingEmps);
-        }
-      );
-    } else {
-      let extractedSifre = extractedEmployees.map(e => e.sifra);
-      handleResponse(
-        await service.getMissingEmployeeNumbers(extractedSifre),
-        (res: any) => {
-          if (res.data.length <= 0) return;
-          let missingEmployeesNumbers = res.data;
-          let missingEmps: any[] = [];
-          missingEmployeesNumbers.forEach((number: string) => {
-            let employeeToInsert = extractedEmployees.find(
-              x => x.sifra == number
-            );
-            missingEmps.push(employeeToInsert);
-          });
-
-          setMissingEmployees(missingEmps);
-        }
-      );
-    }
-  };
-
-  function zaposleniNemajuSifre(
-    extractedEmployees: ExtractedEmployeeWithPageNumbers[]
-  ) {
-    let numbers = extractedEmployees.map(e => e.sifra);
-    let jedinstveneSifre = numbers.filter(onlyUnique);
-
-    return jedinstveneSifre.length == 1 && jedinstveneSifre[0] == '';
-
-    function onlyUnique(value: any, index: any, self: any) {
-      return self.indexOf(value) === index;
-    }
-  }
 
   useEffect(() => {
     proveriPravaPristupaAsync();
@@ -154,40 +195,10 @@ export default function DostavljacMailovaComponent() {
     });
   };
   useEffect(() => {
-    if (filePath == '') return;
+    if (folderPath == '') return;
     setMissingEmployees([]);
     setAllExtractedEmployees([]);
-    checkFileValidityAsync();
-  }, [filePath]);
-
-  async function checkFileValidityAsync() {
-    try {
-      setError('');
-      setIsLoading(true);
-      setFetchedEmployees(false);
-
-      setIsPlatniListic(await FileChecker.isPlatniListic(filePath));
-      setIsObustava(await FileChecker.isObustava(filePath));
-      setIsPppPoObrazac(await FileChecker.isPppPoObrazac(filePath));
-
-      let extractedEmployees = await employeeExtractor.getEmployeesAsync(
-        filePath
-      );
-      setAllExtractedEmployees(extractedEmployees);
-      await fetchMissingEmployees(extractedEmployees);
-      setIsLoading(false);
-      setFetchedEmployees(true);
-    } catch (e) {
-      setIsLoading(false);
-      setMissingEmployees([]);
-      setAllExtractedEmployees([]);
-      setFetchedEmployees(false);
-      if (e instanceof InvalidFileException) {
-        setError(e.message);
-        return;
-      }
-    }
-  }
+  }, [folderPath]);
 
   const currentYear = new Date().getFullYear();
   const folderSaIzvestajimaPostoji = fs.existsSync(
@@ -222,7 +233,7 @@ export default function DostavljacMailovaComponent() {
     <Container style={{ marginTop: 10 }} className="noselect">
       <Row>
         <Col style={{ textAlign: 'center', color: 'red', fontWeight: 500 }}>
-          !!! Slanje obustava !!!
+          !!! Slanje platnih listića !!!
         </Col>
       </Row>
       <Row>
@@ -249,15 +260,15 @@ export default function DostavljacMailovaComponent() {
           <div>
             <InputGroup className="mb-3">
               <Form.Control
-                placeholder="Izaberite .pdf fajl (obustave ili  PPP-PO obrazac)"
+                placeholder="Izaberite folder sa platnim listićima"
                 disabled
-                value={filePath}
+                value={folderPath}
                 as="textarea"
                 rows={2}
                 style={{ resize: 'none' }}
               />
               <InputGroup.Append>
-                <Button onClick={openDialog}>Učitaj fajl</Button>
+                <Button onClick={openDialog}>Učitaj folder</Button>
               </InputGroup.Append>
             </InputGroup>
             {error && <span style={{ color: 'red' }}>{error}</span>}
@@ -265,29 +276,11 @@ export default function DostavljacMailovaComponent() {
         </div>
       </Form>
 
-      {missingEmployees.length > 0 && isPlatniListic && fetchedEmployees && (
+      {missingEmployees.length > 0 && fetchedEmployees && (
         <PlatniListicTemplate
           missingEmployees={missingEmployees}
           setInitialState={setInitialState}
-          filePath={filePath}
-          zaposleniUFajlu={allExtractedEmployees}
-        />
-      )}
-
-      {missingEmployees.length > 0 && isObustava && fetchedEmployees && (
-        <ObustavaTemplate
-          missingEmployees={missingEmployees}
-          setInitialState={setInitialState}
-          filePath={filePath}
-          zaposleniUFajlu={allExtractedEmployees}
-        />
-      )}
-
-      {missingEmployees.length > 0 && isPppPoObrazac && fetchedEmployees && (
-        <PppPoObrazacMissingEmployeesTemplate
-          missingEmployees={missingEmployees}
-          setInitialState={setInitialState}
-          filePath={filePath}
+          filePath={folderPath}
           zaposleniUFajlu={allExtractedEmployees}
         />
       )}
@@ -295,9 +288,9 @@ export default function DostavljacMailovaComponent() {
       {missingEmployees.length == 0 && fetchedEmployees && (
         <Redirect
           to={{
-            pathname: routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH,
+            pathname: routes.DOSTAVLJAC_MAILOVA_IZBOR_ZAPOSLENIH_V2,
             state: {
-              filePath: filePath,
+              filePath: folderPath,
               zaposleniUFajlu: allExtractedEmployees
             } as PodaciOSlanjuZaIzborZaposlenih
           }}

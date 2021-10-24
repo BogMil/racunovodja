@@ -14,14 +14,17 @@ const pdfjs = require('pdfjs-dist');
 const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import routes from '../../constants/routes.json';
-import { SlanjeMailovaService, logSendingMail } from './slanjeMailova.service';
+import {
+  SlanjeMailovaServiceV2,
+  logSendingMail
+} from './slanjeMailovaV2.service';
 import { MailAuthException } from '../../services/mailSender/exceptions/mailAuthException';
 import { NepredvidjenException } from '../../services/mailSender/exceptions/nepredvidjenException';
 import { createPdfFile } from './dostavljacMailova.fileCreators';
 import { get as getUserDetails } from '../detaljiKorisnika/detaljiKorisnika.service';
 const { dialog, getCurrentWindow } = require('electron').remote;
 
-export default function SlanjeMailovaComponent() {
+export default function SlanjeMailovaComponentV2() {
   const history = useHistory();
   try {
     const {
@@ -64,20 +67,19 @@ export default function SlanjeMailovaComponent() {
           throw new Error('Greška prilikom učitavanja korisničkih podataka');
 
         let userDetails = userDetailsRes.data;
-        let slanjeMailovaService = new SlanjeMailovaService({
-          filePath: filePath,
+        let slanjeMailovaServiceV2 = new SlanjeMailovaServiceV2({
+          filePath: odabraniZaposleni[0].fajl,
           user: userDetails.email_za_slanje,
           pass: userDetails.password_email_za_slanje
         });
 
-        await slanjeMailovaService.posaljiEmailoveZaposlenima({
+        await slanjeMailovaServiceV2.posaljiEmailoveZaposlenima({
           listaZaposlenih: odabraniZaposleni,
           onSuccess: async zaposleni => {
             rezultatiSlanjaTemp.push({
-              zaposleni: `${zaposleni.dbEmployee.sifra} - ${
-                zaposleni.dbEmployee.prezime
-              } ${zaposleni.dbEmployee.ime} - ${zaposleni.dbEmployee.email1 ??
-                ''} ${zaposleni.dbEmployee.email2 ?? ''}`,
+              zaposleni: `${zaposleni.sifra} - ${zaposleni.prezime} ${
+                zaposleni.ime
+              } - ${zaposleni.email1 ?? ''} ${zaposleni.email2 ?? ''}`,
               message: '',
               uspesno: true
             });
@@ -85,10 +87,9 @@ export default function SlanjeMailovaComponent() {
           },
           onFail: async (zaposleni, e) => {
             rezultatiSlanjaTemp.push({
-              zaposleni: `${zaposleni.dbEmployee.sifra} - ${
-                zaposleni.dbEmployee.prezime
-              } ${zaposleni.dbEmployee.ime} - ${zaposleni.dbEmployee.email1 ??
-                ''} ${zaposleni.dbEmployee.email2 ?? ''}`,
+              zaposleni: `${zaposleni.sifra} - ${zaposleni.prezime} ${
+                zaposleni.ime
+              } - ${zaposleni.email1 ?? ''} ${zaposleni.email2 ?? ''}`,
               message: e.message,
               uspesno: false
             });
@@ -138,7 +139,7 @@ export default function SlanjeMailovaComponent() {
           <Row>
             <Col>
               <div>
-                putanja fajla : <b>{filePath}</b>
+                putanja foldera : <b>{filePath}</b>
               </div>
             </Col>
           </Row>
