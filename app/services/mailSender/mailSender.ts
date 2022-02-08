@@ -1,3 +1,9 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable lines-between-class-members */
+/* eslint-disable import/prefer-default-export */
 import { promisify } from 'util';
 import { MailAuthException } from './exceptions/mailAuthException';
 import { NepredvidjenException } from './exceptions/nepredvidjenException';
@@ -39,7 +45,7 @@ export class MailSender {
 
   private _createTransporter(user: string, pass: string) {
     return nodemailer.createTransport({
-      host: 'mail.bogmilko.rs',
+      host: 'host105.dwhost.net',
       port: 465,
       secure: true,
       auth: {
